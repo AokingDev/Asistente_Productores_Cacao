@@ -1,0 +1,35 @@
+# --- Secretos (NUNCA subir) ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# --- Node / frontend ---
+node_modules/
+dist/
+build/
+.angular/
+
+# --- Datos pesados ---
+# Los PDF oficiales se descargan con scripts/descargar_fuentes.py (ver data/raw/README.md)
+data/raw/*.pdf
+data/processed/
+data/vectorstore/
+chroma/
+
+# --- Editor / SO ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.claude/settings.local.json
