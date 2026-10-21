@@ -112,6 +112,6 @@ se usaron y cómo se verificó su salida._
 
 | Integrante | Rol | Aporte |
 | :--- | :--- | :--- |
-| _Nombre 1_ | | |
-| _Nombre 2_ | | |
-| _Nombre 3_ | | |
+| Darío Tipanluisa | Análisis | Elaboración de propuesta del problema (01) y requisitos con historias de usuario (02). |
+| Jhonn Miranda | Arquitectura | Diseño de la arquitectura (03), inventario de fuentes (04) e integración de manuales. |
+| Marco Rivas | Gestión y Desarrollo | Levantamiento real de preguntas, configuración base del repositorio y evidencias. |
