@@ -1,0 +1,14 @@
+# Evidencia: GET /health en local (2026-10-21T19:40Z)
+$ uvicorn app.main:app --port 8000
+$ curl -i http://localhost:8000/health
+HTTP/1.1 200 OK
+date: Wed, 21 Oct 2026 19:40:15 GMT
+server: uvicorn
+content-length: 171
+content-type: application/json
+vary: Origin
+
+{"status":"ok","service":"Asistente Agrotecnico Cacao","version":"0.1.0","environment":"development","llm_configured":false,"timestamp":"2026-10-21T19:40:15.283318+00:00"}
+
+$ pytest -q
+2 passed in 0.67s
