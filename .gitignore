@@ -22,7 +22,6 @@ build/
 
 # --- Datos pesados ---
 # Los PDF oficiales se descargan con scripts/descargar_fuentes.py (ver data/raw/README.md)
-data/raw/*.pdf
 data/processed/
 data/vectorstore/
 chroma/
