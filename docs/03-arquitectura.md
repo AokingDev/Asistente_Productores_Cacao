@@ -23,7 +23,7 @@ graph TD
     end
 
     subgraph IA Generativa
-        F[Modelo LLM <br> Gemini 1.5 Flash]
+        F[Modelo LLM <br> Gemini Flash]
     end
 
     subgraph Fuentes de Conocimiento
@@ -31,7 +31,7 @@ graph TD
     end
 
     %% Ingesta de datos
-    G -.->|Extrae Embeddings| E
+    G -.->|Genera embeddings| E
 
     %% Flujo de la consulta
     A -->|1. Envía síntoma| B
@@ -42,3 +42,4 @@ graph TD
     F -->|6. Respuesta generada| C
     C -->|7. Envía respuesta| B
     B -->|8. Muestra en pantalla| A
+```
