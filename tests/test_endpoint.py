@@ -11,13 +11,17 @@ from app.services.llm import FlujoInterrumpido, ProveedorNoDisponible
 
 class FlujoFalso:
     def __init__(self, trozos, cortar=False):
-        self.trozos, self.cortar = trozos, cortar
-        self.proveedor, self.latencia_ms, self.tokens_entrada, self.tokens_salida = "a", 120, 30, 12
+        self.trozos, self.cortar, self.cancelado = trozos, cortar, False
+        self.proveedor, self.modelo = "gemini", "gemini-3.8-flash"
+        self.latencia_ms, self.tokens_entrada, self.tokens_salida = 120, 30, 12
 
     def __iter__(self):
         yield from self.trozos
         if self.cortar:
             raise FlujoInterrumpido()
+
+    def cancelar(self):
+        self.cancelado = True
 
 
 class LLMFalso:
@@ -66,7 +70,8 @@ def test_chat_responde_en_streaming():
     assert r.status_code == 200 and r.headers["content-type"].startswith("application/x-ndjson")
     ev = eventos(r)
     assert "".join(e["texto"] for e in ev if e["tipo"] == "texto") == "Puede ser monilla."
-    assert ev[-1] == {"tipo": "fin", "proveedor": "a", "latencia_ms": 120, "tokens_entrada": 30, "tokens_salida": 12}
+    assert ev[-1] == {"tipo": "fin", "proveedor": "gemini", "modelo": "gemini-3.8-flash", "latencia_ms": 120,
+                      "tokens_entrada": 30, "tokens_salida": 12}
 
 
 def test_chat_usa_el_prompt_v3_y_el_historial():
@@ -113,3 +118,27 @@ def test_sin_clave_configurada_da_503_sin_detalles_internos():
     app.dependency_overrides[obtener_llm] = sin_clave
     r = TestClient(app).post("/chat", json={"mensaje": "manchas"})
     assert r.status_code == 503 and "GEMINI_API_KEY" not in r.text
+
+
+def test_si_el_cliente_se_desconecta_se_cancela_el_flujo():
+    """Equivale a pulsar «Detener»: el servidor deja de leer y cierra el generador."""
+    import asyncio
+
+    from app.main import _eventos
+
+    flujo = FlujoFalso(["uno ", "dos ", "tres"])
+
+    async def leer_uno_y_cortar():
+        gen = _eventos(flujo)
+        primero = await gen.__anext__()
+        await gen.aclose()
+        return primero
+
+    assert json.loads(asyncio.run(leer_uno_y_cortar()))["texto"] == "uno "
+    assert flujo.cancelado is True
+
+
+def test_respuesta_completa_no_se_cancela():
+    flujo = FlujoFalso(["ok"])
+    con(LLMFalso(flujo)).post("/chat", json={"mensaje": "manchas"})
+    assert flujo.cancelado is False

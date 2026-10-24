@@ -117,3 +117,52 @@ def test_log_no_guarda_el_texto_del_usuario(tmp_path, monkeypatch):
     list(c.generar_stream("sys", [{"role": "user", "content": "MI CÉDULA 1712345678"}]))
     assert registros and "1712345678" not in json.dumps(registros)
     assert registros[-1]["evento"] == "ok" and registros[-1]["tokens_entrada"] == 30
+
+
+class StreamCerrable:
+    """Imita el objeto Stream del SDK: iterable y con close()."""
+
+    def __init__(self, trozos):
+        self.trozos, self.cerrado = trozos, False
+
+    def __iter__(self):
+        return iter(self.trozos)
+
+    def close(self):
+        self.cerrado = True
+
+
+def test_detener_cierra_la_conexion_con_el_proveedor():
+    crudo = StreamCerrable(flujo("uno ", "dos ", "tres"))
+    f = cliente(Doble([crudo]))[0].generar_stream("sys", [])
+    it = iter(f)
+    assert next(it) == "uno "
+    it.close()  # lo que pasa cuando el usuario pulsa «Detener»
+    assert crudo.cerrado is True
+
+
+def test_cancelar_desde_otro_hilo_cierra_y_no_lanza_error():
+    """«Detener» llega mientras el hilo del stream está esperando el siguiente trozo."""
+    def gen():
+        yield trozo("uno ")
+        yield trozo("dos ")
+        raise httpx.ReadError("conexión cerrada por nosotros")  # lo que pasa al cerrar la respuesta
+
+    crudo = StreamCerrable(gen())
+    f =cliente(Doble([crudo]))[0].generar_stream("sys", [])
+    it = iter(f)
+    assert next(it) == "uno "
+    f.cancelar()
+    assert crudo.cerrado is True
+    assert list(it) == []  # termina sin FlujoInterrumpido ni registro de «ok»
+    assert f.latencia_ms is None
+
+
+def test_error_inesperado_a_mitad_se_traduce_a_flujo_interrumpido():
+    def gen():
+        yield trozo("uno ")
+        raise httpx.RemoteProtocolError("el proveedor cortó")
+
+    c, _ = cliente(Doble([gen()]))
+    with pytest.raises(FlujoInterrumpido):
+        list(c.generar_stream("sys", []))
