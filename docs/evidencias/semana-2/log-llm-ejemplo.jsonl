@@ -1,0 +1,5 @@
+{"ts": "2026-10-23T18:54:48", "evento": "ok", "modo": "stream", "proveedor": "simulado", "modelo": "simulado-1", "intento": 1, "primer_trozo_ms": 22, "latencia_ms": 1668, "tokens_entrada": 42, "tokens_salida": 53}
+{"ts": "2026-10-23T18:54:51", "evento": "reintento", "proveedor": "simulado", "intento": 1, "tipo": "APIConnectionError", "estado_http": null, "espera_s": 0.65}
+{"ts": "2026-10-23T18:54:53", "evento": "reintento", "proveedor": "simulado", "intento": 2, "tipo": "APIConnectionError", "estado_http": null, "espera_s": 1.32}
+{"ts": "2026-10-23T18:54:57", "evento": "agotado", "proveedor": "simulado", "intento": 3, "tipo": "APIConnectionError", "estado_http": null, "espera_s": 3.83}
+{"ts": "2026-10-23T18:54:57", "evento": "sin_proveedor"}

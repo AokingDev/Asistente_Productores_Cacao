@@ -1,0 +1,17 @@
+# Verificación: la clave vive solo en .env y .env nunca se subió
+# Fecha: 2026-10-23 18:58 · rama: main · commits revisados: 13
+
+$ git check-ignore -v .env
+.gitignore:2:.env	.env
+
+$ git log --all --oneline -- .env "**/.env"      # commits que tocaron un .env
+(ninguno)
+
+$ git log --all --name-only --format= | grep -E "(^|/)\.env$"   # archivos .env en el historial
+(ninguno)
+
+$ git log --all -p | grep -cE "AIza[0-9A-Za-z_-]{30,}|gsk_[0-9A-Za-z]{30,}"   # claves de Gemini/Groq en algún diff
+0
+
+$ grep -rnE 'AIza[0-9A-Za-z_-]{30,}|gsk_[0-9A-Za-z]{30,}|API_KEY\s*=\s*["'][^"']+' app frontend scripts tests   # claves en el código actual
+(ninguna)
