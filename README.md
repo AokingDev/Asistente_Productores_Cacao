@@ -96,7 +96,7 @@ uvicorn app.main:app --reload      # abrir http://localhost:8000
 | Método | Ruta | Entrada | Salida | Estado |
 | :-: | :--- | :--- | :--- | :-: |
 | GET | `/health` | — | `{"estado":"ok", "version", "prompt", "llm":{"principal","respaldo"}}` | ✅ |
-| POST | `/chat` | `{"mensaje": str (2–1000), "historial": [{"role":"user"\|"assistant","content"}]}` | NDJSON en streaming: `{"tipo":"texto"\|"fin"\|"error"}`; 503 si el modelo no está disponible | ✅ |
+| POST | `/chat` | `{"mensaje": str (2–1000), "historial": [{"role":"user"\|"assistant","content"}]}` | NDJSON en streaming: `{"tipo":"texto"\|"fin"\|"error"}` (`fin` trae `proveedor`, `modelo`, tokens y latencia); 503 si el modelo no está disponible | ✅ |
 | GET | `/` | — | Interfaz web del chat | ✅ |
 
 ## URL desplegada
