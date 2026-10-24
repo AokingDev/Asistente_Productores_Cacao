@@ -24,7 +24,7 @@ Nombrar como `NN-descripcion.png`:
 - [x] Requisitos e historias de usuario — `docs/02-requisitos.md`
 - [x] Arquitectura — `docs/03-arquitectura.md`
 - [x] Catálogo de fuentes — `docs/04-fuentes.md` + `data/raw/README.md`
-- [x] Levantamiento (20 preguntas) — `docs/05-levantamiento.md`
+- [x] Levantamiento (20 preguntas) — `docs/00-levantamiento.md` (antes 05; renombrado en la semana 2)
 - [x] Fuentes descargadas en `data/raw/` (enlaces + script, PDF fuera de Git por tamaño)
 - [x] README inicial, `.gitignore`, `.env.example`
 - [x] FastAPI con `/health` en local (opcional)
