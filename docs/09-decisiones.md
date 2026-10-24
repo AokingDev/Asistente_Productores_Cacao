@@ -91,3 +91,30 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
   fijo. La comparación marca automáticamente cualquier cantidad por bomba/litro/ha (`⚠dosis`).
 - **Consecuencias:** en la semana 3 la regla se relaja **solo** para dosis presentes en los fragmentos recuperados,
   con cita.
+
+### ADR-010 · Recordatorio del técnico en un avatar, no en cada respuesta
+- **Estado:** Aceptada.
+- **Contexto:** `system_v3` cierra cada respuesta con «Es una orientación preliminar; confírmelo con un técnico…».
+  Repetido en todas las respuestas, el productor deja de leerlo y ocupa espacio en una pantalla pequeña.
+- **Decisión:** un avatar de cacao (abajo a la derecha) con una nube muestra **siempre** el recordatorio (HU06).
+  El frontend quita esa frase cuando es la **última línea suelta** de la respuesta (no se tocan viñetas con contenido).
+  La nube se vuelve a abrir, con una animación, después de cada respuesta. El prompt **no** se modificó, para no
+  invalidar la comparación de `docs/05-prompts.md`.
+- **Consecuencias:** el aviso ya no depende de que el modelo lo escriba (lo pone el código). Si se quiere ahorrar
+  tokens, una futura `system_v4` puede omitir la frase de cierre.
+
+### ADR-011 · Mostrar qué proveedor generó cada respuesta y permitir detenerla
+- **Estado:** Aceptada.
+- **Contexto:** con respaldo automático, el usuario y el evaluador deben saber si respondió Gemini o Groq. Las
+  respuestas largas en señal lenta deben poder cortarse.
+- **Decisión:** el evento `fin` incluye `proveedor` y `modelo`; la interfaz muestra «Generado por Gemini/Groq» bajo cada
+  respuesta y lo guarda en el historial local (al servidor solo se reenvían `role` y `content`). Durante la respuesta,
+  «Enviar» sigue deshabilitado (requisito de la guía) y aparece un botón aparte **«Detener respuesta»**. Al detener, el
+  backend cierra la conexión con el proveedor (`Flujo.cancelar`) y registra `stream_cancelado`.
+- **Consecuencias:** una respuesta detenida no se guarda en el historial (no se reenvía a medias al modelo).
+
+### ADR-012 · Escritorio a todo el ancho con panel informativo
+- **Estado:** Aceptada.
+- **Decisión:** desde 960 px: panel lateral fijo (qué hace, qué no hace, cómo describir un síntoma, fuentes y estado
+  del servicio desde `/health`) + chat a todo el ancho restante. En el teléfono el panel es un cajón (botón «Info»).
+  Las burbujas se limitan a ~1100 px para que las líneas sigan siendo legibles en monitores anchos.

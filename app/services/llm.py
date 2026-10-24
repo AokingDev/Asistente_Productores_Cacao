@@ -140,7 +140,8 @@ class Flujo:
     altura ya no se puede cambiar de proveedor sin repetir texto al usuario.
     """
 
-    def __init__(self, proveedor: Proveedor, primero: str, resto: Iterator, uso, t0: float, intentos: int):
+    def __init__(self, proveedor: Proveedor, primero: str, resto: Iterator, uso, t0: float, intentos: int,
+                 cerrar: Callable[[], None] | None = None):
         self.proveedor, self.modelo = proveedor.nombre, proveedor.modelo
         self.intentos = intentos
         self.primer_trozo_ms = int((time.monotonic() - t0) * 1000)
@@ -148,29 +149,50 @@ class Flujo:
         self.tokens_entrada: int | None = None
         self.tokens_salida: int | None = None
         self._primero, self._resto, self._uso, self._t0 = primero, resto, uso, t0
+        self._cerrar = cerrar
+        self._cancelado = False
 
     def _anotar_uso(self, uso) -> None:
         if uso is not None:
             self.tokens_entrada = getattr(uso, "prompt_tokens", None)
             self.tokens_salida = getattr(uso, "completion_tokens", None)
 
+    def cancelar(self) -> None:
+        """El usuario pulsó «Detener» o cerró la página. Corta la conexión con el proveedor para
+        que deje de generar (y de cobrar) tokens. Se puede llamar desde otro hilo."""
+        if self._cancelado or self.latencia_ms is not None:
+            return
+        self._cancelado = True
+        _registrar(evento="stream_cancelado", proveedor=self.proveedor, modelo=self.modelo,
+                   latencia_ms=int((time.monotonic() - self._t0) * 1000), tokens_salida=self.tokens_salida)
+        if self._cerrar:
+            try:
+                self._cerrar()
+            except Exception:  # noqa: BLE001 — cerrar es un «mejor esfuerzo»
+                pass
+
     def __iter__(self) -> Iterator[str]:
         self._anotar_uso(self._uso)
-        yield self._primero
         try:
+            yield self._primero
             for trozo in self._resto:
+                if self._cancelado:
+                    return
                 self._anotar_uso(getattr(trozo, "usage", None))
                 texto = _texto_trozo(trozo)
                 if texto:
                     yield texto
-        except openai.APIError as e:
+        except GeneratorExit:
+            self.cancelar()
+            raise
+        except Exception as e:  # noqa: BLE001
+            if self._cancelado:  # la conexión la cerramos nosotros al cancelar
+                return
             _registrar(evento="stream_cortado", proveedor=self.proveedor, tipo=type(e).__name__,
                        latencia_ms=int((time.monotonic() - self._t0) * 1000))
             raise FlujoInterrumpido() from e
-        except GeneratorExit:  # el usuario cerró la página
-            _registrar(evento="stream_cancelado", proveedor=self.proveedor,
-                       latencia_ms=int((time.monotonic() - self._t0) * 1000))
-            raise
+        if self._cancelado:
+            return
         self.latencia_ms = int((time.monotonic() - self._t0) * 1000)
         _registrar(evento="ok", modo="stream", proveedor=self.proveedor, modelo=self.modelo, intento=self.intentos,
                    primer_trozo_ms=self.primer_trozo_ms, latencia_ms=self.latencia_ms,
@@ -299,17 +321,18 @@ class ClienteLLM:
 
             def una_vez():
                 t0 = time.monotonic()
-                resto = iter(cliente.chat.completions.create(model=p.modelo, messages=completos, **opciones))
+                crudo = cliente.chat.completions.create(model=p.modelo, messages=completos, **opciones)
+                resto = iter(crudo)
                 uso = None
                 for trozo in resto:  # los modelos de razonamiento pueden mandar trozos vacíos al inicio
                     uso = getattr(trozo, "usage", None) or uso
                     texto = _texto_trozo(trozo)
                     if texto:
-                        return texto, resto, uso, t0
+                        return texto, resto, uso, t0, getattr(crudo, "close", None)
                 raise _RespuestaVacia()
 
-            (primero, resto, uso, t0), intento = self._con_reintentos(p, una_vez)
-            return Flujo(p, primero, resto, uso, t0, intento)
+            (primero, resto, uso, t0, cerrar), intento = self._con_reintentos(p, una_vez)
+            return Flujo(p, primero, resto, uso, t0, intento, cerrar)
 
         return self._con_respaldo(abrir)
 

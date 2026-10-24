@@ -4,6 +4,7 @@ Sirve para practicar el manejo de errores sin gastar cuota real.
     python scripts/servidor_simulado.py --limite 5           # 429 a partir de la 6.ª solicitud en 10 segundos
     python scripts/servidor_simulado.py --romper-json 0.5  # la mitad de las respuestas trae JSON roto
     python scripts/servidor_simulado.py --lento 40         # tarda 40 s (para probar el tiempo límite)
+    python scripts/servidor_simulado.py --pausa 0.3        # escribe despacio (para probar «Detener»)
 
 Luego, en .env:  LLM_PRINCIPAL=simulado
 
@@ -19,7 +20,7 @@ import time
 from collections import deque
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-OPC = argparse.Namespace(limite=5, ventana=10, romper_json=0.0, lento=0.0, vacio=0.0)
+OPC = argparse.Namespace(limite=5, ventana=10, romper_json=0.0, lento=0.0, vacio=0.0, pausa=0.03)
 _tiempos: deque = deque()
 TEXTO_SIMULADO = (
     "**Respuesta simulada** (proveedor de pruebas, no es el modelo real).\n"
@@ -74,7 +75,7 @@ class Manejador(BaseHTTPRequestHandler):
 
         for t in trozos:
             evento({**base, "choices": [{"index": 0, "delta": {"content": t}, "finish_reason": None}]})
-            time.sleep(0.03)
+            time.sleep(OPC.pausa)
         evento({**base, "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}]})
         if con_uso:
             evento({**base, "choices": [], "usage": {"prompt_tokens": 42, "completion_tokens": len(trozos),
@@ -135,7 +136,9 @@ if __name__ == "__main__":
     ap.add_argument("--romper-json", type=float, default=0.0)
     ap.add_argument("--lento", type=float, default=0.0)
     ap.add_argument("--vacio", type=float, default=0.0)
+    ap.add_argument("--pausa", type=float, default=0.03, help="segundos entre palabras del streaming (para probar «Detener»)")
     a = ap.parse_args()
-    OPC.limite, OPC.ventana, OPC.romper_json, OPC.lento, OPC.vacio = a.limite, a.ventana, a.romper_json, a.lento, a.vacio
+    OPC.limite, OPC.ventana, OPC.romper_json, OPC.lento, OPC.vacio, OPC.pausa = (
+        a.limite, a.ventana, a.romper_json, a.lento, a.vacio, a.pausa)
     print(f"Proveedor simulado en http://127.0.0.1:8099/v1 · {a.limite} solicitudes cada {a.ventana:g} s · Ctrl+C para salir")
     ThreadingHTTPServer(("127.0.0.1", 8099), Manejador).serve_forever()

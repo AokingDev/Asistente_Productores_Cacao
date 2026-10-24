@@ -5,11 +5,12 @@ Ejecutar:  uvicorn app.main:app --reload     y abrir http://127.0.0.1:8000
 """
 import json
 from functools import lru_cache
-from typing import Iterator
+from typing import AsyncIterator
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
 
 from app.config import APP_NOMBRE, APP_VERSION, RAIZ, ErrorConfiguracion, cargar_config
 from app.schemas import ChatSolicitud
@@ -21,7 +22,7 @@ app = FastAPI(
     title=APP_NOMBRE,
     version=APP_VERSION,
     description="Chat de orientación agrotécnica para productores de cacao. "
-                "Desde la semana 3: RAG sobre manuales del INIAP y el MAG con citas.",
+                "RAG sobre manuales del INIAP y el MAG con citas.",
 )
 
 
@@ -52,14 +53,25 @@ def _evento(**datos) -> str:
     return json.dumps(datos, ensure_ascii=False) + "\n"
 
 
-def _eventos(flujo: Flujo) -> Iterator[str]:
+async def _eventos(flujo: Flujo) -> AsyncIterator[str]:
+    """Convierte el flujo del modelo en eventos NDJSON. Si el navegador se desconecta (el
+    productor pulsó «Detener» o cerró la página) se cancela el flujo: sin esto la conexión con
+    el proveedor quedaría abierta y el modelo seguiría generando tokens."""
+    trozos = iter(flujo)
+    termino = False
     try:
-        for texto in flujo:
+        # El SDK del proveedor es síncrono: cada trozo se espera en un hilo aparte.
+        while (texto := await run_in_threadpool(next, trozos, None)) is not None:
             yield _evento(tipo="texto", texto=texto)
+        termino = True
     except ErrorLLM as e:
+        termino = True
         yield _evento(tipo="error", mensaje=e.mensaje_usuario)
         return
-    yield _evento(tipo="fin", proveedor=flujo.proveedor, latencia_ms=flujo.latencia_ms,
+    finally:
+        if not termino:
+            flujo.cancelar()
+    yield _evento(tipo="fin", proveedor=flujo.proveedor, modelo=flujo.modelo, latencia_ms=flujo.latencia_ms,
                   tokens_entrada=flujo.tokens_entrada, tokens_salida=flujo.tokens_salida)
 
 
