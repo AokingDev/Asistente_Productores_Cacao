@@ -5,50 +5,146 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#3b2a1e">
   <title>Asistente Cacao</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M33 13c7-8 16-8 21-5-3 7-11 11-21 8z' fill='%233f8a3c'/%3E%3Cpath d='M32 14c11 0 18 10 18 23S42 61 32 61 14 50 14 37s7-23 18-23z' fill='%23c96a26'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Dibujo del cacao: se define una vez y se reutiliza (barra, panel y avatar) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="mazorca" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#eda04f"/>
+        <stop offset="1" stop-color="#a24f1c"/>
+      </linearGradient>
+    </defs>
+    <symbol id="cacao" viewBox="0 0 64 64">
+      <path d="M33 13c7-8 16-8 21-5-3 7-11 11-21 8z" fill="#3f8a3c"/>
+      <path d="M34 15c6-2 11-5 16-8" stroke="#2c6a2a" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <path d="M31 15c0-3 1-6 3-8" stroke="#5b3a1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+      <path d="M32 14c11 0 18 10 18 23S42 61 32 61 14 50 14 37s7-23 18-23z" fill="url(#mazorca)"/>
+      <path d="M23 19c-4 9-4 29 2 39M41 19c4 9 4 29-2 39" stroke="#7d3510" stroke-opacity=".35" stroke-width="1.6" fill="none"/>
+      <ellipse cx="26" cy="36" rx="3.4" ry="4" fill="#fff"/>
+      <ellipse cx="38" cy="36" rx="3.4" ry="4" fill="#fff"/>
+      <circle cx="26.7" cy="36.8" r="2" fill="#2a1a10"/>
+      <circle cx="38.7" cy="36.8" r="2" fill="#2a1a10"/>
+      <circle cx="21.5" cy="43" r="2.5" fill="#f6a5a0" opacity=".7"/>
+      <circle cx="42.5" cy="43" r="2.5" fill="#f6a5a0" opacity=".7"/>
+      <path d="M27 45c3 3.2 7 3.2 10 0" stroke="#2a1a10" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
   <header class="barra">
     <div class="marca">
-      <span class="logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 2c3.9 0 7 4.5 7 10s-3.1 10-7 10-7-4.5-7-10S8.1 2 12 2Zm0 2v16c2.6 0 5-3.6 5-8s-2.4-8-5-8Z"/></svg>
-      </span>
+      <svg class="logo" aria-hidden="true"><use href="#cacao"/></svg>
       <div>
         <h1>Asistente Cacao</h1>
         <p class="sub">Orientación para su cultivo</p>
       </div>
     </div>
-    <button id="nueva" class="btn-texto" type="button" title="Borrar la conversación">Nueva</button>
+    <div class="acciones">
+      <button id="abrir-info" class="btn-texto solo-movil" type="button" aria-controls="lateral" aria-expanded="false">Info</button>
+      <button id="nueva" class="btn-texto" type="button" title="Borrar la conversación">Nueva</button>
+    </div>
   </header>
 
-  <p class="aviso" role="note">
-    Orientación preliminar. Confirme siempre con un técnico del MAG o del INIAP.
-    No recomendamos productos ni dosis.
-  </p>
-
-  <main id="conversacion" aria-live="polite">
-    <section id="bienvenida" class="bienvenida">
-      <h2>¿Qué observa en su cacao?</h2>
-      <p>Describa lo que ve en las mazorcas, hojas o ramas, o pregunte por poda, abono o sombra.</p>
-      <div class="sugerencias">
-        <button type="button" class="chip">Las mazorcas tienen manchas cafés y un polvo blanco</button>
-        <button type="button" class="chip">Mis árboles tienen ramas gruesas como escobas</button>
-        <button type="button" class="chip">¿En qué mes hago la poda de mantenimiento?</button>
-        <button type="button" class="chip">Las hojas están amarillas, ¿qué le falta?</button>
+  <div class="cuerpo">
+    <aside id="lateral" class="lateral" aria-label="Información del asistente">
+      <div class="lateral-cabecera">
+        <svg class="lateral-avatar" aria-hidden="true"><use href="#cacao"/></svg>
+        <div>
+          <h2>Su asistente de cacao</h2>
+          <p>Le ayudo a entender qué le pasa a su cultivo y qué labores hacer.</p>
+        </div>
+        <button id="cerrar-info" class="btn-cerrar solo-movil" type="button" aria-label="Cerrar información">✕</button>
       </div>
-    </section>
-  </main>
 
-  <div id="error" class="error" role="alert" hidden>
-    <span id="error-texto"></span>
-    <button id="reintentar" type="button" class="btn-texto">Reintentar</button>
+      <section>
+        <h3>Qué puedo hacer</h3>
+        <ul class="lista si">
+          <li>Orientar un <strong>diagnóstico preliminar</strong> de enfermedades y plagas según lo que usted ve.</li>
+          <li>Responder sobre <strong>poda, abono, sombra, variedades</strong> y poscosecha.</li>
+          <li>Preguntarle datos de su finca cuando los necesite.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Qué no hago</h3>
+        <ul class="lista no">
+          <li>No receto productos químicos ni dosis.</li>
+          <li>No reemplazo la visita de un técnico.</li>
+          <li>Solo atiendo el cultivo de cacao.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Para describir un síntoma</h3>
+        <ol class="pasos">
+          <li>¿Qué parte está afectada? <span>mazorca, hoja, rama, tronco</span></li>
+          <li>¿Cómo se ve? <span>color de la mancha, polvo o felpa, deformación</span></li>
+          <li>¿Desde cuándo y cuántas plantas?</li>
+          <li>Edad de la plantación y tipo de cacao.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h3>Fuentes oficiales del proyecto</h3>
+        <ul class="fuentes">
+          <li>INIAP · Guía de manejo integrado del cultivo de cacao</li>
+          <li>INIAP · Catálogo de cultivares de cacao en Ecuador</li>
+          <li>INIAP · Manual del cultivo de cacao (Amazonía)</li>
+        </ul>
+      </section>
+
+      <footer class="lateral-pie">
+        <p id="estado" class="estado"><span class="punto"></span><span id="estado-texto">Verificando servicio…</span></p>
+      </footer>
+    </aside>
+    <div id="velo" class="velo" hidden></div>
+
+    <section class="chat">
+      <main id="conversacion" aria-live="polite">
+        <section id="bienvenida" class="bienvenida">
+          <h2>¿Qué observa en su cacao?</h2>
+          <p>Describa lo que ve en las mazorcas, hojas o ramas, o pregunte por poda, abono o sombra.</p>
+          <div class="sugerencias">
+            <button type="button" class="chip">Las mazorcas tienen manchas cafés y un polvo blanco</button>
+            <button type="button" class="chip">Mis árboles tienen ramas gruesas como escobas</button>
+            <button type="button" class="chip">¿En qué mes hago la poda de mantenimiento?</button>
+            <button type="button" class="chip">Las hojas están amarillas, ¿qué le falta?</button>
+          </div>
+        </section>
+      </main>
+
+      <div class="controles">
+        <button id="detener" class="btn-detener" type="button" hidden>
+          <span class="cuadro" aria-hidden="true"></span> Detener respuesta
+        </button>
+        <div id="error" class="error" role="alert" hidden>
+          <span id="error-texto"></span>
+          <button id="reintentar" type="button" class="btn-texto">Reintentar</button>
+        </div>
+      </div>
+
+      <form id="formulario" class="entrada" autocomplete="off">
+        <label for="mensaje" class="solo-lector">Su pregunta</label>
+        <textarea id="mensaje" rows="1" maxlength="1000" placeholder="Escriba su pregunta…" required></textarea>
+        <button id="enviar" type="submit" class="btn-enviar">Enviar</button>
+      </form>
+    </section>
   </div>
 
-  <form id="formulario" class="entrada" autocomplete="off">
-    <label for="mensaje" class="solo-lector">Su pregunta</label>
-    <textarea id="mensaje" rows="1" maxlength="1000" placeholder="Escriba su pregunta…" required></textarea>
-    <button id="enviar" type="submit" class="btn-enviar">Enviar</button>
-  </form>
+  <!-- Avatar con el recordatorio de confirmar con un técnico (HU06) -->
+  <div id="mascota" class="mascota">
+    <div id="nube" class="nube" role="note">
+      <button id="cerrar-nube" class="btn-cerrar" type="button" aria-label="Ocultar recordatorio">✕</button>
+      <p><strong>¡Recuerde!</strong> Mis respuestas son una <strong>orientación preliminar</strong>.</p>
+      <p>Antes de aplicar cualquier tratamiento, confirme el diagnóstico con un <strong>técnico del MAG o del INIAP</strong>.
+        No recomiendo productos ni dosis.</p>
+    </div>
+    <button id="avatar" class="avatar" type="button" aria-label="Ver recordatorio" aria-controls="nube" aria-expanded="true">
+      <svg aria-hidden="true"><use href="#cacao"/></svg>
+    </button>
+  </div>
 
   <script src="app.js"></script>
 </body>

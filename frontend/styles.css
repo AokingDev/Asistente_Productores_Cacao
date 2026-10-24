@@ -1,19 +1,26 @@
-/* Mobile-first: diseñado para 360 px de ancho; se centra en pantallas grandes. */
+/* Mobile-first: diseñado para 360 px de ancho. Desde 960 px: panel lateral + chat a todo el ancho. */
 :root {
   --cacao: #3b2a1e;
-  --cacao-claro: #6b4a32;
+  --cacao-medio: #6b4a32;
+  --mazorca: #c96a26;
   --hoja: #2f6b3a;
   --hoja-claro: #e6f0e3;
   --fondo: #f7f3ee;
+  --lateral: #fbf8f4;
   --tarjeta: #ffffff;
   --texto: #2a211b;
   --suave: #6d625a;
   --borde: #ddd3c8;
-  --alerta: #fff4d6;
-  --alerta-borde: #e3c46b;
+  --nube: #fff7df;
+  --nube-borde: #e8cf86;
   --error: #fde8e6;
   --error-texto: #8a1f14;
+  --gemini: #1a73e8;
+  --groq: #d4572a;
+  --simulado: #8a8178;
   --radio: 14px;
+  --alto-entrada: 68px;     /* lo ajusta app.js con la altura real de la barra de entrada */
+  --espacio-mascota: 112px; /* lo ajusta app.js: alto del avatar (+ nube si está abierta) */
 }
 
 * { box-sizing: border-box; }
@@ -24,8 +31,8 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  max-width: 720px;
-  margin-inline: auto;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--fondo);
   color: var(--texto);
   font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -38,25 +45,27 @@ body {
 
 /* ---------- Barra superior ---------- */
 .barra {
-  position: sticky;
-  top: 0;
-  z-index: 2;
+  flex: none;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 10px;
+  padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px 16px;
   background: var(--cacao);
   color: #fff;
 }
 .marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .logo {
-  display: grid; place-items: center; flex: none;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: #8b5a2b; color: #f3d9a4;
+  flex: none;
+  width: 40px; height: 40px;
+  padding: 3px;
+  border-radius: 50%;
+  background: #f3e3c8;
 }
 .barra h1 { margin: 0; font-size: 1.05rem; line-height: 1.2; }
 .barra .sub { margin: 0; font-size: .8rem; opacity: .8; }
+.acciones { display: flex; gap: 2px; }
 
 .btn-texto {
   min-height: 44px;
@@ -70,22 +79,113 @@ body {
   cursor: pointer;
 }
 .barra .btn-texto { color: #f3d9a4; }
+.barra .btn-texto:hover { background: rgba(255, 255, 255, .08); }
 
-/* ---------- Aviso fijo (HU06) ---------- */
-.aviso {
-  margin: 0;
-  padding: 8px 16px;
-  background: var(--alerta);
-  border-bottom: 1px solid var(--alerta-borde);
-  font-size: .85rem;
-  color: #5a4510;
+.btn-cerrar {
+  flex: none;
+  width: 36px; height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--suave);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.btn-cerrar:hover { background: rgba(0, 0, 0, .06); }
+
+/* ---------- Cuerpo: panel + chat ---------- */
+.cuerpo {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 
-/* ---------- Conversación ---------- */
+/* ---------- Panel lateral (en el teléfono es un cajón) ---------- */
+.lateral {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 5;
+  width: min(86vw, 340px);
+  overflow-y: auto;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 18px;
+  background: var(--lateral);
+  border-right: 1px solid var(--borde);
+  transform: translateX(-102%);
+  transition: transform .25s ease;
+  font-size: .92rem;
+}
+.lateral.abierto { transform: none; box-shadow: 4px 0 24px rgba(0, 0, 0, .18); }
+
+.velo { position: fixed; inset: 0; z-index: 4; background: rgba(30, 20, 12, .4); }
+.velo[hidden] { display: none; }
+
+.lateral-cabecera { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
+.lateral-avatar {
+  flex: none;
+  width: 56px; height: 56px;
+  padding: 4px;
+  border-radius: 16px;
+  background: #f3e3c8;
+}
+.lateral h2 { margin: 2px 0 2px; font-size: 1.05rem; color: var(--cacao); }
+.lateral-cabecera p { margin: 0; color: var(--suave); }
+.lateral section { padding: 14px 0; border-top: 1px solid var(--borde); }
+.lateral h3 {
+  margin: 0 0 8px;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--cacao-medio);
+}
+.lateral ul, .lateral ol { margin: 0; padding: 0; list-style: none; }
+.lateral li + li { margin-top: 6px; }
+
+.lista li { position: relative; padding-left: 24px; }
+.lista li::before {
+  position: absolute; left: 0; top: 1px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: .7rem; font-weight: 700;
+}
+.lista.si li::before { content: "✓"; background: var(--hoja-claro); color: var(--hoja); }
+.lista.no li::before { content: "✕"; background: var(--error); color: var(--error-texto); }
+
+.pasos { counter-reset: paso; }
+.pasos li { position: relative; padding-left: 28px; counter-increment: paso; }
+.pasos li::before {
+  content: counter(paso);
+  position: absolute; left: 0; top: 0;
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  display: grid; place-items: center;
+  background: var(--cacao); color: #fff;
+  font-size: .75rem; font-weight: 700;
+}
+.pasos span { display: block; color: var(--suave); font-size: .85rem; }
+
+.fuentes li { padding-left: 12px; border-left: 3px solid var(--mazorca); color: var(--suave); }
+
+.lateral-pie { padding-top: 14px; border-top: 1px solid var(--borde); color: var(--suave); font-size: .8rem; }
+.lateral-pie p { margin: 0 0 4px; }
+.estado { display: flex; align-items: center; gap: 8px; color: var(--texto); font-size: .85rem; }
+.estado .punto { width: 9px; height: 9px; border-radius: 50%; background: #b9b0a7; }
+.estado.ok .punto { background: #2e9d4f; box-shadow: 0 0 0 3px rgba(46, 157, 79, .18); }
+.estado.mal .punto { background: #d0442f; }
+
+/* ---------- Chat ---------- */
+.chat {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 main {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 16px 16px var(--espacio-mascota); /* el avatar y su nube nunca tapan el último mensaje */
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -93,7 +193,7 @@ main {
 
 .bienvenida h2 { margin: 8px 0 4px; font-size: 1.25rem; color: var(--cacao); }
 .bienvenida p { margin: 0 0 14px; color: var(--suave); }
-.sugerencias { display: flex; flex-direction: column; gap: 8px; }
+.sugerencias { display: grid; gap: 8px; }
 .chip {
   min-height: 44px;
   padding: 10px 14px;
@@ -105,7 +205,9 @@ main {
   text-align: left;
   cursor: pointer;
 }
+.chip:hover { border-color: var(--hoja); }
 .chip:active { background: var(--hoja-claro); }
+.chip:disabled { opacity: .55; cursor: default; }
 
 .burbuja {
   max-width: 88%;
@@ -131,31 +233,86 @@ main {
   border: 1px solid var(--borde);
   border-bottom-left-radius: 4px;
 }
-.asistente.incompleta::after {
-  content: "Respuesta incompleta";
+.asistente.incompleta::after,
+.asistente.detenida::after {
   display: block;
   margin-top: 6px;
   font-size: .8rem;
-  color: var(--error-texto);
 }
-.meta { margin-top: 6px; font-size: .75rem; color: var(--suave); }
+.asistente.incompleta::after { content: "Respuesta incompleta"; color: var(--error-texto); }
+.asistente.detenida::after { content: "Respuesta detenida por usted"; color: var(--suave); }
+
+/* Quién generó la respuesta */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--borde);
+  font-size: .75rem;
+  color: var(--suave);
+}
+.meta .marca-ia {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px 1px 6px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--simulado);
+}
+.meta .marca-ia::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, .85); }
+.meta .marca-ia.gemini { background: var(--gemini); }
+.meta .marca-ia.groq { background: var(--groq); }
 
 .escribiendo { display: inline-flex; gap: 4px; padding: 4px 0; }
 .escribiendo span {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--cacao-claro);
+  width: 7px; height: 7px; border-radius: 50%; background: var(--cacao-medio);
   animation: latido 1s infinite ease-in-out;
 }
 .escribiendo span:nth-child(2) { animation-delay: .15s; }
 .escribiendo span:nth-child(3) { animation-delay: .3s; }
 @keyframes latido { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
 
-/* ---------- Error ---------- */
+/* ---------- Detener y errores ---------- */
+.controles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+}
+.controles:has(> :not([hidden])) { padding-bottom: 8px; }
+
+.btn-detener {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--cacao-medio);
+  border-radius: 999px;
+  background: var(--tarjeta);
+  color: var(--cacao);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(59, 42, 30, .12);
+}
+.btn-detener:hover { background: #f3ebe2; }
+.btn-detener .cuadro { width: 10px; height: 10px; border-radius: 2px; background: currentColor; }
+.btn-detener[hidden] { display: none; }
+
 .error {
+  align-self: stretch;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin: 0 16px 8px;
   padding: 8px 8px 8px 14px;
   border-radius: 10px;
   background: var(--error);
@@ -166,8 +323,7 @@ main {
 
 /* ---------- Entrada ---------- */
 .entrada {
-  position: sticky;
-  bottom: 0;
+  flex: none;
   display: flex;
   align-items: flex-end;
   gap: 8px;
@@ -204,3 +360,103 @@ main {
   cursor: pointer;
 }
 .btn-enviar:disabled { background: #9db5a1; cursor: wait; }
+
+/* ---------- Avatar de cacao con su nube ---------- */
+.mascota {
+  position: fixed;
+  right: 12px;
+  bottom: calc(var(--alto-entrada) + 12px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  pointer-events: none; /* solo la nube y el avatar reciben clics */
+}
+.avatar, .nube { pointer-events: auto; }
+
+.avatar {
+  width: 60px; height: 60px;
+  padding: 4px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #f3e3c8;
+  box-shadow: 0 4px 14px rgba(59, 42, 30, .28);
+  cursor: pointer;
+}
+.avatar svg { width: 100%; height: 100%; display: block; }
+.avatar:hover { transform: translateY(-2px); }
+.mascota.llama .avatar { animation: saludo .9s ease-in-out 2; }
+@keyframes saludo {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-12deg); }
+  75% { transform: rotate(10deg); }
+}
+
+.nube {
+  position: relative;
+  width: min(300px, calc(100vw - 32px));
+  padding: 12px 36px 12px 14px;
+  border: 1px solid var(--nube-borde);
+  border-radius: 16px 16px 4px 16px;
+  background: var(--nube);
+  color: #4d3b0e;
+  font-size: .85rem;
+  line-height: 1.45;
+  box-shadow: 0 6px 20px rgba(59, 42, 30, .16);
+  transform-origin: bottom right;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.nube p { margin: 0; }
+.nube p + p { margin-top: 6px; }
+.nube .btn-cerrar { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; color: #8a6d1f; }
+/* colita de la nube apuntando al avatar */
+.nube::after {
+  content: "";
+  position: absolute;
+  right: 22px;
+  bottom: -8px;
+  width: 14px; height: 14px;
+  background: var(--nube);
+  border-right: 1px solid var(--nube-borde);
+  border-bottom: 1px solid var(--nube-borde);
+  transform: rotate(45deg);
+}
+.mascota.cerrada .nube { transform: scale(.6); opacity: 0; pointer-events: none; }
+
+/* ---------- Teléfono: utilidades ---------- */
+@media (max-width: 959px) {
+  .avatar { width: 52px; height: 52px; }
+}
+@media (max-width: 400px) {
+  .barra .sub { display: none; }
+  .barra .btn-texto { padding: 0 10px; }
+}
+
+/* ---------- Escritorio: panel fijo + chat a todo el ancho ---------- */
+@media (min-width: 960px) {
+  .solo-movil { display: none; }
+
+  .cuerpo { grid-template-columns: clamp(280px, 24vw, 360px) 1fr; }
+
+  .lateral {
+    position: static;
+    width: auto;
+    transform: none;
+    transition: none;
+    padding: 20px 22px;
+  }
+  .velo { display: none; }
+
+  main { padding: 24px clamp(24px, 4vw, 64px) var(--espacio-mascota); }
+  .controles { padding: 0 clamp(24px, 4vw, 64px); }
+  .entrada { padding: 14px clamp(24px, 4vw, 64px) 16px; }
+
+  .burbuja { max-width: min(78%, 1100px); }
+  .bienvenida h2 { font-size: 1.5rem; }
+  .sugerencias { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 1100px; }
+
+  .mascota { right: clamp(20px, 3vw, 40px); }
+  .avatar { width: 72px; height: 72px; }
+  .nube { width: 320px; font-size: .9rem; }
+}
