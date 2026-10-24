@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b2a1e">
+  <title>Asistente Cacao</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="barra">
+    <div class="marca">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 2c3.9 0 7 4.5 7 10s-3.1 10-7 10-7-4.5-7-10S8.1 2 12 2Zm0 2v16c2.6 0 5-3.6 5-8s-2.4-8-5-8Z"/></svg>
+      </span>
+      <div>
+        <h1>Asistente Cacao</h1>
+        <p class="sub">Orientación para su cultivo</p>
+      </div>
+    </div>
+    <button id="nueva" class="btn-texto" type="button" title="Borrar la conversación">Nueva</button>
+  </header>
+
+  <p class="aviso" role="note">
+    Orientación preliminar. Confirme siempre con un técnico del MAG o del INIAP.
+    No recomendamos productos ni dosis.
+  </p>
+
+  <main id="conversacion" aria-live="polite">
+    <section id="bienvenida" class="bienvenida">
+      <h2>¿Qué observa en su cacao?</h2>
+      <p>Describa lo que ve en las mazorcas, hojas o ramas, o pregunte por poda, abono o sombra.</p>
+      <div class="sugerencias">
+        <button type="button" class="chip">Las mazorcas tienen manchas cafés y un polvo blanco</button>
+        <button type="button" class="chip">Mis árboles tienen ramas gruesas como escobas</button>
+        <button type="button" class="chip">¿En qué mes hago la poda de mantenimiento?</button>
+        <button type="button" class="chip">Las hojas están amarillas, ¿qué le falta?</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="error" class="error" role="alert" hidden>
+    <span id="error-texto"></span>
+    <button id="reintentar" type="button" class="btn-texto">Reintentar</button>
+  </div>
+
+  <form id="formulario" class="entrada" autocomplete="off">
+    <label for="mensaje" class="solo-lector">Su pregunta</label>
+    <textarea id="mensaje" rows="1" maxlength="1000" placeholder="Escriba su pregunta…" required></textarea>
+    <button id="enviar" type="submit" class="btn-enviar">Enviar</button>
+  </form>
+
+  <script src="app.js"></script>
+</body>
+</html>
