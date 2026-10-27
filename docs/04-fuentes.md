@@ -31,3 +31,4 @@ La base de conocimiento de nuestro modelo RAG está construida estrictamente con
 13. **Manejo de Malezas:** ¿Qué problemas me traen las malezas trepadoras en los árboles jóvenes y cómo las controlo?
 14. **Poda de Formación:** Mi plantación tiene apenas un año, ¿cuántos ejes debo dejarle a la planta durante la poda de formación si es un clon?
 15. **Clon EET 103:** Voy a renovar mi finca, ¿qué rendimiento y características de tolerancia a enfermedades tiene el clon EET 103?
+// PRUEBA DE COMMIT
