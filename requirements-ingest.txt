@@ -1,0 +1,4 @@
+# Solo para reconstruir el índice (python scripts/ingest.py). El servidor desplegado NO lo necesita:
+# el índice ya generado vive en data/index/.
+-r requirements.txt
+pymupdf==2.0            # extrae el texto con su fuente tipográfica (licencia AGPL: uso académico, solo en la ingesta)
