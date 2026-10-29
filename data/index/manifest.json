@@ -1,0 +1,48 @@
+{
+  "creado": "2026-10-29T02:33:20+00:00",
+  "fragmentos": 175,
+  "palabras": {
+    "min": 17,
+    "max": 300,
+    "promedio": 148.7
+  },
+  "por_documento": {
+    "guia_iniap": 86,
+    "manual76": 49,
+    "catalogo_cultivares": 40
+  },
+  "por_tema": {
+    "enfermedades": 11,
+    "establecimiento": 35,
+    "fertilizacion": 25,
+    "general": 1,
+    "plagas": 7,
+    "poda": 25,
+    "poscosecha": 29,
+    "variedades": 42
+  },
+  "documentos": {
+    "guia_iniap": {
+      "archivo": "INIAP_guia_manejo_integrado_cacao.pdf",
+      "sha256": "b9b9957668f37fec3ae2e27eb6af2f392bea3565f46508e3dd5a90c8f19313d7"
+    },
+    "manual76": {
+      "archivo": "INIAP_manual76_cultivo_cacao_amazonia.pdf",
+      "sha256": "b7728f5b3026fd6a3d3d33a4eadf25790258d9b1eed30f1b053267d83b704819"
+    },
+    "catalogo_cultivares": {
+      "archivo": "INIAP_catalogo_cultivares_cacao.pdf",
+      "sha256": "866cf19c0d06c1fdb6348246d01bcaa544a797e20c4d717403755ef6943f937c"
+    }
+  },
+  "fragmentacion": {
+    "palabras_max": 300,
+    "palabras_min": 40,
+    "solapamiento_palabras": 45,
+    "incluir_practicas_facilitador": false
+  },
+  "embeddings": {
+    "modelo": "gemini-embedding-001",
+    "dimensiones": 768
+  }
+}
