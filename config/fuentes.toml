@@ -1,0 +1,82 @@
+# Catálogo de documentos de la base de conocimiento y reglas para extraer su estructura.
+# Lo lee scripts/ingest.py. Para agregar un documento: descargarlo en data/raw/, añadir un bloque
+# [[documento]] con sus reglas y volver a ejecutar la ingesta. El código no se toca.
+#
+# Las reglas de títulos usan la fuente tipográfica del PDF (nombre y tamaño en puntos), medida con
+# PyMuPDF. Las páginas se numeran como en el PDF (la que ve el usuario al abrir el enlace).
+
+fecha_consulta = "2026-10-21"
+
+[[documento]]
+id = "guia_iniap"
+titulo = "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao"
+institucion = "INIAP – Estación Experimental Tropical Pichilingue"
+anio = "2015 (edición abril 2017)"
+vigencia = "Edición 2017. Verificar vigencia de productos en Agrocalidad."
+url = "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content"
+archivo = "INIAP_guia_manejo_integrado_cacao.pdf"
+cita_apa = "Merchán, M., Flores, E., & Quiroz, J. (2015). Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao (Theobroma cacao L.). INIAP."
+estrategia = "guia"
+orden = "posicion"     # en este PDF algunos títulos vienen después de su texto en el flujo interno
+paginas_excluir = [1, 2, 5, 6, 7, 8, 156, 157, 158, 159, 160]   # portada, créditos, indicaciones al facilitador, índice y formatos de costos vacíos
+# Módulos: el número sale del pie «MÓDULO N» de cada página (hay páginas fuera de orden en el PDF)
+modulos = { 1 = "Vivero", 2 = "Establecimiento de la plantación", 3 = "Manejo agronómico", 4 = "Cosecha y poscosecha", 5 = "Costos de producción" }
+ignorar = [                                 # encabezados, pies y números de página repetidos
+  '^M[ÓO]DULO \d+$',
+  '^GU[ÍI]A PARA FACILITAR',
+  '^INIAP - Estaci[óo]n Experimental',
+  '^\d+$',
+  '^[´`]$',
+]
+[documento.titulos]
+notas = { fuente = "Bebas", min = 20.5, max = 21.5 }          # «Notas Técnicas»: empieza el contenido técnico
+practica = { fuente = "Bebas", min = 24.0, max = 24.5 }       # título de cada práctica
+marca_practica = { fuente = "Bebas", min = 17.5, max = 18.1, texto = '^(OBJETIVOS?|TIEMPO|MATERIALES|PROCEDIMIENTO)$' }
+modulo = { fuente = "Bebas", min = 16.5, max = 17.5 }         # título del módulo en su portada
+seccion = { fuente = "Bebas", min = 15.0, max = 16.5 }        # «Moniliasis», «Escoba de bruja»…
+subseccion = { fuente = "Helvetica-Bold", min = 13.0, max = 13.6, solo_mayusculas = true }  # «ANÁLISIS DEL SUELO»
+
+[[documento]]
+id = "manual76"
+titulo = "Manual del cultivo de cacao (Manual No. 76)"
+institucion = "INIAP – Estación Experimental Central de la Amazonía"
+anio = "s. f."
+vigencia = "Sin fecha de publicación. Prácticas para la Amazonía Norte."
+url = "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf"
+archivo = "INIAP_manual76_cultivo_cacao_amazonia.pdf"
+cita_apa = "Instituto Nacional Autónomo de Investigaciones Agropecuarias. (s. f.). Manual del cultivo de cacao (Manual No. 76). Estación Experimental Central de la Amazonía."
+estrategia = "manual"
+orden = "flujo"        # dos páginas impresas por hoja y dos columnas por página: el flujo interno ya es el orden de lectura
+paginas_excluir = [1, 24, 25]               # portada, contenido temático y contraportada
+ignorar = ['^\d+$', '^\d+\s+\d+$', '^LL$']
+# Cada hoja del PDF tiene dos páginas impresas: impresa = 2 × hoja − 4 (+1 en la mitad derecha).
+# Capítulos tomados del «Contenido temático» impreso (hoja 24): [página impresa, título].
+pagina_impresa = { factor = 2, desfase = -4 }
+capitulos = [
+  [1, "Presentación"], [3, "Condiciones de suelo y clima para sembrar cacao"], [5, "Principales variedades de cacao"],
+  [7, "Métodos de propagación de cacao"], [12, "El vivero de cacao"], [14, "Siembra en el campo definitivo"],
+  [17, "Beneficios ecológicos del sistema"], [18, "Manejo de la fertilidad del suelo"], [22, "Podas"],
+  [26, "Principales plagas y su manejo"], [27, "Control de malezas"], [28, "Manejo de las principales enfermedades"],
+  [32, "Cosecha"], [34, "Fermentación"], [37, "Secado y almacenamiento de cacao"],
+  [40, "Comercialización asociativa y mercados especiales"], [41, "Certificaciones en cacao"],
+]
+[documento.titulos]
+capitulo = { fuente = "Cronos", min = 28.0, max = 31.0 }       # «Podas», «Fermentación» (con sus líneas de 16 pt)
+seccion = { fuente = "Cronos", min = 15.5, max = 16.5, negrita = true }   # «Poda de formación»
+
+[[documento]]
+id = "catalogo_cultivares"
+titulo = "Catálogo de cultivares de cacao en Ecuador (Boletín Técnico No. 449)"
+institucion = "INIAP"
+anio = "2021"
+vigencia = "Primera edición 2021."
+url = "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/f92da475-087c-49e9-89f7-1770a71a4ff4/content"
+archivo = "INIAP_catalogo_cultivares_cacao.pdf"
+cita_apa = "Quiroz-Vera, J., Mestanza, S., Parada-Vera, N., Morillo, E., Samaniego, I., & Garzón, I. (2021). Catálogo de cultivares de cacao en Ecuador (Boletín Técnico No. 449). INIAP."
+estrategia = "catalogo"
+orden = "flujo"
+paginas_excluir = [1, 2, 3, 4, 5, 6, 61, 62, 63, 64, 65, 66]   # portada, créditos, índice, glosario, bibliografía y anexos
+ignorar = ['^\d+$', '^Fuente: Ing\.', '^Instituto Nacional de Investigaciones Agropecuarias$', '^Clones de Cacao$', '^Patr[óo]n gen[ée]tico:$', 'No datos$']
+[documento.titulos]
+seccion = { fuente = "", min = 20.5, max = 22.0, negrita = true }   # «Introducción», «Calidad intrínseca»
+clon = { fuente = "", min = 24.0, max = 26.0, negrita = true }      # «EET-103» (la ficha ocupa la página anterior y esta)

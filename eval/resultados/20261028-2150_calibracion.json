@@ -1,0 +1,351 @@
+{
+  "filas": [
+    {
+      "origen": "levantamiento",
+      "texto": "¿Cómo identifico si las manchas de mis mazorcas son por Moniliasis?",
+      "debe_responder": "si",
+      "coseno": 0.805
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "Mis árboles tienen ramas engrosadas, verdes y deformes como escobas. ¿Qué método de control cultural debo aplicar?",
+      "debe_responder": "si",
+      "coseno": 0.735
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Qué causa que las mazorcas se pongan negras y duras, y cómo lo prevengo?",
+      "debe_responder": "si",
+      "coseno": 0.713
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "Si veo hojas marchitas de color café rojizo que no se desprenden de la rama, ¿es Mal de Machete?",
+      "debe_responder": "si",
+      "coseno": 0.761
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿En qué época del año o mes es recomendable hacer la poda de mantenimiento para el cacao?",
+      "debe_responder": "si",
+      "coseno": 0.838
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Qué debo hacer exactamente con las mazorcas enfermas que tumbo al suelo durante la poda fitosanitaria?",
+      "debe_responder": "si",
+      "coseno": 0.696
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "Tengo pulgones y hormigas en los cojinetes florales, ¿qué control químico y en qué dosis recomienda el INIAP?",
+      "debe_responder": "si",
+      "coseno": 0.744
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Qué síntomas presenta el ataque de la mosquita del cacao o chinche amarillo en los frutos pequeños?",
+      "debe_responder": "si",
+      "coseno": 0.783
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Cómo debo desinfectar mis herramientas para no propagar enfermedades de un árbol a otro?",
+      "debe_responder": "si",
+      "coseno": 0.721
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Qué tipo de fertilizante complementario necesita mi plantación si las hojas están amarillentas?",
+      "debe_responder": "si",
+      "coseno": 0.639
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Cómo debo manejar el porcentaje de sombra para evitar que aumente la población del chinche de la mazorca?",
+      "debe_responder": "si",
+      "coseno": 0.712
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Cuáles son los clones desarrollados por el INIAP que tienen mayor resistencia o tolerancia a la Moniliasis?",
+      "debe_responder": "si",
+      "coseno": 0.746
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Qué problemas me traen las malezas trepadoras en los árboles jóvenes y cómo las controlo?",
+      "debe_responder": "si",
+      "coseno": 0.682
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "Mi plantación tiene apenas un año, ¿cuántos ejes debo dejarle a la planta durante la poda de formación si es un clon?",
+      "debe_responder": "si",
+      "coseno": 0.789
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "Voy a renovar mi finca, ¿qué rendimiento y características de tolerancia a enfermedades tiene el clon EET 103?",
+      "debe_responder": "si",
+      "coseno": 0.823
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Cuántos días se fermenta el cacao y cada cuánto se voltea?",
+      "debe_responder": "si",
+      "coseno": 0.8
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "Tengo el cacao recién sembrado, ¿qué labores hago este mes?",
+      "debe_responder": "si",
+      "coseno": 0.772
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "En el almacén me dijeron que le eche 3 litros de un fungicida por bomba para la monilla, ¿está bien?",
+      "debe_responder": "si",
+      "coseno": 0.641
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "La mazorca tiene manchas café y también se ve blanca por partes, ¿es monilla o mazorca negra?",
+      "debe_responder": "si",
+      "coseno": 0.699
+    },
+    {
+      "origen": "levantamiento",
+      "texto": "¿Cuánto abono orgánico le pongo a cada planta al año?",
+      "debe_responder": "si",
+      "coseno": 0.745
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Varias mazorcas tienen una mancha color chocolate y encima un polvillo como harina blanca",
+      "debe_responder": "si",
+      "coseno": 0.711
+    },
+    {
+      "origen": "sintoma",
+      "texto": "En las puntas de las ramas salen brotes hinchados con muchas ramitas, parecen escobas",
+      "debe_responder": "si",
+      "coseno": 0.734
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Las mazorcas se pudren y se ponen negras, sobre todo abajo donde hay mucha humedad",
+      "debe_responder": "si",
+      "coseno": 0.759
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Un árbol se secó de repente, las hojas secas siguen colgadas y tiene huequitos con polvo de madera",
+      "debe_responder": "si",
+      "coseno": 0.666
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Las mazorcas chiquitas tienen piquetes redondos oscuros hundidos y se quedan duras",
+      "debe_responder": "si",
+      "coseno": 0.644
+    },
+    {
+      "origen": "sintoma",
+      "texto": "En la noche me pelan las hojas de las plantas nuevas y veo un hormiguero grande cerca",
+      "debe_responder": "si",
+      "coseno": 0.72
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Hay colonias de insectos chiquitos negros en los cojines de flores",
+      "debe_responder": "si",
+      "coseno": 0.694
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Hay túneles de tierra subiendo por el tronco de los árboles más viejos",
+      "debe_responder": "si",
+      "coseno": 0.632
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Las plantitas del vivero se ponen amarillas y hay larvas blancas comiendo la raíz",
+      "debe_responder": "si",
+      "coseno": 0.754
+    },
+    {
+      "origen": "sintoma",
+      "texto": "Se me caen las mazorcas chiquitas y salen manchas",
+      "debe_responder": "si",
+      "coseno": 0.664
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿A qué precio está hoy el quintal de cacao en Guayaquil?",
+      "debe_responder": "no",
+      "coseno": 0.651
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Qué dron me recomiendan para fumigar el cacao?",
+      "debe_responder": "no",
+      "coseno": 0.661
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Cómo preparo un ceviche de camarón?",
+      "debe_responder": "no",
+      "coseno": 0.515
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Qué le pongo a mi plátano que tiene manchas negras en las hojas?",
+      "debe_responder": "no",
+      "coseno": 0.697
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Cómo saco un crédito en BanEcuador para mi finca?",
+      "debe_responder": "no",
+      "coseno": 0.599
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Cuál es el mejor fertilizante para el maíz duro?",
+      "debe_responder": "no",
+      "coseno": 0.614
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Va a llover mañana en Quevedo?",
+      "debe_responder": "no",
+      "coseno": 0.544
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Qué raza de gallinas pone más huevos?",
+      "debe_responder": "no",
+      "coseno": 0.544
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Cómo exporto cacao a Europa y qué certificados piden las aduanas?",
+      "debe_responder": "no",
+      "coseno": 0.724
+    },
+    {
+      "origen": "fuera",
+      "texto": "¿Cuánto gana un jornalero en la cosecha de cacao?",
+      "debe_responder": "no",
+      "coseno": 0.731
+    }
+  ],
+  "tabla": [
+    {
+      "umbral": 0.55,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 7
+    },
+    {
+      "umbral": 0.56,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 7
+    },
+    {
+      "umbral": 0.57,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 7
+    },
+    {
+      "umbral": 0.58,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 7
+    },
+    {
+      "umbral": 0.59,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 7
+    },
+    {
+      "umbral": 0.6,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 6
+    },
+    {
+      "umbral": 0.61,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 6
+    },
+    {
+      "umbral": 0.62,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 5
+    },
+    {
+      "umbral": 0.63,
+      "validas_bloqueadas": 0,
+      "fuera_que_pasan": 5
+    },
+    {
+      "umbral": 0.64,
+      "validas_bloqueadas": 2,
+      "fuera_que_pasan": 5
+    },
+    {
+      "umbral": 0.65,
+      "validas_bloqueadas": 4,
+      "fuera_que_pasan": 5
+    },
+    {
+      "umbral": 0.66,
+      "validas_bloqueadas": 4,
+      "fuera_que_pasan": 4
+    },
+    {
+      "umbral": 0.67,
+      "validas_bloqueadas": 6,
+      "fuera_que_pasan": 3
+    },
+    {
+      "umbral": 0.68,
+      "validas_bloqueadas": 6,
+      "fuera_que_pasan": 3
+    },
+    {
+      "umbral": 0.69,
+      "validas_bloqueadas": 7,
+      "fuera_que_pasan": 3
+    },
+    {
+      "umbral": 0.7,
+      "validas_bloqueadas": 10,
+      "fuera_que_pasan": 2
+    },
+    {
+      "umbral": 0.71,
+      "validas_bloqueadas": 10,
+      "fuera_que_pasan": 2
+    },
+    {
+      "umbral": 0.72,
+      "validas_bloqueadas": 13,
+      "fuera_que_pasan": 2
+    },
+    {
+      "umbral": 0.73,
+      "validas_bloqueadas": 15,
+      "fuera_que_pasan": 1
+    },
+    {
+      "umbral": 0.74,
+      "validas_bloqueadas": 17,
+      "fuera_que_pasan": 0
+    },
+    {
+      "umbral": 0.75,
+      "validas_bloqueadas": 20,
+      "fuera_que_pasan": 0
+    }
+  ]
+}

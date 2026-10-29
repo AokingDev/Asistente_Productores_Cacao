@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#3b2a1e">
+  <!-- El firewall del repositorio del INIAP bloquea los clics que llegan con Referer de otro sitio -->
+  <meta name="referrer" content="no-referrer">
   <title>Asistente Cacao</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M33 13c7-8 16-8 21-5-3 7-11 11-21 8z' fill='%233f8a3c'/%3E%3Cpath d='M32 14c11 0 18 10 18 23S42 61 32 61 14 50 14 37s7-23 18-23z' fill='%23c96a26'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
@@ -70,7 +72,7 @@
       <section>
         <h3>Qué no hago</h3>
         <ul class="lista no">
-          <li>No receto productos químicos ni dosis.</li>
+          <li>No invento productos ni dosis: solo cito los que están en los manuales.</li>
           <li>No reemplazo la visita de un técnico.</li>
           <li>Solo atiendo el cultivo de cacao.</li>
         </ul>
@@ -87,8 +89,16 @@
       </section>
 
       <section>
-        <h3>Fuentes oficiales del proyecto</h3>
-        <ul class="fuentes">
+        <h3><label for="filtro-tema">Buscar solo en</label></h3>
+        <select id="filtro-tema" class="filtro">
+          <option value="">Todos los temas</option>
+        </select>
+        <p class="nota-filtro">Úselo si las respuestas mezclan temas. Las fuentes de cada respuesta indican su tema.</p>
+      </section>
+
+      <section>
+        <h3>Fuentes oficiales</h3>
+        <ul id="lista-fuentes" class="fuentes">
           <li>INIAP · Guía de manejo integrado del cultivo de cacao</li>
           <li>INIAP · Catálogo de cultivares de cacao en Ecuador</li>
           <li>INIAP · Manual del cultivo de cacao (Amazonía)</li>
@@ -109,13 +119,17 @@
           <div class="sugerencias">
             <button type="button" class="chip">Las mazorcas tienen manchas cafés y un polvo blanco</button>
             <button type="button" class="chip">Mis árboles tienen ramas gruesas como escobas</button>
-            <button type="button" class="chip">¿En qué mes hago la poda de mantenimiento?</button>
-            <button type="button" class="chip">Las hojas están amarillas, ¿qué le falta?</button>
+            <button type="button" class="chip">¿Qué labores me tocan este mes? Mi cacao está en producción en la Costa</button>
+            <button type="button" class="chip">¿Qué rendimiento tiene el clon EET-103?</button>
           </div>
         </section>
       </main>
 
       <div class="controles">
+        <div id="filtro-activo" class="filtro-activo" hidden>
+          Buscando solo en: <strong id="filtro-activo-texto"></strong>
+          <button id="quitar-filtro" type="button" aria-label="Quitar filtro">✕</button>
+        </div>
         <button id="detener" class="btn-detener" type="button" hidden>
           <span class="cuadro" aria-hidden="true"></span> Detener respuesta
         </button>
@@ -139,7 +153,7 @@
       <button id="cerrar-nube" class="btn-cerrar" type="button" aria-label="Ocultar recordatorio">✕</button>
       <p><strong>¡Recuerde!</strong> Mis respuestas son una <strong>orientación preliminar</strong>.</p>
       <p>Antes de aplicar cualquier tratamiento, confirme el diagnóstico con un <strong>técnico del MAG o del INIAP</strong>.
-        No recomiendo productos ni dosis.</p>
+        Si cito un producto, verifique su registro vigente en Agrocalidad.</p>
     </div>
     <button id="avatar" class="avatar" type="button" aria-label="Ver recordatorio" aria-controls="nube" aria-expanded="true">
       <svg aria-hidden="true"><use href="#cacao"/></svg>

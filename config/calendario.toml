@@ -1,0 +1,163 @@
+# Calendario de labores culturales (herramienta calendario_labores).
+# Cada labor cita documento y página. «cuando» define en qué meses aplica:
+#   tipo = "todo_el_anio"        → todos los meses (frecuencia en el texto)
+#   tipo = "meses"               → meses fijos (meses = [1, 3, 5])
+#   tipo = "epoca"               → meses de la época indicada de la región (epoca = "lluviosa" | "seca")
+# Las épocas por región salen de los manuales; cuando el mes no está escrito literalmente se marca «derivado».
+
+[regiones.costa]
+nombre = "Costa (Litoral)"
+lluviosa = [1, 2, 3, 4, 5]
+seca = [6, 7, 8, 9, 10, 11, 12]
+nota = "Derivado de la guía INIAP (p. 93): las aplicaciones de enero, marzo y mayo se hacen «en la época de lluvia»; la época seca dura unos 6 meses (p. 86)."
+fuentes = [{ doc = "guia_iniap", pagina = 93 }, { doc = "guia_iniap", pagina = 86 }]
+
+[regiones.amazonia]
+nombre = "Amazonía Norte"
+lluviosa = [1, 2, 3, 4, 5, 6, 11, 12]
+seca = [7, 8, 9, 10]
+nota = "Según el Manual 76 (p. 14), la época de mínima precipitación en la Amazonía Norte va de julio a octubre."
+fuentes = [{ doc = "manual76", pagina = 14 }]
+
+[etapas]
+vivero = "Vivero (plantas en fundas, hasta el trasplante)"
+plantacion_joven = "Plantación joven (del trasplante hasta los 2 años)"
+produccion = "Plantación en producción (desde el 2.º año)"
+
+# ------------------------------------------------------------------ vivero
+[[labor]]
+id = "vivero_malezas"
+nombre = "Deshierba de las fundas"
+etapas = ["vivero"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "Cada semana"
+descripcion = "Arranque a mano las malas hierbas de las fundas; no use herbicidas."
+fuentes = [{ doc = "manual76", pagina = 8 }]
+
+[[labor]]
+id = "vivero_riego"
+nombre = "Riego del vivero"
+etapas = ["vivero"]
+cuando = { tipo = "epoca", epoca = "seca" }
+frecuencia = "Diario en sequía (mañana y tarde)"
+descripcion = "En épocas de sequía riegue a diario, en la mañana y en la tarde, mojando bien hojas y tierra."
+fuentes = [{ doc = "manual76", pagina = 8 }]
+
+[[labor]]
+id = "vivero_abono"
+nombre = "Abono del vivero"
+etapas = ["vivero"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "Cada mes, desde los 2 meses de la planta"
+descripcion = "Aplique cada mes abonos orgánicos líquidos (biol o purines) al follaje y a la raíz, o fertilización según la guía, desde los dos meses hasta un mes antes del trasplante."
+fuentes = [{ doc = "manual76", pagina = 8 }, { doc = "guia_iniap", pagina = 28 }]
+
+[[labor]]
+id = "vivero_sombra"
+nombre = "Reducción gradual de sombra"
+etapas = ["vivero"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "Desde el 3.er mes hasta el 4.º o 5.º mes"
+descripcion = "Quite la sombra poco a poco desde el tercer mes, hasta dejar el vivero a plena exposición solar en el cuarto o quinto mes, antes del trasplante."
+fuentes = [{ doc = "manual76", pagina = 8 }]
+
+[[labor]]
+id = "vivero_trasplante"
+nombre = "Trasplante al campo"
+etapas = ["vivero"]
+cuando = { tipo = "epoca", epoca = "lluviosa" }
+frecuencia = "Una vez, al inicio de las lluvias"
+descripcion = "Siembre al inicio de la época de mayor lluvia: los clones desde el 4.º mes después de injertados y las plantas de semilla en el 5.º mes."
+fuentes = [{ doc = "manual76", pagina = 9 }]
+
+# ------------------------------------------------------------------ plantación joven
+[[labor]]
+id = "joven_corona"
+nombre = "Coronas y control de malezas"
+etapas = ["plantacion_joven"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "4 a 5 chapeas al año"
+descripcion = "Haga una corona de 1 a 1,5 m alrededor de cada planta con machete, sin herir raíces ni el cuello de la planta. El control de malezas es clave en los primeros años."
+fuentes = [{ doc = "manual76", pagina = 15 }, { doc = "guia_iniap", pagina = 86 }]
+
+[[labor]]
+id = "joven_fertilizacion"
+nombre = "Fertilización de plantas en crecimiento"
+etapas = ["plantacion_joven"]
+cuando = { tipo = "meses", meses = [1, 3, 5] }
+frecuencia = "3 aplicaciones al año sin riego (cada 2 meses si hay riego)"
+descripcion = "Sin riego, divida la dosis anual en tres aplicaciones (enero, marzo y mayo), en época de lluvia; con riego, en seis aplicaciones, una cada dos meses. Planifique según el análisis de suelo."
+fuentes = [{ doc = "guia_iniap", pagina = 93 }]
+
+[[labor]]
+id = "joven_poda_formacion"
+nombre = "Poda de formación"
+etapas = ["plantacion_joven"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "Cuando las plantas tengan entre 10 y 16 meses de sembradas"
+descripcion = "Deje un número adecuado de ramas principales y elimine chupones y ramas del interior de la copa: un eje en híbridos y de tres a cuatro ejes bien distribuidos en clones."
+fuentes = [{ doc = "guia_iniap", pagina = 101 }, { doc = "manual76", pagina = 13 }]
+
+[[labor]]
+id = "joven_riego"
+nombre = "Riego suplementario"
+etapas = ["plantacion_joven", "produccion"]
+cuando = { tipo = "epoca", epoca = "seca" }
+frecuencia = "Cada 15 días durante la época seca"
+descripcion = "Como referencia, en los 6 meses secos riegue cada 15 días (unos 12 riegos de aproximadamente 60 mm), si dispone de riego."
+fuentes = [{ doc = "guia_iniap", pagina = 86 }]
+
+# ------------------------------------------------------------------ producción
+[[labor]]
+id = "prod_cosecha"
+nombre = "Cosecha"
+etapas = ["produccion"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "Semanal o algo más espaciada, según la mano de obra"
+descripcion = "Coseche solo mazorcas maduras y sanas, cortando por la mitad del pedúnculo para no dañar el cojín floral. Separe las sanas de las enfermas."
+fuentes = [{ doc = "guia_iniap", pagina = 130 }, { doc = "manual76", pagina = 18 }]
+
+[[labor]]
+id = "prod_remocion_enfermas"
+nombre = "Remoción de mazorcas enfermas"
+etapas = ["produccion"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "Cada semana y en cada cosecha"
+descripcion = "Retire las mazorcas con monilla antes de que aparezca el polvo blanco y déjelas en el campo para que se descompongan; en cada cosecha elimine todos los frutos enfermos."
+fuentes = [{ doc = "manual76", pagina = 16 }, { doc = "manual76", pagina = 14 }, { doc = "guia_iniap", pagina = 119 }]
+
+[[labor]]
+id = "prod_poda_mantenimiento"
+nombre = "Poda de mantenimiento y fitosanitaria"
+etapas = ["produccion"]
+cuando = { tipo = "epoca", epoca = "seca" }
+frecuencia = "1 o 2 veces al año"
+descripcion = "En la época de mínima lluvia, antes de la floración y con árboles sin frutos: elimine ramas secas, mal formadas y chupones, y las partes enfermas (escobas, frutos con monilla). Cubra los cortes con pasta cúprica y desinfecte las herramientas."
+fuentes = [{ doc = "guia_iniap", pagina = 102 }, { doc = "manual76", pagina = 13 }, { doc = "manual76", pagina = 14 }, { doc = "guia_iniap", pagina = 121 }]
+
+[[labor]]
+id = "prod_fertilizacion"
+nombre = "Fertilización de plantas en producción"
+etapas = ["produccion"]
+cuando = { tipo = "epoca", epoca = "lluviosa" }
+frecuencia = "Fraccionada, desde la poda principal"
+descripcion = "Inicie la fertilización con la poda principal y aproveche la humedad de la época de lluvias para que el fertilizante se disuelva. El abono orgánico se aplica en corona, al inicio de la producción y al final del pico productivo."
+fuentes = [{ doc = "guia_iniap", pagina = 93 }, { doc = "manual76", pagina = 11 }]
+
+[[labor]]
+id = "prod_malezas"
+nombre = "Control de malezas"
+etapas = ["produccion"]
+cuando = { tipo = "todo_el_anio" }
+frecuencia = "Según se necesite (4 a 5 chapeas al año como referencia)"
+descripcion = "Mantenga limpia la corona sin herir raíces ni el cuello del árbol; combine el control manual o mecánico para no abusar de herbicidas."
+fuentes = [{ doc = "manual76", pagina = 15 }, { doc = "guia_iniap", pagina = 86 }]
+
+[[labor]]
+id = "prod_vigilancia_chinche"
+nombre = "Vigilancia del chinche de la mazorca"
+etapas = ["produccion"]
+cuando = { tipo = "epoca", epoca = "seca" }
+frecuencia = "Revisión periódica, sobre todo cuando bajan las lluvias"
+descripcion = "La población del chinche aumenta cuando disminuyen las lluvias: revise las mazorcas pequeñas y elimine las afectadas; mantenga la sombra regulada."
+fuentes = [{ doc = "guia_iniap", pagina = 112 }, { doc = "manual76", pagina = 15 }]

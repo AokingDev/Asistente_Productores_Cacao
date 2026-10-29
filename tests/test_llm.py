@@ -117,3 +117,20 @@ def test_todos_caidos_da_error_claro():
 def test_retry_after_muy_largo_va_directo_al_respaldo():
     c, esperas = cliente(Doble([error_http(openai.RateLimitError, 429, {"retry-after": "3600"})]), Doble([BUENA]))
     assert c.generar_json("sys", "texto", RespuestaAsistente).proveedor == "b" and esperas == []
+
+
+def test_cuota_diaria_de_gemini_va_directo_al_respaldo():
+    # Gemini no manda Retry-After: la espera viene al final del mensaje. Antes se reintentaba 3 veces
+    # en 4 s y cada intento gastaba otra de las 20 solicitudes diarias del plan gratuito.
+    mensaje = ("You exceeded your current quota, please check your plan and billing details. For more information "
+               "on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current "
+               "usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage."
+               "googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.8-flash, description: "
+               "Generate content requests per day limit exceeded on Free Tier.\nPlease retry in 1h37m10.167017668s.")
+    req = httpx.Request("POST", "https://proveedor.test/v1/chat/completions")
+    error = openai.RateLimitError(mensaje, response=httpx.Response(429, request=req),
+                                  body=[{"error": {"code": 429, "message": mensaje}}])
+    principal = Doble([error])
+    c, esperas = cliente(principal, Doble([BUENA]))
+    assert c.generar_json("sys", "texto", RespuestaAsistente).proveedor == "b"
+    assert esperas == [] and len(principal.llamadas) == 1

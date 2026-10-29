@@ -460,3 +460,165 @@ main {
   .avatar { width: 72px; height: 72px; }
   .nube { width: 320px; font-size: .9rem; }
 }
+
+/* ======================================================================== Semana 3: RAG y agente */
+:root {
+  --cita: #8a5a1a;
+  --cita-fondo: #f3e3c8;
+  --alerta: #fde8e6;
+  --alerta-borde: #e8a49b;
+  --aviso: #eef4fb;
+  --aviso-borde: #b8cde6;
+  --ok: #2e7d4f;
+}
+
+/* Citas [n] dentro del texto: botones pequeños que llevan a su fuente */
+.cita {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35em;
+  height: 1.35em;
+  margin: 0 1px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--cita-fondo);
+  color: var(--cita);
+  font: 700 .72rem/1 system-ui, sans-serif;
+  vertical-align: super;
+  cursor: pointer;
+}
+.cita:hover { background: #e9cf9f; }
+
+.burbuja.asistente { width: min(100%, 88%); }
+.burbuja .cuerpo:empty { display: none; }
+.estado-paso { color: var(--suave); font-size: .85rem; }
+
+/* Fuentes bajo cada respuesta */
+.fuentes:empty, .tarjetas:empty, .avisos:empty { display: none; }
+.fuentes { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--borde); }
+.fuentes-titulo { margin: 0 0 6px; font-size: .8rem; font-weight: 700; color: var(--cacao-medio); }
+.fuentes-lista { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.fuente {
+  display: flex;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: #fdfbf8;
+  font-size: .8rem;
+  line-height: 1.35;
+}
+.fuente > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.fuente-n {
+  flex: none;
+  display: grid; place-items: center;
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  background: var(--cita-fondo);
+  color: var(--cita);
+  font-weight: 700;
+  font-size: .72rem;
+}
+.fuente-doc, .fuente-pie { color: var(--suave); }
+.fuente a { color: var(--hoja); font-weight: 600; }
+.fuente.resaltada { animation: resaltar 1.6s ease-out; }
+@keyframes resaltar { 0% { background: #ffe9a8; border-color: #e3c46b; } 100% { background: #fdfbf8; } }
+.fuentes-otras { margin-top: 6px; font-size: .8rem; color: var(--suave); }
+.fuentes-otras summary { cursor: pointer; padding: 4px 0; }
+.fuentes-otras .fuentes-lista { margin-top: 6px; }
+
+/* Tarjetas de las herramientas del agente */
+.tarjetas { display: grid; gap: 8px; margin-top: 10px; }
+.tarjeta {
+  padding: 10px 12px;
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--hoja);
+  border-radius: 10px;
+  background: #fbfdf9;
+  font-size: .88rem;
+}
+.tarjeta h4 { margin: 0 0 6px; font-size: .92rem; color: var(--cacao); }
+.tarjeta p { margin: 4px 0; }
+.tarjeta-sub, .tarjeta-nota { color: var(--suave); font-size: .78rem; }
+.alternativas { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+.alt-cabecera { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.alt-signos, .alt-fuentes { color: var(--suave); font-size: .8rem; }
+.alt-fuentes a, .cal-fuente a { color: var(--hoja); }
+.insignia { padding: 1px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700; }
+.insignia.alta { background: #dff0e3; color: var(--ok); }
+.insignia.media { background: #fff1cf; color: #8a6200; }
+.insignia.baja { background: #eeeae5; color: var(--suave); }
+
+.calendario details summary { cursor: pointer; color: var(--hoja); font-weight: 600; margin: 6px 0; }
+.tabla-desliza { overflow-x: auto; }
+.calendario table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.calendario th, .calendario td { padding: 6px; border-bottom: 1px solid var(--borde); text-align: left; vertical-align: top; }
+.calendario td span { display: block; color: var(--suave); font-size: .75rem; }
+.calendario tr.ahora td { background: #f1f8ee; }
+.cal-fuente { min-width: 120px; font-size: .75rem; }
+
+.confirmacion { border-left-color: #c96a26; background: #fffaf3; }
+.confirmacion dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 8px 0; font-size: .82rem; }
+.confirmacion dt { color: var(--suave); }
+.confirmacion dd { margin: 0; }
+.conf-botones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.conf-botones button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-confirmar { border: 0; background: var(--hoja); color: #fff; }
+.btn-cancelar { border: 1px solid var(--borde); background: #fff; color: var(--texto); }
+.conf-botones button:disabled { opacity: .6; cursor: wait; }
+.conf-ok { color: var(--ok); font-weight: 600; }
+.conf-no { color: var(--suave); }
+
+/* Abstención, alertas y avisos de dosis */
+.avisos { display: grid; gap: 6px; margin-top: 8px; }
+.burbuja.abstencion { border-style: dashed; }
+.etiqueta-abstencion { margin: 0; color: var(--suave); font-size: .8rem; font-weight: 600; }
+.alerta-dosis, .aviso-dosis { margin: 0; padding: 8px 10px; border-radius: 8px; font-size: .82rem; }
+.alerta-dosis { background: var(--alerta); border: 1px solid var(--alerta-borde); color: var(--error-texto); font-weight: 600; }
+.aviso-dosis { background: var(--aviso); border: 1px solid var(--aviso-borde); color: #234a73; }
+
+/* Filtro por tema */
+.filtro {
+  width: 100%;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--texto);
+  font: inherit;
+}
+.nota-filtro { margin: 6px 0 0; color: var(--suave); font-size: .78rem; }
+.filtro-activo {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px 3px 12px;
+  border-radius: 999px;
+  background: var(--hoja-claro);
+  color: var(--hoja);
+  font-size: .82rem;
+}
+.filtro-activo[hidden] { display: none; }
+.filtro-activo button {
+  width: 26px; height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.controles:has(> .filtro-activo:not([hidden])) { padding-bottom: 8px; }
+
+#lista-fuentes a { color: var(--texto); font-weight: 600; text-decoration-color: var(--borde); }
+#lista-fuentes span { display: block; font-size: .78rem; color: var(--suave); }
+.nota-cuarentena { margin: 0 0 6px; padding: 6px 9px; border-radius: 8px; background: #f1f4f8; color: #33475b; font-size: .78rem; }

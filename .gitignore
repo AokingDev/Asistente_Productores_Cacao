@@ -36,3 +36,7 @@ chroma/
 .DS_Store
 Thumbs.db
 .claude/settings.local.json
+# --- Consultas confirmadas por los productores (datos de uso, no se versionan) ---
+data/consultas/
+eval/resultados/logs/
+data/index_inyeccion/
