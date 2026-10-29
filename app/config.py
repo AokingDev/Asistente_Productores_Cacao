@@ -64,6 +64,7 @@ class Config:
     max_tokens: int
     reintentos: int
     razonamiento: str | None  # "low" | "medium" | "high" | None
+    enfriamiento_s: float = 0  # tras fallar, el proveedor pasa al final de la fila durante este tiempo
 
 
 def _proveedor(nombre: str) -> Proveedor:
@@ -96,4 +97,5 @@ def cargar_config() -> Config:
         max_tokens=int(os.getenv("LLM_MAX_TOKENS", "2048")),
         reintentos=int(os.getenv("LLM_REINTENTOS", "3")),
         razonamiento=razonamiento,
+        enfriamiento_s=float(os.getenv("LLM_ENFRIAMIENTO_S", "120")),
     )

@@ -5,30 +5,37 @@ Ejecutar:  uvicorn app.main:app --reload     y abrir http://127.0.0.1:8000
 """
 import json
 from functools import lru_cache
-from typing import AsyncIterator
+from typing import AsyncIterator, Iterator
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.concurrency import run_in_threadpool
 
+from app.agente import consultas
+from app.agente.herramientas import pendientes
+from app.asistente import Turno
 from app.config import APP_NOMBRE, APP_VERSION, RAIZ, ErrorConfiguracion, cargar_config
+from app.parametros import cargar, documentos, temas
+from app.rag.indice import Indice, indice_global
 from app.schemas import ChatSolicitud
-from app.services.llm import ClienteLLM, ErrorLLM, Flujo, ProveedorNoDisponible, _registrar, cargar_prompt
-
-PROMPT = "system_v3"  # versión ganadora de la comparación (docs/05-prompts.md)
+from app.services.llm import ClienteLLM, ProveedorNoDisponible, _registrar
 
 app = FastAPI(
     title=APP_NOMBRE,
     version=APP_VERSION,
-    description="Chat de orientación agrotécnica para productores de cacao. "
-                "RAG sobre manuales del INIAP y el MAG con citas.",
+    description="Chat de orientación agrotécnica para productores de cacao: RAG con citas sobre manuales del "
+                "INIAP y agente con diagnóstico preliminar, calendario de labores y registro con confirmación.",
 )
 
 
 @lru_cache
 def obtener_llm() -> ClienteLLM:
     return ClienteLLM()
+
+
+def obtener_indice() -> Indice:
+    return indice_global()
 
 
 @app.exception_handler(ErrorConfiguracion)
@@ -40,56 +47,86 @@ def falta_configuracion(_: Request, e: ErrorConfiguracion):
 
 @app.get("/health", tags=["sistema"])
 def health():
-    """Estado del servicio. Dice qué proveedor está configurado, nunca la clave."""
+    """Estado del servicio. Dice qué proveedor y qué índice están cargados, nunca las claves."""
     try:
         cfg = cargar_config()
         llm = {"principal": cfg.principal.nombre, "respaldo": cfg.respaldo.nombre if cfg.respaldo else None}
     except ErrorConfiguracion:
         llm = None
-    return {"estado": "ok", "servicio": APP_NOMBRE, "version": APP_VERSION, "prompt": PROMPT, "llm": llm}
+    try:
+        ind = indice_global()
+        indice = {"fragmentos": len(ind.fragmentos), "busqueda": "hibrida" if ind.tiene_embeddings else "bm25",
+                  "creado": ind.manifiesto.get("creado")}
+    except FileNotFoundError:
+        indice = None
+    return {"estado": "ok", "servicio": APP_NOMBRE, "version": APP_VERSION,
+            "prompt": cargar("agente")["agente"]["prompt"], "llm": llm, "indice": indice}
 
 
-def _evento(**datos) -> str:
-    return json.dumps(datos, ensure_ascii=False) + "\n"
+@app.get("/fuentes", tags=["sistema"])
+def fuentes():
+    """Documentos de la base de conocimiento y temas para el filtro de la interfaz."""
+    return {"documentos": [{"id": d["id"], "titulo": d["titulo"], "institucion": d["institucion"], "anio": d["anio"],
+                            "vigencia": d["vigencia"], "url": d["url"], "cita_apa": d["cita_apa"]}
+                           for d in documentos().values()],
+            "temas": [{"id": k, "etiqueta": v} for k, v in temas().items()]}
 
 
-async def _eventos(flujo: Flujo) -> AsyncIterator[str]:
-    """Convierte el flujo del modelo en eventos NDJSON. Si el navegador se desconecta (el
-    productor pulsó «Detener» o cerró la página) se cancela el flujo: sin esto la conexión con
-    el proveedor quedaría abierta y el modelo seguiría generando tokens."""
-    trozos = iter(flujo)
+def _linea(evento: dict) -> str:
+    return json.dumps(evento, ensure_ascii=False) + "\n"
+
+
+async def _ndjson(primero: dict, eventos: Iterator[dict], turno: Turno) -> AsyncIterator[str]:
+    """Envía los eventos como NDJSON. Si el navegador se desconecta (el productor pulsó «Detener» o
+    cerró la página) se cancela el turno: sin esto el modelo seguiría generando tokens."""
     termino = False
     try:
-        # El SDK del proveedor es síncrono: cada trozo se espera en un hilo aparte.
-        while (texto := await run_in_threadpool(next, trozos, None)) is not None:
-            yield _evento(tipo="texto", texto=texto)
+        yield _linea(primero)
+        # El SDK del proveedor es síncrono: cada evento se espera en un hilo aparte.
+        while (evento := await run_in_threadpool(next, eventos, None)) is not None:
+            yield _linea(evento)
         termino = True
-    except ErrorLLM as e:
-        termino = True
-        yield _evento(tipo="error", mensaje=e.mensaje_usuario)
-        return
     finally:
         if not termino:
-            flujo.cancelar()
-    yield _evento(tipo="fin", proveedor=flujo.proveedor, modelo=flujo.modelo, latencia_ms=flujo.latencia_ms,
-                  tokens_entrada=flujo.tokens_entrada, tokens_salida=flujo.tokens_salida)
+            turno.cancelar()
 
 
 @app.post("/chat", tags=["chat"], responses={
     200: {"content": {"application/x-ndjson": {}},
-          "description": 'Una línea JSON por evento: {"tipo":"texto"|"fin"|"error", ...}'},
+          "description": 'Una línea JSON por evento: {"tipo": "fuentes"|"herramienta"|"confirmacion"|"texto"|'
+                         '"alerta"|"aviso"|"error"|"fin", ...}'},
     503: {"description": "Ningún proveedor del modelo respondió"},
 })
-def chat(solicitud: ChatSolicitud, llm: ClienteLLM = Depends(obtener_llm)):
-    """Responde en streaming (NDJSON). El historial lo guarda el navegador y lo reenvía;
-    el servidor solo usa los últimos turnos."""
+def chat(solicitud: ChatSolicitud, llm: ClienteLLM = Depends(obtener_llm), indice: Indice = Depends(obtener_indice)):
+    """Busca en los manuales, decide si hay base para responder y, si la hay, responde con citas usando
+    las herramientas del agente. El historial lo guarda el navegador; el servidor usa solo los últimos turnos."""
+    turno = Turno(llm, indice)
+    eventos = turno.responder(solicitud)
     try:
-        flujo = llm.generar_stream(cargar_prompt(PROMPT), solicitud.mensajes_para_modelo())
+        primero = next(eventos)
     except ProveedorNoDisponible as e:
         # Nunca se muestra el error crudo del proveedor: un mensaje claro y un 503.
         raise HTTPException(status_code=503, detail=e.mensaje_usuario)
-    return StreamingResponse(_eventos(flujo), media_type="application/x-ndjson",
+    return StreamingResponse(_ndjson(primero, eventos, turno), media_type="application/x-ndjson",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.post("/consultas/{ident}/confirmar", tags=["agente"])
+def confirmar_consulta(ident: str):
+    """Confirmación humana: SOLO aquí se guarda la consulta que propuso el agente."""
+    datos = pendientes().tomar(ident)
+    if datos is None:
+        raise HTTPException(status_code=404, detail="La propuesta ya no está disponible (pasó el tiempo o ya se respondió). "
+                                                    "Pida de nuevo el registro.")
+    codigo = consultas.guardar(datos)
+    _registrar(evento="consulta_registrada", codigo=codigo, motivo=datos.motivo)
+    return {"codigo": codigo, "mensaje": f"Consulta registrada con el código {codigo}. Guárdelo para el seguimiento del técnico."}
+
+
+@app.post("/consultas/{ident}/cancelar", tags=["agente"])
+def cancelar_consulta(ident: str):
+    pendientes().tomar(ident)
+    return {"mensaje": "No se registró la consulta."}
 
 
 # Interfaz web (al final, para que no tape las rutas de la API)
