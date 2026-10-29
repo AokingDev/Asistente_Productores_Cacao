@@ -1,26 +1,24 @@
 # Arquitectura del Sistema (modelo C4)
 
 El Asistente Agrotécnico para Productores de Cacao es una aplicación web mobile-first con un backend FastAPI que
-encapsula al modelo generativo. En la semana 2 funciona como **chat con streaming**; en la semana 3 se agregan el
-**RAG con citas** sobre los manuales del INIAP/MAG y el **agente** con sus tres herramientas.
-
-> Convención: los elementos con borde punteado se implementan en la semana 3. Decisiones en
-> [09-decisiones.md](09-decisiones.md).
+encapsula al modelo generativo. Desde la semana 3 responde con **RAG y citas** sobre los manuales del INIAP, y un
+**agente** con tres herramientas deterministas orienta el diagnóstico, arma el calendario y registra consultas con
+confirmación humana. Decisiones en [09-decisiones.md](09-decisiones.md); detalle del RAG en [06-rag.md](06-rag.md).
 
 ## Nivel 1 · Contexto
 
 ```mermaid
 flowchart TB
     productor["👤 <b>Productor de cacao</b><br/>Pequeño productor, teléfono de gama<br/>media/baja, señal intermitente"]
-    tecnico["👤 <b>Técnico MAG / INIAP</b><br/>Confirma el diagnóstico en campo"]
-    sistema["<b>Asistente Agrotécnico Cacao</b><br/>Responde consultas, orienta un diagnóstico<br/>preliminar y arma el calendario de labores"]
-    llm["<b>Proveedor de IA generativa</b><br/>Gemini (principal) · Groq (respaldo)"]
-    manuales["<b>Manuales oficiales</b><br/>Repositorio INIAP · MAG"]
+    tecnico["👤 <b>Técnico MAG / INIAP</b><br/>Confirma el diagnóstico y da<br/>seguimiento a las consultas registradas"]
+    sistema["<b>Asistente Agrotécnico Cacao</b><br/>Responde con citas, orienta un diagnóstico<br/>preliminar y arma el calendario de labores"]
+    llm["<b>Proveedores de IA generativa</b><br/>Gemini (principal) · Groq (respaldo)<br/>Embeddings de Gemini"]
+    manuales["<b>Manuales oficiales</b><br/>Repositorio INIAP"]
 
     productor -- "Describe síntomas y pregunta<br/>(HTTPS, desde el navegador)" --> sistema
-    sistema -- "Recomienda confirmar con" --> tecnico
-    sistema -- "Chat Completions API<br/>(HTTPS, clave en el backend)" --> llm
-    manuales -. "PDF descargados e indexados<br/>(semana 3)" .-> sistema
+    sistema -- "Consultas confirmadas<br/>por el productor" --> tecnico
+    sistema -- "Chat Completions + Embeddings<br/>(HTTPS, clave en el backend)" --> llm
+    manuales -- "PDF descargados e indexados<br/>(scripts/ingest.py)" --> sistema
 
     classDef persona fill:#08427b,color:#fff,stroke:#052e56
     classDef sist fill:#1168bd,color:#fff,stroke:#0b4884
@@ -37,28 +35,32 @@ flowchart TB
     productor["👤 Productor"]
 
     subgraph sistema["Asistente Agrotécnico Cacao (un solo servicio desplegable)"]
-        web["<b>Interfaz web</b><br/>HTML + CSS + JS sin framework<br/><i>frontend/</i><br/>Chat mobile-first (360 px), historial<br/>en localStorage, streaming"]
-        api["<b>API</b><br/>Python 3.11+ · FastAPI · Pydantic<br/><i>app/</i><br/>POST /chat (NDJSON) · GET /health<br/>Sirve también la interfaz web"]
-        logs[("<b>Registro</b><br/>logs/llm.jsonl<br/>tokens y tiempos por solicitud")]
-        vec[("<b>Base vectorial</b><br/>fragmentos de manuales<br/>con metadato tema")]:::futuro
-        consultas[("<b>Registro de consultas</b><br/>registrar_consulta(datos)")]:::futuro
+        web["<b>Interfaz web</b><br/>HTML + CSS + JS sin framework · <i>frontend/</i><br/>Chat mobile-first, fuentes citadas, tarjetas<br/>de diagnóstico y calendario, confirmación"]
+        api["<b>API</b> · FastAPI + Pydantic · <i>app/</i><br/>POST /chat (NDJSON) · GET /fuentes · GET /health<br/>POST /consultas/{id}/confirmar|cancelar"]
+        indice[("<b>Índice</b> · <i>data/index/</i><br/>175 fragmentos con metadatos<br/>+ embeddings (768 d)")]
+        cfg[("<b>Parámetros</b> · <i>config/*.toml</i><br/>umbrales, tabla de síntomas,<br/>calendario, mensajes")]
+        consultas[("<b>Consultas confirmadas</b><br/><i>data/consultas/*.jsonl</i>")]
+        logs[("<b>Registro</b> · <i>logs/llm.jsonl</i><br/>tokens, tiempos, búsquedas")]
     end
 
-    gemini["Gemini API<br/>(principal)"]
-    groq["Groq API<br/>(respaldo)"]
+    ingesta["<b>Ingesta</b> (fuera de línea)<br/><i>scripts/ingest.py</i>"]
+    gemini["Gemini API<br/>chat + embeddings"]
+    groq["Groq API<br/>(respaldo del chat)"]
 
     productor -- "HTTPS" --> web
-    web -- "fetch POST /chat<br/>JSON → NDJSON en streaming" --> api
+    web -- "fetch POST /chat → NDJSON" --> api
+    api -- "lee" --> indice
+    api -- "lee" --> cfg
+    api -- "guarda solo si el<br/>productor confirma" --> consultas
     api -- "escribe" --> logs
-    api -- "OpenAI-compatible, streaming" --> gemini
+    api -- "chat (streaming) y<br/>embedding de la pregunta" --> gemini
     api -. "si Gemini falla" .-> groq
-    api -. "búsqueda semántica" .-> vec
-    api -. "guarda" .-> consultas
+    ingesta -- "genera" --> indice
+    ingesta -. "embeddings" .-> gemini
 
-    classDef futuro stroke-dasharray: 5 5,fill:#f4f4f4,color:#555
     classDef cont fill:#438dd5,color:#fff,stroke:#2e6295
     classDef ext fill:#999,color:#fff,stroke:#6b6b6b
-    class web,api cont
+    class web,api,ingesta cont
     class gemini,groq ext
 ```
 
@@ -69,36 +71,36 @@ flowchart LR
     web["Interfaz web"]
 
     subgraph api["API (FastAPI)"]
-        main["<b>app/main.py</b><br/>Rutas /chat y /health<br/>Traduce errores a mensajes claros"]
-        schemas["<b>app/schemas.py</b><br/>ChatSolicitud, Mensaje (entrada)<br/>RespuestaAsistente (salida JSON)"]
-        prompts["<b>app/prompts/</b><br/>system_v1 · v2 · v3 (activo)"]
-        llm["<b>app/services/llm.py</b><br/>ClienteLLM: reintentos, espera<br/>exponencial, respaldo, streaming, log"]
-        config["<b>app/config.py</b><br/>Lee .env · catálogo de proveedores"]
-        rag["<b>app/services/rag.py</b><br/>Recupera fragmentos + citas"]:::futuro
-        agente["<b>app/services/agente.py</b><br/>diagnosticar_sintomas · calendario_labores<br/>registrar_consulta"]:::futuro
+        main["<b>app/main.py</b><br/>Rutas · traduce errores<br/>· cancela si el cliente se va"]
+        turno["<b>app/asistente.py</b><br/>Turno: buscar → decidir →<br/>agente → verificar"]
+        indice["<b>app/rag/indice.py</b><br/>BM25 + embeddings (RRF),<br/>filtros, abstención"]
+        texto["<b>app/rag/texto.py</b><br/>raíces en español"]
+        prompt["<b>app/services/prompt.py</b><br/>fragmentos delimitados,<br/>neutraliza inyección"]
+        herr["<b>app/agente/herramientas.py</b><br/>diagnosticar_sintomas · calendario_labores<br/>· registrar_consulta (Pydantic, deterministas)"]
+        citas["<b>app/services/citas.py</b><br/>citas válidas · dosis vs fuente oficial"]
+        llm["<b>app/services/llm.py</b><br/>ClienteLLM: reintentos, respaldo,<br/>circuito, streaming con tool calls"]
+        params["<b>app/parametros.py</b><br/>config/*.toml"]
     end
 
     proveedor["Gemini / Groq"]
 
-    web --> main
-    main -- "valida con" --> schemas
-    main -- "carga" --> prompts
-    main -- "generar_stream()" --> llm
-    llm -- "usa" --> config
-    llm -- "HTTPS" --> proveedor
-    main -.-> agente
-    agente -.-> rag
-    agente -.-> llm
+    web --> main --> turno
+    turno --> indice --> texto
+    turno --> prompt
+    turno -- "≤ 3 vueltas" --> llm --> proveedor
+    turno -- "ejecuta lo que pide el modelo" --> herr
+    turno --> citas
+    herr --> params
+    indice --> params
 
-    classDef futuro stroke-dasharray: 5 5,fill:#f4f4f4,color:#555
     classDef comp fill:#85bbf0,color:#000,stroke:#5d82a8
     classDef ext fill:#999,color:#fff,stroke:#6b6b6b
-    class main,schemas,prompts,llm,config comp
+    class main,turno,indice,texto,prompt,herr,citas,llm,params comp
     class proveedor ext
 ```
 
-**Regla de dependencia:** solo `app/services/llm.py` conoce al proveedor. Cambiar de Gemini a Groq u otro proveedor
-compatible es cambiar variables del `.env`; los endpoints no se tocan.
+**Reglas de dependencia:** solo `app/services/llm.py` conoce al proveedor del chat, y solo `app/rag/embeddings.py`
+conoce al de embeddings. Las herramientas no llaman al modelo. Los umbrales, tablas y textos fijos viven en `config/`.
 
 ## Flujo de una consulta (`POST /chat`)
 
@@ -107,42 +109,49 @@ sequenceDiagram
     autonumber
     actor P as Productor
     participant W as Interfaz web
-    participant A as API /chat
+    participant A as API / Turno
+    participant I as Índice
     participant L as ClienteLLM
-    participant G as Gemini
-    participant Q as Groq (respaldo)
+    participant H as Herramientas
 
-    P->>W: Escribe «manchas cafés y polvo blanco»
-    W->>W: Deshabilita el botón («Enviando…»)
-    W->>A: POST /chat {mensaje, historial (últimos 10)}
-    A->>A: Valida con Pydantic (2–1000 caracteres, roles user/assistant)
-    A->>L: generar_stream(system_v3, mensajes)
-    L->>G: chat.completions (stream)
-    alt 429 / tiempo agotado / respuesta vacía
-        L->>L: Espera exponencial (o Retry-After) y reintenta (máx. 3)
-        L->>Q: Si Gemini se rinde, pasa al respaldo
+    P->>W: «Las mazorcas tienen manchas cafés y polvo blanco»
+    W->>A: POST /chat {mensaje, historial, tema?}
+    A->>I: buscar(consulta + nombre técnico, filtro de tema)
+    I-->>A: 5 fragmentos · coseno máx. 0,70
+    alt coseno < 0,63 y no es pedido de herramienta
+        A-->>W: texto de abstención + fin (sin llamar al modelo)
+    else hay base
+        A->>A: cuarentena de fragmentos sospechosos
+        A->>L: generar_stream(system_v4, fragmentos numerados, herramientas)
+        L-->>A: tool call diagnosticar_sintomas(sintomas, parte)
+        A-->>W: {"tipo":"fuentes"} 
+        A->>H: ejecutar (Pydantic + tabla validada)
+        H-->>A: moniliasis (alta) · fuentes p. 119, p. 16
+        A-->>W: {"tipo":"herramienta"} → tarjeta de diagnóstico
+        A->>L: 2.ª vuelta con el resultado (mismo proveedor)
+        loop cada trozo
+            L-->>A: texto con citas [n]
+            A-->>W: {"tipo":"texto"}
+        end
+        A->>A: verifica citas y dosis contra fuentes oficiales
+        A-->>W: {"tipo":"alerta"|"aviso"} si corresponde
+        A-->>W: {"tipo":"fin", citadas, proveedor, tokens}
     end
-    G-->>L: Primer trozo de texto
-    L-->>A: Flujo abierto
-    loop cada trozo
-        A-->>W: {"tipo":"texto","texto":"…"}
-        W-->>P: Muestra el texto mientras llega
-    end
-    L->>L: Registra tokens y tiempos en logs/llm.jsonl
-    A-->>W: {"tipo":"fin", tokens, latencia}
-    W->>W: Guarda el turno en localStorage y habilita el botón
-    Note over A,W: Si ningún proveedor responde antes del primer trozo → 503 con mensaje claro.<br/>Si el flujo se corta a la mitad → {"tipo":"error"} y la respuesta se marca incompleta.
+    W->>W: Pinta fuentes citadas, guarda el turno y abre la nube del técnico
+    Note over A,W: Sin proveedor antes del primer evento → 503 claro. «Detener» → cancela el flujo y el modelo deja de generar.
 ```
 
 ## Atributos de calidad y cómo se atienden
 
 | Atributo | Mecanismo | Dónde |
 | :--- | :--- | :--- |
-| Seguridad de la clave | Solo en `.env` / variables de la plataforma; nunca en el frontend | `app/config.py`, `.gitignore` |
-| Disponibilidad | Reintentos con espera exponencial, `Retry-After`, proveedor de respaldo | `app/services/llm.py` |
-| Consumo excesivo (OWASP LLM10) | Mensaje ≤ 1000 caracteres, historial ≤ 10 turnos, `max_tokens`, tiempo límite | `app/schemas.py`, `.env` |
-| Inyección de prompt (LLM01) | El rol `system` solo lo pone el servidor; el prompt ordena ignorar instrucciones del usuario | `app/schemas.py`, `system_v3.md` |
-| Salida insegura (LLM05) | La respuesta del modelo se escapa antes de mostrarse (sin HTML crudo) | `frontend/app.js` |
-| Desinformación (LLM09) | Sin productos ni dosis; abstención explícita; aviso fijo de orientación preliminar | `system_v3.md`, `frontend/index.html` |
-| Usabilidad móvil | Mobile-first 360 px, botones ≥ 44 px, historial disponible sin señal | `frontend/styles.css` |
-| Observabilidad | Una línea JSON por llamada: proveedor, intento, tokens, latencia (sin texto del usuario) | `logs/llm.jsonl` |
+| Fundamentación (LLM09) | Respuestas solo con fragmentos, cita `[n]` obligatoria, fuentes con página enlazada | `system_v4.md`, `app/asistente.py`, `frontend/app.js` |
+| Abstención | Umbral calibrado (código) + prompt; mensaje que orienta al técnico | `config/rag.toml`, `app/rag/indice.py` |
+| Seguridad de agroquímicos | Dosis verificadas contra fuentes oficiales; alerta si no aparecen; aviso de registro en Agrocalidad | `app/services/citas.py` |
+| Inyección indirecta (LLM01) | Fragmentos delimitados y neutralizados; cuarentena por patrones; documento ajeno no respalda dosis | `app/services/prompt.py`, `config/rag.toml` |
+| Agencia excesiva (LLM06) | Herramientas deterministas, ≤ 3 vueltas, argumentos validados, registro solo con confirmación humana | `app/agente/`, `config/agente.toml` |
+| Disponibilidad | Reintentos, `Retry-After`, respaldo, interruptor de circuito; búsqueda sigue con BM25 si fallan los embeddings | `app/services/llm.py`, `app/rag/` |
+| Consumo excesivo (LLM10) | Mensaje ≤ 1000 caracteres, historial ≤ 10 turnos, 5 fragmentos, `max_tokens`, cancelación con «Detener» | `app/schemas.py`, `config/` |
+| Salida insegura (LLM05) | La respuesta se escapa antes de mostrarse; las citas se convierten en botones, no en HTML del modelo | `frontend/app.js` |
+| Usabilidad móvil | Mobile-first 360 px, tarjetas plegables, tablas con desplazamiento propio | `frontend/styles.css` |
+| Observabilidad | Una línea JSON por llamada y por búsqueda (decisión, coseno, fragmentos), sin texto del usuario | `logs/llm.jsonl` |
