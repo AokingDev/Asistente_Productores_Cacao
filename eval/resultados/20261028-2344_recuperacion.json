@@ -1,0 +1,312 @@
+{
+  "metricas": {
+    "hit@1": 0.9411764705882353,
+    "hit@5": 1.0,
+    "mrr": 0.971,
+    "abstencion_por_umbral": "0/2",
+    "abstenciones_indebidas": 0,
+    "modo": "hibrida"
+  },
+  "filas": [
+    {
+      "id": "P01",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.8072964549064636,
+      "rango_acierto": 1,
+      "top": [
+        "manual76:[16, 17]",
+        "manual76:[17]",
+        "manual76:[15, 16]",
+        "guia_iniap:[119, 120]",
+        "manual76:[16]"
+      ]
+    },
+    {
+      "id": "P02",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.7643524408340454,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[119, 120]",
+        "manual76:[16, 17]",
+        "manual76:[16]",
+        "manual76:[14]",
+        "guia_iniap:[120, 121]"
+      ]
+    },
+    {
+      "id": "P03",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.7501606941223145,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[121, 122]",
+        "guia_iniap:[120, 121]",
+        "manual76:[16]",
+        "guia_iniap:[86]",
+        "manual76:[14]"
+      ]
+    },
+    {
+      "id": "P04",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.7913200855255127,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[122, 123]",
+        "manual76:[17]",
+        "guia_iniap:[110, 111]",
+        "manual76:[15, 16]",
+        "manual76:[16]"
+      ]
+    },
+    {
+      "id": "P05",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.7514899969100952,
+      "rango_acierto": 1,
+      "top": [
+        "manual76:[14]",
+        "manual76:[14]",
+        "guia_iniap:[101, 102, 103, 104]",
+        "manual76:[17]",
+        "guia_iniap:[130, 131]"
+      ]
+    },
+    {
+      "id": "P06",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.7848232984542847,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[101, 102, 103, 104]",
+        "manual76:[13, 14]",
+        "manual76:[13]",
+        "guia_iniap:[101]",
+        "manual76:[14]"
+      ]
+    },
+    {
+      "id": "P07",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.76190185546875,
+      "rango_acierto": 1,
+      "top": [
+        "manual76:[13]",
+        "manual76:[14]",
+        "guia_iniap:[101, 102, 103, 104]",
+        "manual76:[14]",
+        "manual76:[14, 15]"
+      ]
+    },
+    {
+      "id": "P08",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.768182635307312,
+      "rango_acierto": 1,
+      "top": [
+        "manual76:[13, 14]",
+        "guia_iniap:[101, 102, 103, 104]",
+        "manual76:[13]",
+        "manual76:[9]",
+        "manual76:[6]"
+      ]
+    },
+    {
+      "id": "P09",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.7829961776733398,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[111, 112, 113]",
+        "manual76:[15, 16]",
+        "manual76:[10]",
+        "manual76:[17]",
+        "guia_iniap:[74, 75]"
+      ]
+    },
+    {
+      "id": "P10",
+      "categoria": "dosis",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.771011233329773,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[111, 112, 113]",
+        "manual76:[15, 16]",
+        "manual76:[14, 15]",
+        "manual76:[2, 3]",
+        "guia_iniap:[86]"
+      ]
+    },
+    {
+      "id": "P11",
+      "categoria": "dosis_ajena",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.6879692077636719,
+      "rango_acierto": 2,
+      "top": [
+        "guia_iniap:[28]",
+        "manual76:[16, 17]",
+        "manual76:[12]",
+        "manual76:[11, 12]",
+        "manual76:[12]"
+      ]
+    },
+    {
+      "id": "P12",
+      "categoria": "contradiccion",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.8320221900939941,
+      "rango_acierto": 1,
+      "top": [
+        "manual76:[19, 20]",
+        "guia_iniap:[139]",
+        "guia_iniap:[135, 136, 137]",
+        "manual76:[20, 21]",
+        "manual76:[21]"
+      ]
+    },
+    {
+      "id": "P13",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.8359586000442505,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[139, 140]",
+        "guia_iniap:[135, 136, 137]",
+        "manual76:[20]",
+        "manual76:[19, 20]",
+        "guia_iniap:[139]"
+      ]
+    },
+    {
+      "id": "P14",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.8113394975662231,
+      "rango_acierto": 1,
+      "top": [
+        "catalogo_cultivares:[28, 29]",
+        "catalogo_cultivares:[25, 26]",
+        "catalogo_cultivares:[22, 23]",
+        "catalogo_cultivares:[31, 32]",
+        "catalogo_cultivares:[55, 56]"
+      ]
+    },
+    {
+      "id": "P15",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.775731086730957,
+      "rango_acierto": 1,
+      "top": [
+        "catalogo_cultivares:[58, 59]",
+        "catalogo_cultivares:[10, 11]",
+        "catalogo_cultivares:[59]",
+        "catalogo_cultivares:[11, 12]",
+        "catalogo_cultivares:[7]"
+      ]
+    },
+    {
+      "id": "P16",
+      "categoria": "contradiccion",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.8583024144172668,
+      "rango_acierto": 1,
+      "top": [
+        "guia_iniap:[13]",
+        "manual76:[8]",
+        "guia_iniap:[73]",
+        "manual76:[8, 9]",
+        "guia_iniap:[73]"
+      ]
+    },
+    {
+      "id": "P17",
+      "categoria": "consulta",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.7952490448951721,
+      "rango_acierto": 1,
+      "top": [
+        "manual76:[8, 9]",
+        "guia_iniap:[70, 71]",
+        "manual76:[9, 10]",
+        "guia_iniap:[81, 82, 83]",
+        "manual76:[6]"
+      ]
+    },
+    {
+      "id": "P18",
+      "categoria": "fuera_alcance",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.6973931789398193,
+      "rango_acierto": null,
+      "top": [
+        "manual76:[17]",
+        "manual76:[16, 17]",
+        "guia_iniap:[114, 115]",
+        "manual76:[15, 16]",
+        "manual76:[16]"
+      ]
+    },
+    {
+      "id": "P19",
+      "categoria": "abstencion",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.6508801579475403,
+      "rango_acierto": null,
+      "top": [
+        "manual76:[3, 4]",
+        "manual76:[22, 23]",
+        "manual76:[4]",
+        "guia_iniap:[149, 150, 151, 152]",
+        "manual76:[11]"
+      ]
+    },
+    {
+      "id": "P20",
+      "categoria": "abstencion",
+      "decision": "suficiente",
+      "modo": "hibrida",
+      "mejor_coseno": 0.6609357595443726,
+      "rango_acierto": null,
+      "top": [
+        "manual76:[17]",
+        "manual76:[9, 10]",
+        "guia_iniap:[83, 84]",
+        "manual76:[12]",
+        "manual76:[15, 16]"
+      ]
+    }
+  ]
+}
