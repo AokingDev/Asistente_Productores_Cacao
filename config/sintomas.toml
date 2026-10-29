@@ -1,0 +1,272 @@
+# Tabla de síntomas validada con los manuales (herramienta diagnosticar_sintomas).
+# Cada signo cita documento y página del PDF; los textos de manejo resumen SOLO prácticas culturales
+# que aparecen en esas páginas. Las claves son frases cortas en minúsculas: un signo coincide si
+# TODAS las palabras de alguna clave aparecen en la descripción del productor (por raíz, sin tildes).
+# peso: 3 = signo característico · 2 = signo frecuente · 1 = signo de apoyo o contexto.
+#
+# Revisada contra: guia_iniap pp. 34, 110-115, 119-122 · manual76 pp. 15-17.
+
+[[problema]]
+id = "moniliasis"
+nombre = "Moniliasis (monilla)"
+tipo = "enfermedad"
+agente = "Moniliophthora roreri (hongo)"
+partes = ["mazorca"]
+nombres_locales = ["monilla", "monilia", "moniliasis"]
+diferencial = "Si sobre la mancha aparece una felpa blanca-crema que suelta polvo con el viento, es monilla. La mazorca negra deja una mancha café oscuro sin esa felpa."
+manejo_cultural = "Retire cada semana las mazorcas enfermas antes de que aparezca el polvo blanco y déjelas en el campo para que se descompongan. Regule la sombra con podas y mantenga buen drenaje."
+fuentes = [{ doc = "guia_iniap", pagina = 119 }, { doc = "manual76", pagina = 16 }]
+  [[problema.signo]]
+  texto = "Felpa o polvo blanco-crema sobre la mancha"
+  peso = 3
+  claves = ["felpa", "polvo blanco", "polvillo blanco", "polvo crema", "capa blanca", "moho blanco", "algodon", "ceniza", "blanco cremoso", "blanca cremosa", "esporas", "polvo"]
+  [[problema.signo]]
+  texto = "Manchas pardas, amarillas o anaranjadas en la mazorca"
+  peso = 2
+  claves = ["mancha parda", "mancha cafe", "mancha marron", "mancha amarilla", "mancha anaranjada", "manchas"]
+  [[problema.signo]]
+  texto = "Granos podridos o pegados en una masa dentro de la mazorca"
+  peso = 1
+  claves = ["podrida por dentro", "granos podridos", "pudricion interna", "granos pegados", "masa compacta", "necrosis"]
+  [[problema.signo]]
+  texto = "Mazorcas pequeñas secas que quedan pegadas al árbol"
+  peso = 1
+  claves = ["quedan pegadas", "adheridas", "mazorcas secas"]
+
+[[problema]]
+id = "escoba_bruja"
+nombre = "Escoba de bruja"
+tipo = "enfermedad"
+agente = "Moniliophthora perniciosa (hongo)"
+partes = ["rama", "brote", "flor", "mazorca"]
+nombres_locales = ["escoba de bruja", "escoba"]
+diferencial = "Las escobas son brotes verdes engrosados con hojas finas y rugosas. También hay frutos deformes llamados «chirimoya» o «zanahoria». Si solo hay manchas en la mazorca, sin brotes deformes, piense en monilla o mazorca negra."
+manejo_cultural = "Haga poda fitosanitaria: elimine escobas y material enfermo una o dos veces al año en época seca (la última, 3 a 4 meses antes de las lluvias) y tumbe los frutos enfermos en cada cosecha. Use clones tolerantes al renovar."
+fuentes = [{ doc = "guia_iniap", pagina = 120 }, { doc = "guia_iniap", pagina = 121 }, { doc = "manual76", pagina = 16 }]
+  [[problema.signo]]
+  texto = "Brotes o ramas engrosados y deformes, en forma de escoba"
+  peso = 3
+  claves = ["escoba", "rama gruesa", "ramas gruesas", "brote grueso", "engrosado", "engrosada", "ramas deformes", "brotes deformes", "hinchada", "proliferacion", "muchas ramitas"]
+  [[problema.signo]]
+  texto = "Flores «estrella» o frutos deformes tipo «chirimoya» o «zanahoria»"
+  peso = 3
+  claves = ["chirimoya", "zanahoria", "flor estrella", "flores estrella", "frutos deformes", "mazorca deforme", "mazorcas deformes"]
+  [[problema.signo]]
+  texto = "Escobas secas en la parte de afuera de la copa"
+  peso = 1
+  claves = ["escobas secas", "secas en la copa"]
+  [[problema.signo]]
+  texto = "Granos endurecidos o con pudrición acuosa"
+  peso = 1
+  claves = ["acuosa", "granos duros"]
+
+[[problema]]
+id = "mazorca_negra"
+nombre = "Mazorca negra"
+tipo = "enfermedad"
+agente = "Phytophthora spp. (hongo)"
+partes = ["mazorca", "tronco", "hoja"]
+nombres_locales = ["mazorca negra", "pudricion negra", "phytophthora"]
+diferencial = "La mazorca negra deja una mancha café oscuro que se extiende, sin felpa blanca. En el tronco aparecen manchas húmedas café o vino tinto («cáncer del tronco»)."
+manejo_cultural = "Retire los frutos enfermos en cada cosecha y evite el encharcamiento con buen drenaje. El exceso de sombra y la falta de poda favorecen la enfermedad."
+fuentes = [{ doc = "manual76", pagina = 17 }]
+  [[problema.signo]]
+  texto = "Mancha café oscura o negra en la mazorca"
+  peso = 3
+  claves = ["mancha negra", "mazorca negra", "mazorcas negras", "cafe oscuro", "mancha oscura", "negra", "ennegrecida", "se pone negra", "se ponen negras"]
+  [[problema.signo]]
+  texto = "Manchas húmedas café o vino tinto en el tronco (cáncer)"
+  peso = 2
+  claves = ["cancer", "mancha humeda", "vino tinto"]
+  [[problema.signo]]
+  texto = "Hojas con manchas que empiezan por el borde y se enrollan"
+  peso = 1
+  claves = ["borde de la hoja", "bordes de las hojas", "se enrollan", "hojas enrolladas"]
+  [[problema.signo]]
+  texto = "Mazorca dura o podrida"
+  peso = 1
+  claves = ["dura", "duras", "podrida", "pudricion"]
+  [[problema.signo]]
+  texto = "Condiciones favorables: mucha sombra, encharcamiento o lluvias"
+  peso = 1
+  claves = ["encharca", "mucha sombra", "exceso de sombra", "mal drenaje", "lluvia", "lluvias"]
+
+[[problema]]
+id = "mal_machete"
+nombre = "Mal del machete"
+tipo = "enfermedad"
+agente = "Ceratocystis (hongo), transmitido por insectos barrenadores (Xyleborus)"
+partes = ["arbol", "tronco", "rama", "hoja"]
+nombres_locales = ["mal de machete", "mal del machete", "ceratocystis"]
+diferencial = "Las hojas se ponen amarillas, luego café rojizo y se secan, pero quedan pegadas a la rama. Suele salir aserrín fino de huequitos en el tronco."
+manejo_cultural = "Elimine y queme fuera de la plantación los árboles enfermos o muertos, evite heridas al deshierbar y desinfecte las herramientas."
+fuentes = [{ doc = "guia_iniap", pagina = 122 }, { doc = "manual76", pagina = 17 }, { doc = "guia_iniap", pagina = 110 }]
+  [[problema.signo]]
+  texto = "Hojas secas que quedan pegadas a la rama"
+  peso = 3
+  claves = ["no se caen", "quedan pegadas", "pegadas a la rama", "adheridas", "no se desprenden"]
+  [[problema.signo]]
+  texto = "Aserrín o polvillo que sale de huequitos en el tronco"
+  peso = 3
+  claves = ["aserrin", "huequitos", "agujeros en el tronco", "perforaciones", "galerias"]
+  [[problema.signo]]
+  texto = "Hojas amarillas que se marchitan y se secan"
+  peso = 2
+  claves = ["hojas amarillas", "amarillamiento", "marchita", "marchitas", "marchitez", "hojas secas", "arbol seco"]
+  [[problema.signo]]
+  texto = "Hojas color café rojizo"
+  peso = 1
+  claves = ["cafe rojizo", "rojizas", "rojizo"]
+  [[problema.signo]]
+  texto = "El árbol se muere en poco tiempo"
+  peso = 1
+  claves = ["muere", "murio", "muerto", "se esta muriendo"]
+
+[[problema]]
+id = "chinche_monalonion"
+nombre = "Chinche de la mazorca (mosquilla del cacao)"
+tipo = "plaga"
+agente = "Monalonion dissimulatum (insecto)"
+partes = ["mazorca", "brote"]
+nombres_locales = ["chinche", "mosquilla", "mosquita", "monalonion"]
+diferencial = "El chinche deja manchas circulares oscuras y hundidas (picaduras) en mazorcas pequeñas, que se deforman y se endurecen. No produce felpa blanca."
+manejo_cultural = "Mantenga buena sombra (cerca de 25 % de luz solar), revise el cultivo con frecuencia y elimine las mazorcas afectadas. La poda y la sombra regulada ayudan a controlarlo."
+fuentes = [{ doc = "guia_iniap", pagina = 111 }, { doc = "guia_iniap", pagina = 112 }, { doc = "manual76", pagina = 15 }]
+  [[problema.signo]]
+  texto = "Manchas circulares oscuras y hundidas (picaduras) en la mazorca"
+  peso = 3
+  claves = ["mancha circular", "manchas circulares", "manchas redondas", "hundidas", "ampollas", "picaduras", "piquetes"]
+  [[problema.signo]]
+  texto = "Insecto rojo-amarillento con bandas negras en las mazorcas"
+  peso = 3
+  claves = ["chinche", "mosquilla", "mosquita", "insecto rojo", "insecto amarillo"]
+  [[problema.signo]]
+  texto = "Mazorcas pequeñas deformes, endurecidas o petrificadas que se caen"
+  peso = 2
+  claves = ["mazorcas pequenas", "frutos pequenos", "se caen", "petrificada", "endurecen", "endurecidas", "deformes"]
+  [[problema.signo]]
+  texto = "Más ataque cuando disminuyen las lluvias o hay poca sombra"
+  peso = 1
+  claves = ["epoca seca", "poca sombra", "verano"]
+
+[[problema]]
+id = "hormiga_arriera"
+nombre = "Hormiga arriera"
+tipo = "plaga"
+agente = "Atta spp. y Acromyrmex spp. (insectos)"
+partes = ["hoja", "flor", "mazorca"]
+nombres_locales = ["arriera", "hormiga arriera", "atta"]
+diferencial = "Cortan pedazos de hoja en forma de media luna, desde el borde hacia la vena central, y los cargan a su nido; trabajan sobre todo de noche."
+manejo_cultural = "Ubique los hormigueros. Sembrar Canavalia alrededor de los nidos o usar cebos de cáscaras de fruta con azúcar o panela y levadura reduce la población."
+fuentes = [{ doc = "guia_iniap", pagina = 113 }, { doc = "manual76", pagina = 15 }]
+  [[problema.signo]]
+  texto = "Cortes semicirculares en el borde de las hojas"
+  peso = 3
+  claves = ["media luna", "semicircular", "hojas cortadas", "hojas comidas", "recortes", "cortan las hojas"]
+  [[problema.signo]]
+  texto = "Hormigas grandes que cargan hojas; montículos de tierra en los nidos"
+  peso = 3
+  claves = ["arriera", "arrieras", "monticulo", "hormiguero", "cargan hojas"]
+  [[problema.signo]]
+  texto = "La planta queda sin hojas de un día para otro (trabajan de noche)"
+  peso = 1
+  claves = ["noche", "sin hojas", "defolia", "pelada"]
+
+[[problema]]
+id = "pulgon"
+nombre = "Pulgón negro (áfidos)"
+tipo = "plaga"
+agente = "Toxoptera aurantii (insecto)"
+partes = ["flor", "brote", "mazorca", "hoja"]
+nombres_locales = ["pulgon", "pulgones", "afidos"]
+diferencial = "Son insectos pequeños (1 a 2 mm), gris oscuro, en colonias sobre cojinetes florales, brotes tiernos y frutos pequeños, casi siempre acompañados de hormigas."
+manejo_cultural = "Elimine brotes y chupones atacados, maneje las malezas que los hospedan, use trampas pegajosas de color y, si puede, riego."
+fuentes = [{ doc = "guia_iniap", pagina = 114 }]
+  [[problema.signo]]
+  texto = "Colonias de insectos pequeños gris oscuro o negros"
+  peso = 3
+  claves = ["pulgon", "pulgones", "afidos", "bichitos negros", "insectos pequenos", "insectos negros", "colonias"]
+  [[problema.signo]]
+  texto = "En cojinetes florales, brotes tiernos o frutos pequeños"
+  peso = 1
+  claves = ["cojinetes", "flores", "brotes tiernos", "hojas tiernas"]
+  [[problema.signo]]
+  texto = "Hormigas que acompañan a los insectos"
+  peso = 1
+  claves = ["hormigas"]
+
+[[problema]]
+id = "barrenador"
+nombre = "Barrenador o taladrador del tronco"
+tipo = "plaga"
+agente = "Xyleborus spp. (escarabajo)"
+partes = ["tronco"]
+nombres_locales = ["barrenador", "taladrador", "xyleborus"]
+diferencial = "Deja montículos de aserrín muy fino sobre la corteza y al pie de la planta, con galerías en la base del tallo. Está asociado al mal del machete."
+manejo_cultural = "Retire y queme fuera de la plantación los árboles marchitos y desinfecte siempre las herramientas."
+fuentes = [{ doc = "guia_iniap", pagina = 110 }, { doc = "guia_iniap", pagina = 111 }]
+  [[problema.signo]]
+  texto = "Aserrín muy fino sobre la corteza o al pie de la planta"
+  peso = 3
+  claves = ["aserrin", "polvillo de madera"]
+  [[problema.signo]]
+  texto = "Huequitos o galerías en la base del tallo"
+  peso = 2
+  claves = ["huequitos", "agujeros", "galerias", "perforaciones"]
+
+[[problema]]
+id = "termitas"
+nombre = "Termitas (comején)"
+tipo = "plaga"
+agente = "Nasutitermes sp. (insecto)"
+partes = ["tronco", "rama"]
+nombres_locales = ["termita", "termitas", "comejen"]
+diferencial = "Hacen túneles de tierra a lo largo del tronco y las ramas, con nidos en el árbol o en el suelo; atacan sobre todo árboles viejos."
+manejo_cultural = "Retire los nidos del árbol."
+fuentes = [{ doc = "guia_iniap", pagina = 115 }]
+  [[problema.signo]]
+  texto = "Túneles o caminos de tierra y nidos en el tronco"
+  peso = 3
+  claves = ["termita", "termitas", "comejen", "tuneles", "caminos de tierra", "nido en el arbol"]
+  [[problema.signo]]
+  texto = "Corteza destruida en árboles viejos"
+  peso = 1
+  claves = ["corteza", "arboles viejos"]
+
+[[problema]]
+id = "gallina_ciega"
+nombre = "Gallina ciega (chiza)"
+tipo = "plaga"
+agente = "Phyllophaga sp. (larva de escarabajo)"
+partes = ["raiz"]
+nombres_locales = ["gallina ciega", "chiza", "chizas", "manicho"]
+diferencial = "Es la principal plaga del suelo en el vivero: larvas que comen la raíz; la plantita se debilita y puede morir."
+manejo_cultural = "Revise el sustrato del vivero y retire con cuidado las plantas enfermas o muertas."
+fuentes = [{ doc = "guia_iniap", pagina = 34 }, { doc = "manual76", pagina = 8 }]
+  [[problema.signo]]
+  texto = "Larvas o gusanos blancos en la raíz"
+  peso = 3
+  claves = ["gallina ciega", "chiza", "chizas", "larva", "larvas", "gusano en la raiz", "gusanos blancos", "raiz comida"]
+  [[problema.signo]]
+  texto = "Plantas del vivero débiles que se mueren"
+  peso = 1
+  claves = ["vivero", "plantitas", "fundas", "debiles"]
+
+[[problema]]
+id = "acaros"
+nombre = "Ácaros (arañitas)"
+tipo = "plaga"
+agente = "Ácaros"
+partes = ["hoja", "brote"]
+nombres_locales = ["acaro", "acaros", "aranita", "aranitas"]
+diferencial = "Arañitas rojas o café en el envés de las hojas, sobre todo en brotes jóvenes del vivero."
+manejo_cultural = "Revise el envés de las hojas en el vivero y retire las plantas muy afectadas."
+fuentes = [{ doc = "guia_iniap", pagina = 34 }]
+  [[problema.signo]]
+  texto = "Arañitas rojas o café en el envés de las hojas"
+  peso = 3
+  claves = ["aranita", "aranitas", "acaro", "acaros", "enves"]
+  [[problema.signo]]
+  texto = "En brotes jóvenes del vivero"
+  peso = 1
+  claves = ["vivero", "brotes jovenes"]

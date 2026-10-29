@@ -1,0 +1,40 @@
+# Parámetros del agente y de sus herramientas.
+
+[agente]
+max_iteraciones = 3             # vueltas modelo → herramienta → modelo; en la última se pide responder sin herramientas
+prompt = "system_v4"            # app/prompts/system_v4.md (RAG + herramientas)
+
+[diagnostico]
+umbral_minimo = 2               # puntaje mínimo para mencionar un problema
+fraccion_alternativas = 0.5     # se muestran como alternativas los que tengan ≥ 50 % del puntaje del primero
+max_alternativas = 3
+puntaje_confianza_alta = 5      # puntaje del primero para confianza «alta»…
+margen_confianza_alta = 2       # …si además supera al segundo por este margen
+puntaje_confianza_media = 3
+penalizacion_parte = 0.4        # multiplicador si la parte afectada no corresponde al problema
+bonus_nombre_local = 1          # el productor nombra la enfermedad (puede equivocarse: bono pequeño)
+
+[intenciones]
+# Antes de abstenerse por falta de fragmentos, el código revisa si el mensaje pide una HERRAMIENTA
+# (que no necesita texto de los manuales). Frases cortas: coinciden por raíz y sin tildes.
+calendario = ["calendario", "cronograma", "labores", "que hago este mes", "que toca hacer", "cuando podar", "cuando abonar",
+              "cuando fertilizar", "cuando regar", "cuando cosechar", "este mes"]
+registro = ["tecnico revise", "visita de un tecnico", "seguimiento", "registrar", "registre", "registro", "guardar mi caso",
+            "que me contacten", "contacte un tecnico"]
+
+[consultas]
+archivo = "data/consultas/consultas.jsonl"
+minutos_para_confirmar = 30     # la propuesta de registro caduca si el productor no confirma
+max_pendientes = 200
+
+[mensajes]
+abstencion = """No encontré esa información en los manuales del INIAP que tengo cargados, así que prefiero no adivinar.
+
+- Si su pregunta es sobre el cacao, intente contarme con otras palabras qué observa o qué labor quiere hacer.
+- Para un caso que no está en los manuales, consulte a un técnico del MAG o del INIAP de su zona."""
+
+fuera_de_alcance = "Solo puedo orientarle sobre el cultivo de cacao con base en los manuales del INIAP."
+
+advertencia_dosis = "Antes de usar cualquier producto, verifique que tenga registro vigente en Agrocalidad, lea la etiqueta y use equipo de protección. Las dosis provienen de manuales de 2015-2021."
+
+dosis_no_respaldada = "Atención: la respuesta mencionó una cantidad de producto que no aparece en los manuales consultados. No la use; confírmela con un técnico del MAG o del INIAP."
