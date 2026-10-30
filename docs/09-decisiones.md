@@ -93,7 +93,7 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
   con cita.
 
 ### ADR-010 · Recordatorio del técnico en un avatar, no en cada respuesta
-- **Estado:** Aceptada.
+- **Estado:** Aceptada; el avatar fue **reemplazado** por una nota fija bajo el campo de texto (ver «Actualización»).
 - **Contexto:** `system_v3` cierra cada respuesta con «Es una orientación preliminar; confírmelo con un técnico…».
   Repetido en todas las respuestas, el productor deja de leerlo y ocupa espacio en una pantalla pequeña.
 - **Decisión:** un avatar de cacao (abajo a la derecha) con una nube muestra **siempre** el recordatorio (HU06).
@@ -102,6 +102,13 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
   invalidar la comparación de `docs/05-prompts.md`.
 - **Consecuencias:** el aviso ya no depende de que el modelo lo escriba (lo pone el código). Si se quiere ahorrar
   tokens, una futura `system_v4` puede omitir la frase de cierre.
+- **Actualización (rediseño de la interfaz):** con el panel al estilo de las apps de chat y la paleta gris/azul con
+  modo claro y oscuro automático, el avatar flotante se retiró: tapaba contenido en pantallas pequeñas. El recordatorio
+  se mostró como nota fija bajo el campo de texto (`#recordatorio`).
+- **Actualización 2:** a pedido del equipo, la nota se ve **solo al iniciar una conversación** y se oculta con la
+  primera pregunta. El recordatorio sigue en los puntos donde importa: cada tarjeta de diagnóstico dice «Diagnóstico
+  preliminar…: confírmelo con un técnico del MAG o del INIAP» y toda dosis lleva el aviso de Agrocalidad. Como la nota
+  ya no está siempre visible, el frontend **dejó de quitar** la frase de cierre del modelo cuando la escribe.
 
 ### ADR-011 · Mostrar qué proveedor generó cada respuesta y permitir detenerla
 - **Estado:** Aceptada.
