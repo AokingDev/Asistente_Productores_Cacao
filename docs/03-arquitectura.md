@@ -137,7 +137,7 @@ sequenceDiagram
         A-->>W: {"tipo":"alerta"|"aviso"} si corresponde
         A-->>W: {"tipo":"fin", citadas, proveedor, tokens}
     end
-    W->>W: Pinta fuentes citadas, guarda el turno y abre la nube del técnico
+    W->>W: Pinta fuentes citadas y guarda el turno (el recordatorio del técnico está fijo bajo el campo)
     Note over A,W: Sin proveedor antes del primer evento → 503 claro. «Detener» → cancela el flujo y el modelo deja de generar.
 ```
 

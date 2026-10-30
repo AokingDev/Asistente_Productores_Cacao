@@ -1,26 +1,124 @@
-/* Mobile-first: diseñado para 360 px de ancho. Desde 960 px: panel lateral + chat a todo el ancho. */
+/* Mobile-first: diseñado para 360 px de ancho. Desde 960 px: panel lateral + chat.
+   Paleta en escala de grises con azul como acento. Los colores son variables: el modo claro es la base y el
+   modo oscuro se activa solo según el sistema (prefers-color-scheme). Ningún componente usa colores fijos. */
 :root {
-  --cacao: #3b2a1e;
-  --cacao-medio: #6b4a32;
-  --mazorca: #c96a26;
-  --hoja: #2f6b3a;
-  --hoja-claro: #e6f0e3;
-  --fondo: #f7f3ee;
-  --lateral: #fbf8f4;
-  --tarjeta: #ffffff;
-  --texto: #2a211b;
-  --suave: #6d625a;
-  --borde: #ddd3c8;
-  --nube: #fff7df;
-  --nube-borde: #e8cf86;
-  --error: #fde8e6;
-  --error-texto: #8a1f14;
-  --gemini: #1a73e8;
-  --groq: #d4572a;
-  --simulado: #8a8178;
+  color-scheme: light dark;
+
+  /* Superficies y texto (grises) */
+  --fondo: #f5f7fa;
+  --superficie: #ffffff;
+  --superficie-2: #eef1f5;
+  --borde: #d9dee5;
+  --borde-fuerte: #b8c0cc;
+  --texto: #1f2933;
+  --suave: #5f6b7a;
+  --sombra: rgba(15, 23, 42, .08);
+
+  /* Acento (azul) */
+  --acento: #2563eb;          /* enlaces, foco, iconos activos */
+  --acento-boton: #2563eb;    /* fondo de botones principales (texto blanco) */
+  --acento-hover: #1d4ed8;
+  --acento-suave: #dbeafe;
+  --acento-texto: #1e40af;
+  --acento-deshabilitado: #9db4e6;
+
+  /* Panel lateral y barra del teléfono */
+  --panel: #eceff3;
+  --panel-texto: #1f2933;
+  --panel-suave: #5f6b7a;
+  --panel-hover: rgba(15, 23, 42, .06);
+  --panel-activo: rgba(15, 23, 42, .1);
+  --panel-borde: #d9dee5;
+
+  /* Mensaje del productor: borde azul y fondo del mismo azul, más claro */
+  --usuario-fondo: #dbeafe;
+  --usuario-borde: #2563eb;
+  --usuario-texto: #172554;
+
+  /* Estados */
+  --error-fondo: #fdecec;
+  --error-borde: #f2b8b5;
+  --error-texto: #b42318;
+  --peligro: #b42318;
+  --aviso-fondo: #eff6ff;
+  --aviso-borde: #bfdbfe;
+  --aviso-texto: #1e3a8a;
+  --ok: #15803d;
+  --ok-fondo: #dcfce7;
+  --medio-fondo: #fef3c7;
+  --medio-texto: #92400e;
+  --nota-fondo: #eef1f5;
+  --nota-texto: #3e4c5c;
+  --en-linea: #16a34a;
+  --caido: #dc2626;
+
+  /* Logo: mazorca blanca sobre círculo gris */
+  --logo-fondo: #4b5563;
+  --logo-figura: #ffffff;
+
+  /* Proveedores de IA (etiqueta «Generado por») */
+  --gemini: #2563eb;
+  --groq: #475569;
+  --simulado: #8a94a3;
+
   --radio: 14px;
-  --alto-entrada: 68px;     /* lo ajusta app.js con la altura real de la barra de entrada */
-  --espacio-mascota: 112px; /* lo ajusta app.js: alto del avatar (+ nube si está abierta) */
+  --ancho-chat: 820px;      /* columna de lectura del chat, centrada como en una app de mensajería */
+  --margen-chat: max(16px, calc((100% - var(--ancho-chat)) / 2));
+  --espacio-final: 24px;    /* aire bajo el último mensaje */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #111418;
+    --superficie: #1a1e24;
+    --superficie-2: #232830;
+    --borde: #323844;
+    --borde-fuerte: #4a5262;
+    --texto: #e6e9ee;
+    --suave: #9aa4b2;
+    --sombra: rgba(0, 0, 0, .35);
+
+    --acento: #60a5fa;
+    --acento-boton: #2563eb;
+    --acento-hover: #3b82f6;
+    --acento-suave: #1e3a5f;
+    --acento-texto: #93c5fd;
+    --acento-deshabilitado: #2a3f63;
+
+    --panel: #0b0d10;
+    --panel-texto: #e6e9ee;
+    --panel-suave: #9aa4b2;
+    --panel-hover: rgba(255, 255, 255, .06);
+    --panel-activo: rgba(255, 255, 255, .11);
+    --panel-borde: #242932;
+
+    --usuario-fondo: #1e3a5f;
+    --usuario-borde: #3b82f6;
+    --usuario-texto: #e6efff;
+
+    --error-fondo: #3a1d1d;
+    --error-borde: #7f2d2d;
+    --error-texto: #fca5a5;
+    --peligro: #b42318;
+    --aviso-fondo: #172554;
+    --aviso-borde: #1e40af;
+    --aviso-texto: #bfdbfe;
+    --ok: #4ade80;
+    --ok-fondo: #14321f;
+    --medio-fondo: #3a2e0f;
+    --medio-texto: #fcd34d;
+    --nota-fondo: #232830;
+    --nota-texto: #c3cad4;
+    --en-linea: #4ade80;
+    --caido: #f87171;
+
+    --logo-fondo: #374151;
+    --logo-figura: #f3f4f6;
+
+    --gemini: #3b82f6;
+    --groq: #64748b;
+    --simulado: #5b6472;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -39,33 +137,29 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+a { color: var(--acento); }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+
 .solo-lector {
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);
 }
 
-/* ---------- Barra superior ---------- */
+/* ---------- Barra superior (solo teléfono) ---------- */
 .barra {
   flex: none;
   z-index: 3;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
-  padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px 16px;
-  background: var(--cacao);
-  color: #fff;
+  padding: calc(8px + env(safe-area-inset-top, 0px)) 12px 8px 12px;
+  background: var(--panel);
+  color: var(--panel-texto);
+  border-bottom: 1px solid var(--panel-borde);
 }
 .marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.logo {
-  flex: none;
-  width: 40px; height: 40px;
-  padding: 3px;
-  border-radius: 50%;
-  background: #f3e3c8;
-}
+.logo { flex: none; width: 40px; height: 40px; } /* el círculo y su borde son parte del dibujo */
 .barra h1 { margin: 0; font-size: 1.05rem; line-height: 1.2; }
-.barra .sub { margin: 0; font-size: .8rem; opacity: .8; }
-.acciones { display: flex; gap: 2px; }
+.barra .sub { margin: 0; font-size: .8rem; color: var(--panel-suave); }
 
 .btn-texto {
   min-height: 44px;
@@ -78,101 +172,268 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
-.barra .btn-texto { color: #f3d9a4; }
-.barra .btn-texto:hover { background: rgba(255, 255, 255, .08); }
 
-.btn-cerrar {
+.btn-icono {
   flex: none;
-  width: 36px; height: 36px;
+  display: grid;
+  place-items: center;
+  width: 44px; height: 44px;
   border: 0;
-  border-radius: 50%;
+  border-radius: 10px;
   background: transparent;
-  color: var(--suave);
-  font-size: 1rem;
+  color: var(--panel-suave);
   cursor: pointer;
 }
-.btn-cerrar:hover { background: rgba(0, 0, 0, .06); }
+.btn-icono:hover { background: var(--panel-hover); color: var(--panel-texto); }
+.btn-icono svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 
 /* ---------- Cuerpo: panel + chat ---------- */
-.cuerpo {
+body > .cuerpo { /* contenedor de panel + chat (no el .cuerpo de cada burbuja) */
   flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr;
 }
 
-/* ---------- Panel lateral (en el teléfono es un cajón) ---------- */
+/* ---------- Panel lateral (estilo app de chat; en el teléfono es un cajón) ---------- */
 .lateral {
   position: fixed;
   inset: 0 auto 0 0;
   z-index: 5;
-  width: min(86vw, 340px);
+  width: min(84vw, 300px);
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
-  padding: calc(16px + env(safe-area-inset-top, 0px)) 18px 18px;
-  background: var(--lateral);
-  border-right: 1px solid var(--borde);
+  overflow-x: hidden;
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 10px 12px;
+  background: var(--panel);
+  color: var(--panel-texto);
+  border-right: 1px solid var(--panel-borde);
   transform: translateX(-102%);
   transition: transform .25s ease;
-  font-size: .92rem;
+  font-size: .95rem;
 }
-.lateral.abierto { transform: none; box-shadow: 4px 0 24px rgba(0, 0, 0, .18); }
+.lateral.abierto { transform: none; box-shadow: 4px 0 24px var(--sombra); }
 
-.velo { position: fixed; inset: 0; z-index: 4; background: rgba(30, 20, 12, .4); }
+.velo { position: fixed; inset: 0; z-index: 4; background: rgba(15, 23, 42, .45); }
 .velo[hidden] { display: none; }
 
-.lateral-cabecera { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px; }
-.lateral-avatar {
+.lateral-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 48px; }
+.lateral-marca { display: flex; align-items: center; gap: 10px; min-width: 0; padding-left: 4px; font-weight: 700; font-size: 1.05rem; }
+.lateral-marca .logo { width: 34px; height: 34px; }
+
+.menu { display: flex; flex-direction: column; gap: 2px; margin-top: 14px; }
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.item svg { flex: none; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8;
+            stroke-linecap: round; stroke-linejoin: round; }
+.item:hover { background: var(--panel-hover); }
+.item.activo { background: var(--panel-activo); }
+.item.activo svg { color: var(--acento); }
+/* «¿Borrar la conversación?»: mismo estilo de la plantilla, con el acento azul para pedir el segundo clic */
+.item.confirmar { background: var(--panel-activo); color: var(--acento); font-weight: 600; }
+.etiqueta { overflow: hidden; text-overflow: ellipsis; }
+
+/* Filtro por tema, desplegado en el propio panel */
+.item-valor { margin-left: auto; padding-left: 8px; font-size: .78rem; color: var(--panel-suave); }
+.item.con-filtro .item-valor { color: var(--acento); font-weight: 600; }
+.item.con-filtro svg { color: var(--acento); }
+.lista-temas { display: flex; flex-direction: column; gap: 0; margin: 0 0 4px 21px; padding-left: 8px;
+               border-left: 1px solid var(--panel-borde); }
+.lista-temas[hidden] { display: none; }
+.tema {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: .84rem;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tema:hover { background: var(--panel-hover); }
+.tema-marca {
   flex: none;
-  width: 56px; height: 56px;
-  padding: 4px;
-  border-radius: 16px;
-  background: #f3e3c8;
-}
-.lateral h2 { margin: 2px 0 2px; font-size: 1.05rem; color: var(--cacao); }
-.lateral-cabecera p { margin: 0; color: var(--suave); }
-.lateral section { padding: 14px 0; border-top: 1px solid var(--borde); }
-.lateral h3 {
-  margin: 0 0 8px;
-  font-size: .78rem;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--cacao-medio);
-}
-.lateral ul, .lateral ol { margin: 0; padding: 0; list-style: none; }
-.lateral li + li { margin-top: 6px; }
-
-.lista li { position: relative; padding-left: 24px; }
-.lista li::before {
-  position: absolute; left: 0; top: 1px;
-  width: 18px; height: 18px;
+  width: 13px; height: 13px;
+  border: 1.5px solid var(--panel-suave);
   border-radius: 50%;
-  display: grid; place-items: center;
-  font-size: .7rem; font-weight: 700;
 }
-.lista.si li::before { content: "✓"; background: var(--hoja-claro); color: var(--hoja); }
-.lista.no li::before { content: "✕"; background: var(--error); color: var(--error-texto); }
+.tema[aria-checked="true"] { color: var(--acento); font-weight: 600; }
+.tema[aria-checked="true"] .tema-marca { border-color: var(--acento); background: var(--acento); box-shadow: inset 0 0 0 2.5px var(--panel); }
 
-.pasos { counter-reset: paso; }
-.pasos li { position: relative; padding-left: 28px; counter-increment: paso; }
-.pasos li::before {
+.lateral-pie { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--panel-borde); }
+.pie-tarjeta { display: block; padding: 4px 6px 12px; }
+.pie-tarjeta strong { display: block; font-size: 1rem; }
+.pie-tarjeta p { margin: 4px 0 0; font-size: .82rem; line-height: 1.4; color: var(--panel-suave); white-space: normal; }
+.estado { display: flex; align-items: center; gap: 8px; margin: 0; padding: 0 6px; font-size: .8rem; color: var(--panel-suave); }
+.estado .punto { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--borde-fuerte); }
+.estado.ok .punto { background: var(--en-linea); box-shadow: 0 0 0 3px color-mix(in srgb, var(--en-linea) 22%, transparent); }
+.estado.mal .punto { background: var(--caido); }
+
+/* ---------- Vista de información (contenido de los botones del panel, en la zona del chat) ---------- */
+.vista-info {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px var(--margen-chat) var(--espacio-final);
+}
+.vista-info[hidden] { display: none; }
+.vista-cabecera { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 18px; }
+.vista-cabecera h2 { margin: 0; font-size: 1.4rem; outline: none; }
+.btn-volver {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-volver:hover { border-color: var(--acento); color: var(--acento); }
+.vista-intro { display: block; margin: 0 0 16px; color: var(--suave); font-size: 1.02rem; }
+.vista-info ul, .vista-info ol { margin: 0; padding: 0; list-style: none; }
+.vista-info h3 { margin: 0 0 2px; font-size: .98rem; }
+.vista-info li p { margin: 0; color: var(--suave); font-size: .9rem; line-height: 1.45; }
+.chat.con-vista > :not(.vista-info) { display: none; }
+.vista-info article { animation: aparecer .2s ease-out; }
+@keyframes aparecer { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* Icono en círculo suave (azul; rojo suave en «Qué no hago») */
+.icono-info {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--acento-suave);
+  color: var(--acento-texto);
+}
+.icono-info svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8;
+                  stroke-linecap: round; stroke-linejoin: round; }
+.icono-info.no { background: var(--error-fondo); color: var(--error-texto); }
+
+/* «Qué puedo hacer»: tarjetas en rejilla */
+.rejilla { display: grid; gap: 12px; }
+.tarjeta-info, .limites li, .documento {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  background: var(--superficie);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.tarjeta-info:hover, .documento:hover { border-color: var(--acento); box-shadow: 0 4px 16px var(--sombra); }
+
+/* «Qué no hago»: filas con su límite */
+.limites { display: grid; gap: 10px; }
+.nota-destacada {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--aviso-borde);
+  border-radius: var(--radio);
+  background: var(--aviso-fondo);
+  color: var(--aviso-texto);
+  font-size: .9rem;
+}
+.nota-destacada svg { flex: none; width: 20px; height: 20px; margin-top: 1px; fill: none; stroke: currentColor; stroke-width: 2;
+                      stroke-linecap: round; }
+
+/* «Cómo describir un síntoma»: pasos numerados unidos por una línea */
+.guia { counter-reset: paso; display: grid; gap: 4px; }
+.guia li { position: relative; padding: 2px 0 14px 48px; counter-increment: paso; }
+.guia li::before {
   content: counter(paso);
   position: absolute; left: 0; top: 0;
-  width: 20px; height: 20px;
-  border-radius: 6px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
   display: grid; place-items: center;
-  background: var(--cacao); color: #fff;
-  font-size: .75rem; font-weight: 700;
+  background: var(--acento-boton); color: #fff;
+  font-size: .9rem; font-weight: 700;
 }
-.pasos span { display: block; color: var(--suave); font-size: .85rem; }
+.guia li:not(:last-child)::after {
+  content: "";
+  position: absolute; left: 15px; top: 36px; bottom: 0;
+  width: 2px;
+  background: var(--borde);
+}
+.guia h3 { margin-top: 4px; }
+.etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px !important; }
+.etiquetas span {
+  padding: 3px 10px;
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--texto);
+  font-size: .8rem;
+}
+.ejemplo {
+  margin: 8px 0 0;
+  padding: 16px;
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--acento);
+  border-radius: var(--radio);
+  background: var(--superficie);
+}
+.ejemplo figcaption { font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--suave); }
+.ejemplo blockquote { margin: 8px 0 12px; font-style: italic; line-height: 1.5; }
+.btn-ejemplo {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--acento);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--acento);
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-ejemplo:hover { background: var(--acento-suave); }
 
-.fuentes li { padding-left: 12px; border-left: 3px solid var(--mazorca); color: var(--suave); }
+/* «Fuentes oficiales»: una tarjeta por documento */
+.documentos { display: grid; gap: 12px; }
+.documento h3 { line-height: 1.35; }
+.documento-nota { margin-top: 4px !important; font-size: .8rem !important; }
+.documento-enlace {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: .88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.documento-enlace:hover { text-decoration: underline; }
 
-.lateral-pie { padding-top: 14px; border-top: 1px solid var(--borde); color: var(--suave); font-size: .8rem; }
-.lateral-pie p { margin: 0 0 4px; }
-.estado { display: flex; align-items: center; gap: 8px; color: var(--texto); font-size: .85rem; }
-.estado .punto { width: 9px; height: 9px; border-radius: 50%; background: #b9b0a7; }
-.estado.ok .punto { background: #2e9d4f; box-shadow: 0 0 0 3px rgba(46, 157, 79, .18); }
-.estado.mal .punto { background: #d0442f; }
+@media (min-width: 700px) {
+  .rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .limites { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 /* ---------- Chat ---------- */
 .chat {
@@ -185,28 +446,41 @@ body {
 main {
   flex: 1;
   overflow-y: auto;
-  padding: 16px 16px var(--espacio-mascota); /* el avatar y su nube nunca tapan el último mensaje */
+  /* margen lateral amplio: los mensajes forman una columna centrada y no van de borde a borde */
+  padding: 16px var(--margen-chat) var(--espacio-final);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.bienvenida h2 { margin: 8px 0 4px; font-size: 1.25rem; color: var(--cacao); }
-.bienvenida p { margin: 0 0 14px; color: var(--suave); }
-.sugerencias { display: grid; gap: 8px; }
+.bienvenida { text-align: center; }
+.bienvenida-logo { width: 64px; height: 64px; }
+.bienvenida h2 { margin: 6px 0 4px; font-size: 1.35rem; }
+.bienvenida p { margin: 0 auto; max-width: 34em; color: var(--suave); }
+/* Preguntas frecuentes: cápsulas pequeñas y discretas, centradas bajo el campo */
+.sugerencias { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 6px var(--margen-chat) 16px; }
+.sugerencias[hidden] { display: none; }
+
+/* Conversación nueva: todo centrado verticalmente (pregunta → campo → sugerencias) y el recordatorio al pie */
+.chat.vacia { overflow-y: auto; }
+.chat.vacia main { flex: none; margin-top: auto; overflow: visible; padding-bottom: 8px; }
+.chat.vacia .sugerencias { margin-bottom: auto; padding-bottom: 24px; }
+.chat.vacia .entrada { border-top: 0; background: transparent; padding-bottom: 8px; }
+.chat.vacia .capsula { min-height: 60px; }
 .chip {
-  min-height: 44px;
-  padding: 10px 14px;
+  min-height: 36px;
+  padding: 6px 14px;
   border: 1px solid var(--borde);
-  border-radius: var(--radio);
-  background: var(--tarjeta);
-  color: var(--texto);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--suave);
   font: inherit;
-  text-align: left;
+  font-size: .88rem;
   cursor: pointer;
+  transition: background .15s ease, color .15s ease;
 }
-.chip:hover { border-color: var(--hoja); }
-.chip:active { background: var(--hoja-claro); }
+.chip:hover { background: var(--superficie); color: var(--texto); }
+.chip:active { background: var(--acento-suave); }
 .chip:disabled { opacity: .55; cursor: default; }
 
 .burbuja {
@@ -220,16 +494,18 @@ main {
 .burbuja ul, .burbuja ol { margin: 0 0 8px; padding-left: 20px; }
 .burbuja li + li { margin-top: 4px; }
 
+/* Mensaje del productor: borde azul y fondo del mismo azul, más claro */
 .usuario {
   align-self: flex-end;
-  background: var(--hoja);
-  color: #fff;
+  border: 1.5px solid var(--usuario-borde);
+  background: var(--usuario-fondo);
+  color: var(--usuario-texto);
   border-bottom-right-radius: 4px;
   white-space: pre-wrap;
 }
 .asistente {
   align-self: flex-start;
-  background: var(--tarjeta);
+  background: var(--superficie);
   border: 1px solid var(--borde);
   border-bottom-left-radius: 4px;
 }
@@ -270,7 +546,7 @@ main {
 
 .escribiendo { display: inline-flex; gap: 4px; padding: 4px 0; }
 .escribiendo span {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--cacao-medio);
+  width: 7px; height: 7px; border-radius: 50%; background: var(--acento);
   animation: latido 1s infinite ease-in-out;
 }
 .escribiendo span:nth-child(2) { animation-delay: .15s; }
@@ -283,7 +559,7 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 0 16px;
+  padding: 0 var(--margen-chat);
 }
 .controles:has(> :not([hidden])) { padding-bottom: 8px; }
 
@@ -293,17 +569,17 @@ main {
   gap: 8px;
   min-height: 40px;
   padding: 0 16px;
-  border: 1px solid var(--cacao-medio);
+  border: 1px solid var(--borde-fuerte);
   border-radius: 999px;
-  background: var(--tarjeta);
-  color: var(--cacao);
+  background: var(--superficie);
+  color: var(--texto);
   font: inherit;
   font-size: .9rem;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(59, 42, 30, .12);
+  box-shadow: 0 2px 8px var(--sombra);
 }
-.btn-detener:hover { background: #f3ebe2; }
+.btn-detener:hover { background: var(--superficie-2); }
 .btn-detener .cuadro { width: 10px; height: 10px; border-radius: 2px; background: currentColor; }
 .btn-detener[hidden] { display: none; }
 
@@ -314,8 +590,9 @@ main {
   justify-content: space-between;
   gap: 8px;
   padding: 8px 8px 8px 14px;
+  border: 1px solid var(--error-borde);
   border-radius: 10px;
-  background: var(--error);
+  background: var(--error-fondo);
   color: var(--error-texto);
   font-size: .9rem;
 }
@@ -324,153 +601,117 @@ main {
 /* ---------- Entrada ---------- */
 .entrada {
   flex: none;
+  padding: 10px var(--margen-chat) 6px;
+  background: var(--fondo);
+}
+
+/* Cápsula: campo redondeado con el botón de enviar dentro, al final */
+.capsula {
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
-  background: var(--fondo);
-  border-top: 1px solid var(--borde);
-}
-.entrada textarea {
-  flex: 1;
-  min-width: 0;
-  min-height: 44px;
-  max-height: 140px;
-  padding: 10px 12px;
+  min-height: 52px;
+  padding: 6px 8px 6px 20px;
   border: 1px solid var(--borde);
-  border-radius: 12px;
-  background: var(--tarjeta);
+  border-radius: 28px;
+  background: var(--superficie);
+  box-shadow: 0 2px 12px var(--sombra);
+}
+.capsula:focus-within { border-color: var(--acento); }
+.capsula textarea {
+  flex: 1;
+  align-self: center;
+  min-width: 0;
+  max-height: 140px;
+  margin: 0;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
   color: var(--texto);
   font: inherit;
   resize: none;
 }
-.entrada textarea:focus { outline: 2px solid var(--hoja); outline-offset: 0; border-color: transparent; }
+.capsula textarea:focus { outline: none; }
+.capsula textarea::placeholder { color: var(--suave); }
 
 .btn-enviar {
   flex: none;
-  min-width: 84px;
-  min-height: 44px;
-  padding: 0 16px;
+  display: grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  padding: 0;
   border: 0;
-  border-radius: 12px;
-  background: var(--hoja);
-  color: #fff;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-.btn-enviar:disabled { background: #9db5a1; cursor: wait; }
-
-/* ---------- Avatar de cacao con su nube ---------- */
-.mascota {
-  position: fixed;
-  right: 12px;
-  bottom: calc(var(--alto-entrada) + 12px);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  pointer-events: none; /* solo la nube y el avatar reciben clics */
-}
-.avatar, .nube { pointer-events: auto; }
-
-.avatar {
-  width: 60px; height: 60px;
-  padding: 4px;
-  border: 3px solid #fff;
   border-radius: 50%;
-  background: #f3e3c8;
-  box-shadow: 0 4px 14px rgba(59, 42, 30, .28);
+  background: var(--acento-boton);
+  color: #fff;
   cursor: pointer;
+  transition: background .15s ease;
 }
-.avatar svg { width: 100%; height: 100%; display: block; }
-.avatar:hover { transform: translateY(-2px); }
-.mascota.llama .avatar { animation: saludo .9s ease-in-out 2; }
-@keyframes saludo {
-  0%, 100% { transform: rotate(0); }
-  25% { transform: rotate(-12deg); }
-  75% { transform: rotate(10deg); }
-}
+.btn-enviar svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2;
+                  stroke-linecap: round; stroke-linejoin: round; }
+.btn-enviar:hover { background: var(--acento-hover); }
+.btn-enviar.sin-texto, .btn-enviar:disabled { background: var(--acento-deshabilitado); }
+.btn-enviar:disabled { cursor: wait; }
 
-.nube {
-  position: relative;
-  width: min(300px, calc(100vw - 32px));
-  padding: 12px 36px 12px 14px;
-  border: 1px solid var(--nube-borde);
-  border-radius: 16px 16px 4px 16px;
-  background: var(--nube);
-  color: #4d3b0e;
-  font-size: .85rem;
-  line-height: 1.45;
-  box-shadow: 0 6px 20px rgba(59, 42, 30, .16);
-  transform-origin: bottom right;
-  transition: transform .2s ease, opacity .2s ease;
+/* Recordatorio bajo el campo (HU06): se ve al iniciar una conversación; con la primera pregunta se oculta
+   (el recordatorio sigue en cada tarjeta de diagnóstico y en el aviso de dosis) */
+.chat:not(.vacia) .recordatorio { display: none; }
+.chat:not(.vacia) .entrada { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+.recordatorio {
+  flex: none;
+  margin: 0;
+  padding: 0 var(--margen-chat) calc(10px + env(safe-area-inset-bottom, 0px));
+  color: var(--suave);
+  font-size: .75rem;
+  line-height: 1.4;
+  text-align: center;
 }
-.nube p { margin: 0; }
-.nube p + p { margin-top: 6px; }
-.nube .btn-cerrar { position: absolute; top: 4px; right: 4px; width: 30px; height: 30px; color: #8a6d1f; }
-/* colita de la nube apuntando al avatar */
-.nube::after {
-  content: "";
-  position: absolute;
-  right: 22px;
-  bottom: -8px;
-  width: 14px; height: 14px;
-  background: var(--nube);
-  border-right: 1px solid var(--nube-borde);
-  border-bottom: 1px solid var(--nube-borde);
-  transform: rotate(45deg);
-}
-.mascota.cerrada .nube { transform: scale(.6); opacity: 0; pointer-events: none; }
+.recordatorio strong { color: var(--texto); }
 
-/* ---------- Teléfono: utilidades ---------- */
+/* ---------- Teléfono: pantalla inicial limpia (logo solo en el chat, sin preguntas frecuentes) ---------- */
 @media (max-width: 959px) {
-  .avatar { width: 52px; height: 52px; }
+  body.inicio .barra .logo { display: none; }
+  body.inicio .sugerencias { display: none; }
+  .chat.vacia .entrada { margin-bottom: auto; } /* sin sugerencias, el campo cierra el bloque centrado */
 }
 @media (max-width: 400px) {
   .barra .sub { display: none; }
-  .barra .btn-texto { padding: 0 10px; }
 }
 
-/* ---------- Escritorio: panel fijo + chat a todo el ancho ---------- */
+/* ---------- Escritorio: panel fijo + chat ---------- */
 @media (min-width: 960px) {
   .solo-movil { display: none; }
+  .barra { display: none; } /* en escritorio la marca y los botones están en el panel */
 
-  .cuerpo { grid-template-columns: clamp(280px, 24vw, 360px) 1fr; }
+  body > .cuerpo { grid-template-columns: 272px 1fr; }
 
   .lateral {
     position: static;
     width: auto;
     transform: none;
     transition: none;
-    padding: 20px 22px;
+    padding: 10px;
   }
   .velo { display: none; }
 
-  main { padding: 24px clamp(24px, 4vw, 64px) var(--espacio-mascota); }
-  .controles { padding: 0 clamp(24px, 4vw, 64px); }
-  .entrada { padding: 14px clamp(24px, 4vw, 64px) 16px; }
+  /* Panel oculto: queda una franja con los iconos (los botones siguen funcionando) */
+  body.panel-oculto > .cuerpo { grid-template-columns: 64px 1fr; }
+  body.panel-oculto .lateral .etiqueta,
+  body.panel-oculto .lateral-marca { display: none; }
+  body.panel-oculto .lateral-cabecera { justify-content: center; }
+  body.panel-oculto .item { justify-content: center; padding: 0; }
+  body.panel-oculto .estado { justify-content: center; padding: 0; }
 
-  .burbuja { max-width: min(78%, 1100px); }
-  .bienvenida h2 { font-size: 1.5rem; }
-  .sugerencias { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 1100px; }
+  :root { --margen-chat: max(32px, calc((100% - var(--ancho-chat)) / 2)); }
+  main { padding-top: 24px; }
+  .entrada { padding-top: 14px; }
 
-  .mascota { right: clamp(20px, 3vw, 40px); }
-  .avatar { width: 72px; height: 72px; }
-  .nube { width: 320px; font-size: .9rem; }
+  .burbuja { max-width: 80%; }
+  .bienvenida h2 { font-size: 1.7rem; }
+  .bienvenida-logo { display: none; } /* en escritorio el logo ya está en el panel */
 }
 
 /* ======================================================================== Semana 3: RAG y agente */
-:root {
-  --cita: #8a5a1a;
-  --cita-fondo: #f3e3c8;
-  --alerta: #fde8e6;
-  --alerta-borde: #e8a49b;
-  --aviso: #eef4fb;
-  --aviso-borde: #b8cde6;
-  --ok: #2e7d4f;
-}
 
 /* Citas [n] dentro del texto: botones pequeños que llevan a su fuente */
 .cita {
@@ -482,13 +723,13 @@ main {
   padding: 0 4px;
   border: 0;
   border-radius: 6px;
-  background: var(--cita-fondo);
-  color: var(--cita);
+  background: var(--acento-suave);
+  color: var(--acento-texto);
   font: 700 .72rem/1 system-ui, sans-serif;
   vertical-align: super;
   cursor: pointer;
 }
-.cita:hover { background: #e9cf9f; }
+.cita:hover { outline: 1px solid var(--acento); }
 
 .burbuja.asistente { width: min(100%, 88%); }
 .burbuja .cuerpo:empty { display: none; }
@@ -497,7 +738,7 @@ main {
 /* Fuentes bajo cada respuesta */
 .fuentes:empty, .tarjetas:empty, .avisos:empty { display: none; }
 .fuentes { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--borde); }
-.fuentes-titulo { margin: 0 0 6px; font-size: .8rem; font-weight: 700; color: var(--cacao-medio); }
+.fuentes-titulo { margin: 0 0 6px; font-size: .8rem; font-weight: 700; color: var(--suave); }
 .fuentes-lista { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
 .fuente {
   display: flex;
@@ -505,7 +746,7 @@ main {
   padding: 7px 9px;
   border: 1px solid var(--borde);
   border-radius: 10px;
-  background: #fdfbf8;
+  background: var(--superficie-2);
   font-size: .8rem;
   line-height: 1.35;
 }
@@ -515,15 +756,15 @@ main {
   display: grid; place-items: center;
   width: 20px; height: 20px;
   border-radius: 6px;
-  background: var(--cita-fondo);
-  color: var(--cita);
+  background: var(--acento-suave);
+  color: var(--acento-texto);
   font-weight: 700;
   font-size: .72rem;
 }
 .fuente-doc, .fuente-pie { color: var(--suave); }
-.fuente a { color: var(--hoja); font-weight: 600; }
+.fuente a { color: var(--acento); font-weight: 600; }
 .fuente.resaltada { animation: resaltar 1.6s ease-out; }
-@keyframes resaltar { 0% { background: #ffe9a8; border-color: #e3c46b; } 100% { background: #fdfbf8; } }
+@keyframes resaltar { 0% { background: var(--acento-suave); border-color: var(--acento); } 100% { background: var(--superficie-2); } }
 .fuentes-otras { margin-top: 6px; font-size: .8rem; color: var(--suave); }
 .fuentes-otras summary { cursor: pointer; padding: 4px 0; }
 .fuentes-otras .fuentes-lista { margin-top: 6px; }
@@ -533,32 +774,32 @@ main {
 .tarjeta {
   padding: 10px 12px;
   border: 1px solid var(--borde);
-  border-left: 4px solid var(--hoja);
+  border-left: 4px solid var(--acento);
   border-radius: 10px;
-  background: #fbfdf9;
+  background: var(--superficie-2);
   font-size: .88rem;
 }
-.tarjeta h4 { margin: 0 0 6px; font-size: .92rem; color: var(--cacao); }
+.tarjeta h4 { margin: 0 0 6px; font-size: .92rem; }
 .tarjeta p { margin: 4px 0; }
 .tarjeta-sub, .tarjeta-nota { color: var(--suave); font-size: .78rem; }
 .alternativas { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
 .alt-cabecera { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .alt-signos, .alt-fuentes { color: var(--suave); font-size: .8rem; }
-.alt-fuentes a, .cal-fuente a { color: var(--hoja); }
+.alt-fuentes a, .cal-fuente a { color: var(--acento); }
 .insignia { padding: 1px 8px; border-radius: 999px; font-size: .72rem; font-weight: 700; }
-.insignia.alta { background: #dff0e3; color: var(--ok); }
-.insignia.media { background: #fff1cf; color: #8a6200; }
-.insignia.baja { background: #eeeae5; color: var(--suave); }
+.insignia.alta { background: var(--ok-fondo); color: var(--ok); }
+.insignia.media { background: var(--medio-fondo); color: var(--medio-texto); }
+.insignia.baja { background: var(--superficie); color: var(--suave); border: 1px solid var(--borde); }
 
-.calendario details summary { cursor: pointer; color: var(--hoja); font-weight: 600; margin: 6px 0; }
+.calendario details summary { cursor: pointer; color: var(--acento); font-weight: 600; margin: 6px 0; }
 .tabla-desliza { overflow-x: auto; }
 .calendario table { width: 100%; border-collapse: collapse; font-size: .8rem; }
 .calendario th, .calendario td { padding: 6px; border-bottom: 1px solid var(--borde); text-align: left; vertical-align: top; }
 .calendario td span { display: block; color: var(--suave); font-size: .75rem; }
-.calendario tr.ahora td { background: #f1f8ee; }
+.calendario tr.ahora td { background: var(--acento-suave); }
 .cal-fuente { min-width: 120px; font-size: .75rem; }
 
-.confirmacion { border-left-color: #c96a26; background: #fffaf3; }
+.confirmacion { border-left-color: var(--medio-texto); }
 .confirmacion dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; margin: 8px 0; font-size: .82rem; }
 .confirmacion dt { color: var(--suave); }
 .confirmacion dd { margin: 0; }
@@ -571,8 +812,9 @@ main {
   font-weight: 600;
   cursor: pointer;
 }
-.btn-confirmar { border: 0; background: var(--hoja); color: #fff; }
-.btn-cancelar { border: 1px solid var(--borde); background: #fff; color: var(--texto); }
+.btn-confirmar { border: 0; background: var(--acento-boton); color: #fff; }
+.btn-confirmar:hover { background: var(--acento-hover); }
+.btn-cancelar { border: 1px solid var(--borde); background: var(--superficie); color: var(--texto); }
 .conf-botones button:disabled { opacity: .6; cursor: wait; }
 .conf-ok { color: var(--ok); font-weight: 600; }
 .conf-no { color: var(--suave); }
@@ -582,8 +824,8 @@ main {
 .burbuja.abstencion { border-style: dashed; }
 .etiqueta-abstencion { margin: 0; color: var(--suave); font-size: .8rem; font-weight: 600; }
 .alerta-dosis, .aviso-dosis { margin: 0; padding: 8px 10px; border-radius: 8px; font-size: .82rem; }
-.alerta-dosis { background: var(--alerta); border: 1px solid var(--alerta-borde); color: var(--error-texto); font-weight: 600; }
-.aviso-dosis { background: var(--aviso); border: 1px solid var(--aviso-borde); color: #234a73; }
+.alerta-dosis { background: var(--error-fondo); border: 1px solid var(--error-borde); color: var(--error-texto); font-weight: 600; }
+.aviso-dosis { background: var(--aviso-fondo); border: 1px solid var(--aviso-borde); color: var(--aviso-texto); }
 
 /* Filtro por tema */
 .filtro {
@@ -592,7 +834,7 @@ main {
   padding: 6px 10px;
   border: 1px solid var(--borde);
   border-radius: 10px;
-  background: #fff;
+  background: var(--superficie);
   color: var(--texto);
   font: inherit;
 }
@@ -604,8 +846,8 @@ main {
   gap: 6px;
   padding: 3px 4px 3px 12px;
   border-radius: 999px;
-  background: var(--hoja-claro);
-  color: var(--hoja);
+  background: var(--acento-suave);
+  color: var(--acento-texto);
   font-size: .82rem;
 }
 .filtro-activo[hidden] { display: none; }
@@ -619,6 +861,4 @@ main {
 }
 .controles:has(> .filtro-activo:not([hidden])) { padding-bottom: 8px; }
 
-#lista-fuentes a { color: var(--texto); font-weight: 600; text-decoration-color: var(--borde); }
-#lista-fuentes span { display: block; font-size: .78rem; color: var(--suave); }
-.nota-cuarentena { margin: 0 0 6px; padding: 6px 9px; border-radius: 8px; background: #f1f4f8; color: #33475b; font-size: .78rem; }
+.nota-cuarentena { margin: 0 0 6px; padding: 6px 9px; border-radius: 8px; background: var(--nota-fondo); color: var(--nota-texto); font-size: .78rem; }
