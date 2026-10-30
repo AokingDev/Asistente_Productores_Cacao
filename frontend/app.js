@@ -4,6 +4,7 @@
 // consultas sin señal, y el servidor no guarda conversaciones.
 const CLAVE_HISTORIAL = "cacao.historial.v1";
 const CLAVE_FILTRO = "cacao.filtro.v1";
+const CLAVE_PANEL = "cacao.panel-oculto.v1";
 const MAX_HISTORIAL_ENVIADO = 10;
 const ESPERA_MAXIMA_MS = 60000; // sin recibir nada en este tiempo se corta la espera
 const ES_ESCRITORIO = window.matchMedia("(min-width: 960px)");
@@ -12,8 +13,10 @@ const NOMBRES_IA = { gemini: "Gemini", groq: "Groq", simulado: "Simulador de pru
 const CONFIANZA = { alta: "Coincide bien", media: "Coincide en parte", baja: "Coincide poco" };
 
 const $ = (sel) => document.querySelector(sel);
+const chat = $("#chat");
 const conversacion = $("#conversacion");
 const bienvenida = $("#bienvenida");
+const sugerencias = $("#sugerencias");
 const formulario = $("#formulario");
 const campo = $("#mensaje");
 const botonEnviar = $("#enviar");
@@ -24,10 +27,10 @@ const botonReintentar = $("#reintentar");
 const botonNueva = $("#nueva");
 const lateral = $("#lateral");
 const velo = $("#velo");
-const botonInfo = $("#abrir-info");
-const mascota = $("#mascota");
-const botonAvatar = $("#avatar");
-const selectorTema = $("#filtro-tema");
+const botonPanel = $("#alternar-panel");
+const vistaInfo = $("#vista-info");
+const listaTemas = $("#lista-temas");
+const botonFiltro = $("#abrir-filtro");
 const filtroActivo = $("#filtro-activo");
 
 let historial = cargarHistorial();
@@ -115,51 +118,6 @@ function el(etiqueta, clase, html) {
   if (clase) e.className = clase;
   if (html !== undefined) e.innerHTML = html;
   return e;
-}
-
-// ---------------------------------------------------------------- recordatorio del técnico
-// El recordatorio «confirme con un técnico» se muestra SIEMPRE en la nube del avatar (lo
-// pone el código, no depende del modelo). Si el modelo lo repite al final, se quita.
-const RECORDATORIO = /(orientaci[oó]n\s+(es\s+)?preliminar|conf[ií]rm\w*\s.*t[eé]cnic|consult\w*\s.*t[eé]cnic|visit\w*\s.*t[eé]cnic)/i;
-const ES_ITEM = /^\s*([-*•]|\d+[.)])\s/;
-
-function sinRecordatorio(texto) {
-  const lineas = texto.replace(/\s+$/, "").split("\n");
-  while (lineas.length > 1) {
-    const ultima = lineas[lineas.length - 1];
-    if (!ultima.trim()) {
-      lineas.pop();
-      continue;
-    }
-    if (ultima.length < 240 && !ES_ITEM.test(ultima) && !/\[\d/.test(ultima) && RECORDATORIO.test(ultima)) {
-      lineas.pop();
-      continue;
-    }
-    break;
-  }
-  return lineas.join("\n");
-}
-
-function reservarEspacio() {
-  const alto = mascota.classList.contains("cerrada") ? botonAvatar.offsetHeight : mascota.offsetHeight;
-  document.documentElement.style.setProperty("--espacio-mascota", `${alto + 24}px`);
-}
-
-function abrirNube(llamar = false) {
-  mascota.classList.remove("cerrada");
-  botonAvatar.setAttribute("aria-expanded", "true");
-  reservarEspacio();
-  if (llamar) {
-    mascota.classList.remove("llama");
-    void mascota.offsetWidth; // reinicia la animación
-    mascota.classList.add("llama");
-  }
-}
-
-function cerrarNube() {
-  mascota.classList.add("cerrada");
-  botonAvatar.setAttribute("aria-expanded", "false");
-  reservarEspacio();
 }
 
 // ---------------------------------------------------------------- piezas de la respuesta
@@ -289,7 +247,7 @@ function tarjetaHerramienta(h, msg) {
 }
 
 function pintarAsistente(partes, msg, terminado = true) {
-  partes.cuerpo.innerHTML = aHtml(sinRecordatorio(msg.content || ""));
+  partes.cuerpo.innerHTML = aHtml(msg.content || "");
   partes.div.classList.toggle("abstencion", Boolean(msg.abstencion));
   partes.tarjetas.innerHTML = "";
   (msg.herramientas || []).forEach((h) => {
@@ -320,7 +278,7 @@ function burbujaAsistente() {
     fuentes: el("div", "fuentes"), meta: el("div", "meta") };
   div.append(partes.cuerpo, partes.tarjetas, partes.avisos, partes.fuentes, partes.meta);
   conversacion.appendChild(div);
-  bienvenida.hidden = true;
+  modoInicio(false);
   return partes;
 }
 
@@ -328,8 +286,16 @@ function burbujaUsuario(texto) {
   const div = el("div", "burbuja usuario");
   div.textContent = texto;
   conversacion.appendChild(div);
-  bienvenida.hidden = true;
+  modoInicio(false);
   return div;
+}
+
+// Conversación nueva: la pregunta, el campo y las sugerencias quedan centrados; al primer mensaje, vista de chat.
+function modoInicio(si) {
+  chat.classList.toggle("vacia", si);
+  document.body.classList.toggle("inicio", si); // la barra del teléfono también cambia en la pantalla inicial
+  bienvenida.hidden = !si;
+  sugerencias.hidden = !si;
 }
 
 function indicadorEscribiendo(cuerpo, texto = "") {
@@ -352,10 +318,17 @@ function ocultarError() {
 function ocupado(si) {
   enviando = si;
   botonEnviar.disabled = si; // «Enviar» se deshabilita mientras espera…
-  botonEnviar.textContent = si ? "Enviando…" : "Enviar";
+  botonEnviar.setAttribute("aria-label", si ? "Enviando…" : "Enviar pregunta");
+  marcarCampoVacio();
   botonDetener.hidden = !si; // …y aparece «Detener respuesta»
   campo.disabled = si;
   document.querySelectorAll(".chip").forEach((c) => (c.disabled = si));
+}
+
+// Con el campo vacío el botón de la cápsula se ve atenuado (como en las apps de chat); no se deshabilita,
+// para que «required» siga avisando si se intenta enviar sin texto.
+function marcarCampoVacio() {
+  botonEnviar.classList.toggle("sin-texto", !campo.value.trim());
 }
 
 function ajustarAltura() {
@@ -365,7 +338,7 @@ function ajustarAltura() {
 
 function pintarHistorial() {
   conversacion.querySelectorAll(".burbuja").forEach((b) => b.remove());
-  bienvenida.hidden = historial.length > 0;
+  modoInicio(historial.length === 0);
   historial.forEach((m) => (m.role === "user" ? burbujaUsuario(m.content) : pintarAsistente(burbujaAsistente(), m)));
   bajar();
 }
@@ -400,7 +373,6 @@ async function enviar(texto) {
   ocupado(true);
   campo.value = "";
   ajustarAltura();
-  if (!ES_ESCRITORIO.matches) cerrarNube(); // en el teléfono la nube no debe tapar la respuesta
   const divUsuario = burbujaUsuario(texto);
   const partes = burbujaAsistente();
   indicadorEscribiendo(partes.cuerpo, "Buscando en los manuales…");
@@ -425,7 +397,7 @@ async function enviar(texto) {
     // Nada llegó: se quita el intento y se devuelve el texto al campo para reintentar.
     divUsuario.remove();
     partes.div.remove();
-    bienvenida.hidden = historial.length > 0;
+    modoInicio(historial.length === 0);
     campo.value = texto;
     ajustarAltura();
     if (mensaje) mostrarError(mensaje);
@@ -467,7 +439,7 @@ async function enviar(texto) {
             break;
           case "texto":
             msg.content += evento.texto;
-            partes.cuerpo.innerHTML = aHtml(sinRecordatorio(msg.content));
+            partes.cuerpo.innerHTML = aHtml(msg.content);
             break;
           case "herramienta": {
             msg.herramientas.push({ nombre: evento.nombre, resultado: evento.resultado });
@@ -506,7 +478,6 @@ async function enviar(texto) {
       pintarAsistente(partes, msg);
       historial.push({ role: "user", content: texto }, msg);
       guardarHistorial();
-      abrirNube(true); // el avatar recuerda confirmar con un técnico
       bajar();
     } else if (!msg.content && !msg.herramientas.length) {
       deshacer("El asistente no respondió. Intente de nuevo.");
@@ -555,29 +526,111 @@ conversacion.addEventListener("click", (e) => {
 });
 
 // ---------------------------------------------------------------- filtro por tema (metadatos)
+// Los temas se despliegan en el mismo panel, bajo «Buscar solo en…»: un clic aplica el filtro sin salir del chat.
+function pintarTemas() {
+  const opciones = [["", "Todos los temas"], ...Object.entries(temas)];
+  listaTemas.innerHTML = opciones.map(([id, etiqueta]) =>
+    `<button type="button" class="tema" role="radio" data-tema="${escapar(id)}" aria-checked="${id === tema}">` +
+    `<span class="tema-marca" aria-hidden="true"></span><span class="etiqueta">${escapar(etiqueta)}</span></button>`).join("");
+}
+
 function aplicarFiltro(nuevo) {
   tema = temas[nuevo] ? nuevo : "";
   escribir(CLAVE_FILTRO, tema);
-  selectorTema.value = tema;
+  listaTemas.querySelectorAll(".tema").forEach((b) => b.setAttribute("aria-checked", String(b.dataset.tema === tema)));
+  $("#filtro-resumen").textContent = temas[tema] || "Todos";
+  botonFiltro.classList.toggle("con-filtro", Boolean(tema));
   filtroActivo.hidden = !tema;
   $("#filtro-activo-texto").textContent = temas[tema] || "";
 }
 
-selectorTema.addEventListener("change", () => aplicarFiltro(selectorTema.value));
+function alternarFiltro(abrir = listaTemas.hidden) {
+  if (abrir && ES_ESCRITORIO.matches && document.body.classList.contains("panel-oculto")) alternarPanel(); // la franja se expande
+  listaTemas.hidden = !abrir;
+  botonFiltro.setAttribute("aria-expanded", String(abrir));
+}
+
+botonFiltro.addEventListener("click", () => alternarFiltro());
+listaTemas.addEventListener("click", (e) => {
+  const opcion = e.target.closest(".tema");
+  if (!opcion) return;
+  aplicarFiltro(opcion.dataset.tema);
+  alternarFiltro(false);
+  if (!ES_ESCRITORIO.matches) cerrarPanel();
+  if (ES_ESCRITORIO.matches && !vistaActual) campo.focus();
+});
 $("#quitar-filtro").addEventListener("click", () => aplicarFiltro(""));
 
-// ---------------------------------------------------------------- panel lateral (teléfono)
+// ---------------------------------------------------------------- panel lateral
+// En el teléfono es un cajón que se abre encima del chat; en escritorio, una columna que se pliega a una
+// franja de iconos (la preferencia se recuerda).
 function abrirPanel() {
   lateral.classList.add("abierto");
   velo.hidden = false;
-  botonInfo.setAttribute("aria-expanded", "true");
-  $("#cerrar-info").focus();
+  rotularBotonPanel();
+  botonPanel.focus();
 }
 
 function cerrarPanel() {
   lateral.classList.remove("abierto");
   velo.hidden = true;
-  botonInfo.setAttribute("aria-expanded", "false");
+  rotularBotonPanel();
+}
+
+function panelVisible() {
+  return ES_ESCRITORIO.matches ? !document.body.classList.contains("panel-oculto") : lateral.classList.contains("abierto");
+}
+
+function rotularBotonPanel() {
+  const visible = panelVisible();
+  const texto = visible ? (ES_ESCRITORIO.matches ? "Ocultar panel" : "Cerrar menú") : "Mostrar panel";
+  botonPanel.setAttribute("aria-expanded", String(visible));
+  botonPanel.setAttribute("aria-label", texto);
+  botonPanel.title = texto;
+  $("#abrir-panel").setAttribute("aria-expanded", String(lateral.classList.contains("abierto")));
+}
+
+function alternarPanel() {
+  if (!ES_ESCRITORIO.matches) {
+    cerrarPanel();
+    return;
+  }
+  const oculto = document.body.classList.toggle("panel-oculto");
+  if (oculto) alternarFiltro(false);
+  escribir(CLAVE_PANEL, oculto);
+  rotularBotonPanel();
+}
+
+// ---------------------------------------------------------------- vistas del panel (se abren en la zona del chat)
+let vistaActual = null;
+
+function mostrarVista(id) {
+  if (vistaActual === id) {
+    cerrarVista();
+    return;
+  }
+  vistaActual = id;
+  let titulo = "";
+  vistaInfo.querySelectorAll("article").forEach((a) => {
+    a.hidden = a.dataset.vista !== id;
+    if (!a.hidden) titulo = a.dataset.titulo;
+  });
+  $("#vista-titulo").textContent = titulo;
+  vistaInfo.hidden = false;
+  chat.classList.add("con-vista");
+  lateral.querySelectorAll(".item[data-vista]").forEach((b) => b.classList.toggle("activo", b.dataset.vista === id));
+  if (!ES_ESCRITORIO.matches) cerrarPanel();
+  $("#vista-titulo").focus();
+}
+
+function cerrarVista() {
+  if (!vistaActual) return;
+  vistaActual = null;
+  vistaInfo.hidden = true;
+  chat.classList.remove("con-vista");
+  lateral.querySelectorAll(".item.activo").forEach((b) => b.classList.remove("activo"));
+  bajar();
+  if (ES_ESCRITORIO.matches) campo.focus();
 }
 
 async function cargarServicio() {
@@ -596,11 +649,18 @@ async function cargarServicio() {
       estado.className = "estado mal";
     }
     temas = Object.fromEntries(fuentes.temas.map((t) => [t.id, t.etiqueta]));
-    selectorTema.innerHTML = `<option value="">Todos los temas</option>` +
-      fuentes.temas.map((t) => `<option value="${escapar(t.id)}">${escapar(t.etiqueta)}</option>`).join("");
+    pintarTemas();
     aplicarFiltro(tema);
-    $("#lista-fuentes").innerHTML = fuentes.documentos.map((d) =>
-      `<li><a href="${escapar(d.url)}" target="_blank" rel="noopener noreferrer">${escapar(d.titulo)}</a><span>${escapar(d.institucion)} · ${escapar(d.anio)}</span></li>`).join("");
+    $("#lista-fuentes").innerHTML = fuentes.documentos.map((d) => `
+      <li class="documento">
+        <span class="icono-info" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.5 3h8L19 7.5V19a2 2 0 0 1-2 2H6.5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5M8.5 13h7M8.5 16.5h5"/></svg></span>
+        <div>
+          <h3>${escapar(d.titulo)}</h3>
+          <p>${escapar(d.institucion)} · ${escapar(d.anio)}</p>
+          ${d.vigencia ? `<p class="documento-nota">${escapar(d.vigencia)}</p>` : ""}
+          ${d.url ? `<a class="documento-enlace" href="${escapar(d.url)}" target="_blank" rel="noopener noreferrer">Abrir documento ↗</a>` : ""}
+        </div>
+      </li>`).join("");
     pintarHistorial(); // las etiquetas de tema ya están disponibles
   } catch {
     texto.textContent = "Sin conexión con el servicio";
@@ -616,9 +676,9 @@ formulario.addEventListener("submit", (e) => {
 
 botonDetener.addEventListener("click", () => detener?.());
 
-campo.addEventListener("input", ajustarAltura);
-campo.addEventListener("focus", () => {
-  if (!ES_ESCRITORIO.matches) cerrarNube();
+campo.addEventListener("input", () => {
+  ajustarAltura();
+  marcarCampoVacio();
 });
 campo.addEventListener("keydown", (e) => {
   // En computador, Enter envía y Shift+Enter hace salto de línea. En el teléfono, Enter hace salto de línea.
@@ -628,7 +688,8 @@ campo.addEventListener("keydown", (e) => {
   }
 });
 
-document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => enviar(chip.textContent)));
+document.querySelectorAll(".chip").forEach((chip) =>
+  chip.addEventListener("click", () => enviar(chip.dataset.pregunta || chip.textContent)));
 
 botonReintentar.addEventListener("click", () => {
   conversacion.querySelectorAll(".incompleta").forEach((b) => {
@@ -639,46 +700,64 @@ botonReintentar.addEventListener("click", () => {
 });
 
 let confirmarBorrado = null;
+const etiquetaNueva = botonNueva.querySelector(".etiqueta");
 botonNueva.addEventListener("click", () => {
+  cerrarVista();
+  if (historial.length === 0 || enviando) { // ya es una conversación nueva
+    if (!enviando) aplicarFiltro(""); // una conversación nueva empieza sin filtro
+    if (!ES_ESCRITORIO.matches) cerrarPanel();
+    return;
+  }
   if (!confirmarBorrado) {
-    botonNueva.textContent = "¿Borrar todo?";
+    // Segundo clic en 3 s para confirmar: evita borrar la conversación por accidente
+    etiquetaNueva.textContent = "¿Borrar la conversación?";
+    botonNueva.classList.add("confirmar");
     confirmarBorrado = setTimeout(() => {
-      botonNueva.textContent = "Nueva";
+      etiquetaNueva.textContent = "Nueva conversación";
+      botonNueva.classList.remove("confirmar");
       confirmarBorrado = null;
     }, 3000);
     return;
   }
   clearTimeout(confirmarBorrado);
   confirmarBorrado = null;
-  botonNueva.textContent = "Nueva";
+  etiquetaNueva.textContent = "Nueva conversación";
+  botonNueva.classList.remove("confirmar");
+  if (!ES_ESCRITORIO.matches) cerrarPanel();
   historial = [];
   guardarHistorial();
+  aplicarFiltro(""); // una conversación nueva empieza sin filtro
+  alternarFiltro(false);
   ocultarError();
   pintarHistorial();
 });
 
-botonAvatar.addEventListener("click", () => (mascota.classList.contains("cerrada") ? abrirNube() : cerrarNube()));
-$("#cerrar-nube").addEventListener("click", cerrarNube);
-
-botonInfo.addEventListener("click", abrirPanel);
-$("#cerrar-info").addEventListener("click", cerrarPanel);
+botonPanel.addEventListener("click", alternarPanel);
+$("#abrir-panel").addEventListener("click", abrirPanel);
 velo.addEventListener("click", cerrarPanel);
+lateral.querySelectorAll(".item[data-vista]").forEach((b) => b.addEventListener("click", () => mostrarVista(b.dataset.vista)));
+$("#volver-chat").addEventListener("click", cerrarVista);
+// «Cómo describir un síntoma»: el ejemplo se copia al campo para que el productor lo adapte a su caso
+$("#usar-ejemplo").addEventListener("click", () => {
+  campo.value = $("#texto-ejemplo").textContent.replace(/\s+/g, " ").trim();
+  cerrarVista();
+  ajustarAltura();
+  marcarCampoVacio();
+  campo.focus();
+});
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     if (lateral.classList.contains("abierto")) cerrarPanel();
+    else if (vistaActual) cerrarVista();
     else if (enviando) detener?.();
   }
 });
 ES_ESCRITORIO.addEventListener("change", cerrarPanel);
 
-// El avatar se ubica justo encima de la barra de entrada, mida lo que mida
-new ResizeObserver(() => {
-  document.documentElement.style.setProperty("--alto-entrada", `${formulario.offsetHeight}px`);
-}).observe(formulario);
-new ResizeObserver(reservarEspacio).observe(mascota);
-
 window.addEventListener("offline", () => mostrarError("Se perdió la señal de internet. Sus consultas anteriores siguen aquí."));
 window.addEventListener("online", ocultarError);
 
+document.body.classList.toggle("panel-oculto", leer(CLAVE_PANEL, false) === true);
+rotularBotonPanel();
 pintarHistorial();
 cargarServicio();
