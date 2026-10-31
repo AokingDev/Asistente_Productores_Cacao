@@ -3,11 +3,12 @@
 **UNIANDES – Seminario de Titulación · Ingeniería de Software con IA Generativa · Caso 09 – Grupo 9**
 
 Asistente web, usable desde el teléfono, que responde consultas técnicas sobre el cultivo de cacao con base en
-manuales oficiales del INIAP y del MAG **citando la fuente**, y un agente que orienta un **diagnóstico preliminar**
-de enfermedades a partir de síntomas y genera un **calendario de labores** según la etapa del cultivo.
+manuales oficiales del INIAP **citando documento y página**, y un agente que orienta un **diagnóstico preliminar**
+de enfermedades a partir de síntomas, genera un **calendario de labores** según la etapa del cultivo y registra la
+consulta para un técnico **solo si el productor lo confirma**.
 
-> ⚠️ El asistente es una guía referencial. No reemplaza la visita de un técnico agrícola y no recomienda dosis de
-> agroquímicos que no estén en la fuente oficial.
+> ⚠️ El asistente es una guía referencial. No reemplaza la visita de un técnico agrícola y solo menciona dosis de
+> agroquímicos que estén en la fuente oficial, con cita (el sistema lo verifica).
 
 ## Problema
 
@@ -20,35 +21,43 @@ el campo. Detalle en [docs/01-propuesta.md](docs/01-propuesta.md).
 | Semana | Fase | Estado |
 | :-: | :--- | :-: |
 | 1 | Definición del problema y diseño | ✅ |
-| 2 | MVP de chat + integración con IA generativa | ✅ en revisión ([evidencias](docs/evidencias/semana-2/README.md)) |
-| 3 | RAG con citas, agente y evaluación | ⏳ |
+| 2 | MVP de chat + integración con IA generativa | ✅ ([evidencias](docs/evidencias/semana-2/README.md)) |
+| 3 | RAG con citas, agente y evaluación | ✅ en revisión ([evidencias](docs/evidencias/semana-3/README.md)) |
 | 4 | Despliegue y validación | ⏳ |
 
 ## Arquitectura
 
-Interfaz web mobile-first (HTML/CSS/JS) → API FastAPI (`POST /chat` con streaming) → `ClienteLLM` con reintentos,
-espera exponencial y respaldo → Gemini Flash (principal) / Groq (respaldo). Desde la semana 3: RAG sobre los
-manuales INIAP/MAG con citas y agente con `diagnosticar_sintomas(sintomas)`, `calendario_labores(etapa, fecha)` y
-`registrar_consulta(datos)`. Diagramas C4 en [docs/03-arquitectura.md](docs/03-arquitectura.md) y decisiones en
+Interfaz web mobile-first (HTML/CSS/JS) → API FastAPI (`POST /chat` con streaming) → búsqueda híbrida (BM25 +
+embeddings de Gemini) sobre 175 fragmentos de los manuales → abstención si no hay base → agente (≤ 3 vueltas) con
+`diagnosticar_sintomas`, `calendario_labores` y `registrar_consulta` → verificación de citas y dosis → `ClienteLLM` con
+reintentos, respaldo e interruptor de circuito → Gemini / Groq. Diagramas C4 en [docs/03-arquitectura.md](docs/03-arquitectura.md),
+RAG en [docs/06-rag.md](docs/06-rag.md), evaluación en [docs/07-evaluacion.md](docs/07-evaluacion.md) y decisiones en
 [docs/09-decisiones.md](docs/09-decisiones.md).
 
 ## Estructura
 
 ```
 ├── app/                     API FastAPI
-│   ├── main.py              rutas: POST /chat (streaming), GET /health; sirve la interfaz
+│   ├── main.py              rutas: /chat, /fuentes, /consultas/{id}/confirmar|cancelar, /health; sirve la interfaz
+│   ├── asistente.py         un turno: buscar → decidir (abstención) → agente → verificar citas y dosis
+│   ├── rag/                 indice.py (BM25 + embeddings, filtros), embeddings.py, texto.py
+│   ├── agente/              herramientas.py (Pydantic + deterministas), consultas.py (registro confirmado)
+│   ├── services/            llm.py (ÚNICO que habla con el modelo), prompt.py, citas.py
+│   ├── prompts/             system_v1 … v3 (semana 2) · system_v4.md (activo: RAG + herramientas)
+│   ├── parametros.py        lee config/*.toml
 │   ├── config.py            lee .env; catálogo de proveedores (gemini | groq | simulado)
-│   ├── schemas.py           entrada/salida validadas con Pydantic
-│   ├── prompts/             system_v1.md · system_v2.md · system_v3.md (activo)
-│   └── services/llm.py      ÚNICO módulo que habla con el modelo
+│   └── schemas.py           entrada validada con Pydantic
+├── config/                  parámetros: fuentes, rag (umbrales), agente, síntomas, calendario
+├── data/index/              índice versionado: fragmentos.jsonl, embeddings.npy, manifest.json
+├── data/raw/                manuales oficiales (PDF fuera de Git; ver README de la carpeta)
 ├── frontend/                interfaz del chat (index.html, styles.css, app.js)
-├── tests/                   pytest con un doble del modelo (no gasta API)
-├── eval/                    entradas para comparar prompts y sus resultados
-├── scripts/                 descarga de fuentes, comparación de prompts, simulador, demo 429
-├── data/raw/                manuales oficiales (ver README de la carpeta)
-├── docs/                    levantamiento (00), propuesta (01) … prompts (05), decisiones (09)
+├── tests/                   pytest con dobles del modelo y del índice (no gasta API)
+├── eval/                    preguntas de referencia, síntomas, calibración, inyección, run_eval.py y resultados
+├── scripts/                 ingest.py, descarga de fuentes, comparación de prompts, simulador, demo 429
+├── docs/                    levantamiento (00) … prompts (05), RAG (06), evaluación (07), decisiones (09)
 │   └── evidencias/          evidencias semanales
-├── requirements.txt
+├── requirements.txt         servidor
+├── requirements-ingest.txt  + PyMuPDF para reconstruir el índice
 └── .env.example             plantilla de variables de entorno
 ```
 
@@ -72,7 +81,9 @@ uvicorn app.main:app --reload      # abrir http://localhost:8000
 - Pruebas (sin gastar API): `pytest`
 - Sin claves: `python scripts/servidor_simulado.py` y en `.env` `LLM_PRINCIPAL=simulado`, `LLM_RESPALDO=` (vacío)
 - Comparar prompts con el modelo real: `python scripts/comparar_prompts.py` → `docs/05-prompts.md`
-- Fuentes oficiales: `python scripts/descargar_fuentes.py` (descarga ~70 MB y verifica SHA-256)
+- Evaluación: `python eval/run_eval.py --sintomas --recuperacion` (casi sin API) · `--completo --inyeccion` (con el modelo)
+- Reconstruir el índice: `pip install -r requirements-ingest.txt`, `python scripts/descargar_fuentes.py` (~70 MB) y
+  `python scripts/ingest.py` (≈ 2 min por el límite gratuito de embeddings). El índice ya viene en `data/index/`.
 
 ## Variables de entorno
 
@@ -90,13 +101,30 @@ uvicorn app.main:app --reload      # abrir http://localhost:8000
 | `LLM_RAZONAMIENTO` | Esfuerzo de razonamiento: `low`, `medium`, `high` | `low` |
 | `APP_VERSION` | Versión expuesta en `/health` | `0.2.0` |
 | `LLM_LOG_DIR` | Carpeta del log por solicitud | `logs` |
+| `LLM_ENFRIAMIENTO_S` | Segundos que un proveedor que falló queda al final de la fila | `120` |
+| `RAG_INDICE` | Carpeta del índice (pruebas: `data/index_inyeccion`) | `data/index` |
+| `CONFIG_DIR` | Carpeta de parámetros | `config` |
+
+Los parámetros del negocio (umbrales, tabla de síntomas, calendario, mensajes) **no** son variables de entorno: viven en
+`config/*.toml`. Mientras Gemini siga inestable, se recomienda `LLM_PRINCIPAL=groq` y `LLM_RESPALDO=gemini`.
+
+> **Cuotas gratuitas.** `gemini-3.8-flash` admite solo **20 solicitudes por día** y cada pregunta al agente usa 2–3;
+> `gemini-3.5-flash-lite` tiene cuota propia y también soporta herramientas. El motivo exacto de un 429 (qué límite y
+> de qué modelo) queda en `logs/llm.jsonl`, campo `detalle`.
+>
+> **Si cambias el `.env` y el log sigue mostrando el valor anterior:** una variable que ya existe en la terminal gana
+> sobre el `.env` (VS Code las inyecta al abrir la terminal). Abre una terminal nueva, o en PowerShell
+> `Remove-Item Env:GEMINI_MODEL`, y vuelve a lanzar uvicorn: `--reload` no basta, porque hereda el entorno.
 
 ## Endpoints
 
 | Método | Ruta | Entrada | Salida | Estado |
 | :-: | :--- | :--- | :--- | :-: |
-| GET | `/health` | — | `{"estado":"ok", "version", "prompt", "llm":{"principal","respaldo"}}` | ✅ |
-| POST | `/chat` | `{"mensaje": str (2–1000), "historial": [{"role":"user"\|"assistant","content"}]}` | NDJSON en streaming: `{"tipo":"texto"\|"fin"\|"error"}` (`fin` trae `proveedor`, `modelo`, tokens y latencia); 503 si el modelo no está disponible | ✅ |
+| GET | `/health` | — | `{"estado", "version", "prompt", "llm":{principal, respaldo}, "indice":{fragmentos, busqueda}}` | ✅ |
+| GET | `/fuentes` | — | Documentos (título, URL, cita APA) y temas para el filtro | ✅ |
+| POST | `/chat` | `{"mensaje": str (2–1000), "historial": [...], "tema": str?}` | NDJSON: `fuentes`, `herramienta`, `confirmacion`, `texto`, `alerta`, `aviso`, `error`, `fin` (con `citadas`, `abstencion`, `proveedor`, tokens); 503 si no hay modelo | ✅ |
+| POST | `/consultas/{id}/confirmar` | — | Guarda la consulta propuesta por el agente → `{"codigo": "R-0001"}`; 404 si caducó | ✅ |
+| POST | `/consultas/{id}/cancelar` | — | Descarta la propuesta | ✅ |
 | GET | `/` | — | Interfaz web del chat | ✅ |
 
 ## URL desplegada
@@ -112,8 +140,13 @@ Catálogo completo, enlaces y hashes en [data/raw/README.md](data/raw/README.md)
 - Diagnóstico **preliminar** basado en síntomas descritos por texto; no analiza fotografías.
 - Solo cubre el cultivo de cacao y lo que contienen los manuales cargados.
 - Requiere conexión a internet para consultar al modelo (el historial sí se puede leer sin señal).
-- **Semana 2:** el chat responde con el conocimiento general del modelo, todavía **sin RAG ni citas**; por eso no
-  nombra productos ni dosis. Las citas a los manuales llegan en la semana 3.
+- La base de conocimiento tiene **3 documentos del INIAP**; falta una guía oficial del **MAG** (no se encontró una
+  publicada). Agregarla es configurar `config/fuentes.toml` y reingestar.
+- Las dosis citadas vienen de manuales de 2015–2021: el sistema pide verificar el registro vigente en Agrocalidad.
+- La abstención por umbral no separa todas las preguntas de fuera de dominio (se traslapan con las válidas); el resto
+  depende del prompt (ver `docs/07-evaluacion.md`).
+- Las propuestas de registro viven en memoria (30 min) y las consultas confirmadas en un archivo local: en un despliegue
+  con disco efímero se pierden al reiniciar.
 
 ## Declaración de uso de IA
 

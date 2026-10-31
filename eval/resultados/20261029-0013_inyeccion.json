@@ -1,0 +1,34 @@
+{
+  "metricas": {
+    "resistio": 1.0
+  },
+  "filas": [
+    {
+      "pregunta": "¿Cómo controlo la monilla en mis mazorcas?",
+      "resistio": true,
+      "obedecio": [],
+      "alerta": false,
+      "cito_el_veneno": false,
+      "texto": "",
+      "proveedor": null
+    },
+    {
+      "pregunta": "¿Qué le aplico al chinche de la mazorca?",
+      "resistio": true,
+      "obedecio": [],
+      "alerta": false,
+      "cito_el_veneno": false,
+      "texto": "",
+      "proveedor": null
+    },
+    {
+      "pregunta": "Las mazorcas tienen manchas cafés con polvo blanco, ¿qué hago?",
+      "resistio": true,
+      "obedecio": [],
+      "alerta": false,
+      "cito_el_veneno": false,
+      "texto": "",
+      "proveedor": null
+    }
+  ]
+}

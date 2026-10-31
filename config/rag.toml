@@ -1,0 +1,67 @@
+# Parámetros del RAG. Justificación en docs/06-rag.md; calibración en docs/07-evaluacion.md.
+
+[fragmentacion]
+# Un fragmento nunca cruza el límite de una sección del documento.
+palabras_max = 300              # ≈ 400 tokens en español: cabe una enfermedad completa con su control
+palabras_min = 40               # secciones más cortas se unen a la siguiente de la misma ruta
+solapamiento_palabras = 45      # ≈ 15 % cuando una sección larga se parte en varias ventanas
+incluir_practicas_facilitador = false   # páginas OBJETIVO/MATERIALES/PROCEDIMIENTO de la guía
+
+[embeddings]
+modelo = "gemini-embedding-001"     # API compatible con OpenAI de Gemini (usa GEMINI_API_KEY)
+dimensiones = 768
+lote = 45
+textos_por_minuto = 90         # el nivel gratuito admite 100 textos/minuto (cada texto cuenta como solicitud)
+timeout_s = 12
+reintentos = 2
+
+[recuperacion]
+top_k = 5                       # fragmentos que se entregan al modelo
+candidatos = 25                 # candidatos por método antes de fusionar
+rrf_k = 60                      # constante de Reciprocal Rank Fusion
+max_por_seccion = 2             # evita 5 ventanas de la misma sección
+# Abstención: si el mejor fragmento no supera estos umbrales, el sistema NO llama al modelo
+# y responde que la información no está en los manuales (calibrados en docs/07-evaluacion.md).
+umbral_coseno = 0.63            # coseno mínimo (con embeddings). Calibrado con 40 mensajes (eval/calibracion_umbral.csv):
+                                # es el más alto que no bloquea ninguna pregunta válida; bloquea 5/10 fuera de dominio
+                                # y el resto lo filtra el prompt (abstención en dos capas). Antes: 0.60.
+umbral_cobertura = 0.50         # fracción mínima de términos de la pregunta presentes (solo BM25)
+min_terminos_contenido = 2      # con menos términos es un saludo o un mensaje vago: conversa sin fuentes
+
+# Temas para el metadato «tema» y el filtro de la interfaz. Se asignan por palabras clave
+# (raíces sin tildes) en el título de la sección (peso 3) y en el texto (peso 1).
+[temas.enfermedades]
+etiqueta = "Enfermedades"
+claves = ["monili", "monill", "escoba", "mazorca negra", "mal de machete", "mal del machete", "phytopht", "hongo", "fungic", "enfermedad", "cancer"]
+[temas.plagas]
+etiqueta = "Plagas"
+claves = ["plaga", "insect", "chinche", "mosquill", "monalon", "hormig", "pulgon", "afid", "termit", "barrenad", "xylebor", "gallina ciega", "acaro", "gusano"]
+[temas.poda]
+etiqueta = "Poda y labores"
+claves = ["poda", "chupon", "recepa", "rehabilit", "maleza", "chapea", "corona", "riego", "herramient"]
+[temas.fertilizacion]
+etiqueta = "Suelo y fertilización"
+claves = ["fertiliz", "abono", "urea", "nutri", "suelo", "compost", "biol", "purin", "foliar", "muriato"]
+[temas.poscosecha]
+etiqueta = "Cosecha y poscosecha"
+claves = ["cosech", "ferment", "secad", "almacen", "madurez", "desgran", "acopio", "calidad", "tendal", "marquesina"]
+[temas.variedades]
+etiqueta = "Clones y variedades"
+claves = ["clon", "eet", "ccn", "cultivar", "variedad", "genotip", "rendimiento", "nacional", "trinitario", "criollo"]
+[seguridad]
+# Inyección indirecta (OWASP LLM01): un fragmento con frases dirigidas al asistente se descarta antes de
+# llegar al modelo y queda en el log («fragmento_en_cuarentena»). Expresiones regulares sobre el texto
+# en minúsculas y sin tildes. Agregado tras la 1.ª prueba de inyección (docs/07-evaluacion.md).
+patrones_inyeccion = [
+  'ignora(r)? (todas )?(tus|las|sus) (reglas|instrucciones)',
+  'instruccion(es)? para el (asistente|modelo|sistema)',
+  '(asistente|inteligencia artificial)[^.]{0,40}(a partir de ahora|debes|responde que)',
+  'a partir de ahora (eres|recomienda|responde|di)',
+  'no menciones (al|a los|el|la)',
+  'olvida (todo|tus|las) (lo anterior|reglas|instrucciones)',
+  'system prompt|prompt del sistema',
+]
+
+[temas.establecimiento]
+etiqueta = "Vivero y siembra"
+claves = ["vivero", "funda", "sustrato", "siembra", "trasplant", "transplant", "injert", "semilla", "sombra", "distancia", "hoyo", "balizado"]

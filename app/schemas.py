@@ -36,6 +36,19 @@ class ChatSolicitud(Estricto):
     mensaje: str = Field(min_length=2, max_length=MAX_MENSAJE, description="Pregunta del productor")
     historial: list[Mensaje] = Field(default_factory=list, max_length=40,
                                      description="Turnos previos; el servidor usa solo los últimos")
+    tema: str | None = Field(default=None, max_length=40,
+                             description="Filtro por metadato: buscar solo en ese tema (ver GET /fuentes)")
+
+    @field_validator("tema")
+    @classmethod
+    def tema_conocido(cls, v: str | None) -> str | None:
+        from app.parametros import temas
+
+        if v in (None, "", "todos"):
+            return None
+        if v not in temas():
+            raise ValueError(f"tema desconocido; use uno de: {', '.join(temas())}")
+        return v
 
     @field_validator("mensaje")
     @classmethod

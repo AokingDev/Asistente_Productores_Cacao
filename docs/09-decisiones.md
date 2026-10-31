@@ -93,7 +93,7 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
   con cita.
 
 ### ADR-010 · Recordatorio del técnico en un avatar, no en cada respuesta
-- **Estado:** Aceptada.
+- **Estado:** Aceptada; el avatar fue **reemplazado** por una nota fija bajo el campo de texto (ver «Actualización»).
 - **Contexto:** `system_v3` cierra cada respuesta con «Es una orientación preliminar; confírmelo con un técnico…».
   Repetido en todas las respuestas, el productor deja de leerlo y ocupa espacio en una pantalla pequeña.
 - **Decisión:** un avatar de cacao (abajo a la derecha) con una nube muestra **siempre** el recordatorio (HU06).
@@ -102,6 +102,13 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
   invalidar la comparación de `docs/05-prompts.md`.
 - **Consecuencias:** el aviso ya no depende de que el modelo lo escriba (lo pone el código). Si se quiere ahorrar
   tokens, una futura `system_v4` puede omitir la frase de cierre.
+- **Actualización (rediseño de la interfaz):** con el panel al estilo de las apps de chat y la paleta gris/azul con
+  modo claro y oscuro automático, el avatar flotante se retiró: tapaba contenido en pantallas pequeñas. El recordatorio
+  se mostró como nota fija bajo el campo de texto (`#recordatorio`).
+- **Actualización 2:** a pedido del equipo, la nota se ve **solo al iniciar una conversación** y se oculta con la
+  primera pregunta. El recordatorio sigue en los puntos donde importa: cada tarjeta de diagnóstico dice «Diagnóstico
+  preliminar…: confírmelo con un técnico del MAG o del INIAP» y toda dosis lleva el aviso de Agrocalidad. Como la nota
+  ya no está siempre visible, el frontend **dejó de quitar** la frase de cierre del modelo cuando la escribe.
 
 ### ADR-011 · Mostrar qué proveedor generó cada respuesta y permitir detenerla
 - **Estado:** Aceptada.
@@ -118,3 +125,68 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
 - **Decisión:** desde 960 px: panel lateral fijo (qué hace, qué no hace, cómo describir un síntoma, fuentes y estado
   del servicio desde `/health`) + chat a todo el ancho restante. En el teléfono el panel es un cajón (botón «Info»).
   Las burbujas se limitan a ~1100 px para que las líneas sigan siendo legibles en monitores anchos.
+
+---
+
+## Semana 3
+
+### ADR-013 · Fragmentación por sección con reglas tipográficas por documento
+- **Estado:** Aceptada. Detalle en [06-rag.md](06-rag.md).
+- **Contexto:** los tres PDF no tienen marcadores y cada uno tiene otra maqueta (páginas del facilitador, dos páginas
+  por hoja, fichas de clones).
+- **Decisión:** las secciones se detectan por fuente y tamaño de letra, con reglas en `config/fuentes.toml`; un fragmento
+  nunca cruza de una sección a otra; tiene como máximo 300 palabras y un solape de 45; cada clon se divide en «características» y
+  «zonas»; las páginas del facilitador quedan fuera.
+- **Consecuencias:** 175 fragmentos coherentes. Agregar un documento requiere escribir sus reglas, no tocar el código.
+
+### ADR-014 · Búsqueda híbrida (BM25 + embeddings de Gemini) con índice versionado
+- **Estado:** Aceptada.
+- **Contexto:** un modelo de embeddings local multilingüe ocupa unos 470 MB en memoria (el plan gratuito de Render tiene
+  512 MB). La API de Gemini es liviana pero inestable (503 y tiempos agotados en las semanas 2 y 3).
+- **Decisión:** embeddings `gemini-embedding-001` (768 dimensiones) más BM25 propio en español, fusionados con RRF. Si la API
+  de embeddings falla, la búsqueda sigue solo con BM25. El índice (≈ 0,8 MB) se versiona en `data/index/`; no se usa
+  ChromaDB ni Pinecone.
+- **Consecuencias:** sin servicios extra en el despliegue. Se gasta una llamada de embeddings por pregunta (en caché).
+  PyMuPDF (licencia AGPL) queda solo en `requirements-ingest.txt`.
+
+### ADR-015 · Abstención en dos capas con umbral calibrado
+- **Estado:** Aceptada. Datos en [07-evaluacion.md](07-evaluacion.md).
+- **Decisión:** el código se abstiene sin llamar al modelo si el coseno máximo es < 0,63, salvo que el mensaje sea para una
+  herramienta (síntomas reconocidos, calendario, registro). El prompt cubre el resto.
+- **Consecuencias:** un mensaje sin base no gasta tokens y la respuesta es predecible. Los mensajes de fuera de dominio que
+  superan el umbral dependen del modelo (3/3 correctos en la evaluación).
+
+### ADR-016 · Agente con bucle limitado y herramientas deterministas
+- **Estado:** Aceptada.
+- **Decisión:** bucle modelo → herramienta → modelo de **3 vueltas como máximo** (`config/agente.toml`); en la última vuelta
+  se llama al modelo sin herramientas para obligarlo a responder. Las herramientas validan con Pydantic (`extra="forbid"`) y
+  calculan con tablas de `config/`, citadas por página: `sintomas.toml` y `calendario.toml`. Un argumento inválido se le
+  devuelve al modelo como error, sin ejecutar nada. Todas las vueltas prefieren el mismo proveedor, y la `thought_signature`
+  de Gemini solo se le devuelve a Gemini.
+- **Consecuencias:** 10/10 síntomas de referencia con la causa esperada en primer lugar; el agente es auditable y se prueba
+  sin API (`tests/test_agente.py`, `tests/test_herramientas.py`).
+
+### ADR-017 · Confirmación humana para registrar
+- **Estado:** Aceptada.
+- **Decisión:** `registrar_consulta` **no guarda**: crea una propuesta pendiente (30 minutos) y la interfaz muestra una
+  tarjeta con los datos y los botones «Sí, registrar» y «No, gracias». Solo `POST /consultas/{id}/confirmar` escribe en
+  `data/consultas/consultas.jsonl`, con un código R-0001 y sin datos de contacto.
+- **Consecuencias:** el modelo nunca registra ni deriva por su cuenta. Las propuestas viven en memoria y se pierden si el
+  servidor se reinicia (el productor vuelve a pedirlo).
+
+### ADR-018 · Las dosis se verifican contra las fuentes oficiales; cuarentena de fragmentos sospechosos
+- **Estado:** Aceptada tras la 1.ª prueba de inyección.
+- **Contexto:** con un documento envenenado en el primer lugar, el modelo recomendó «5 litros de glifosato» en 1 de 3 casos, y
+  el verificador no alertó porque el propio documento envenenado «respaldaba» la dosis.
+- **Decisión:** (1) las dosis solo cuentan como respaldadas si están en documentos de `config/fuentes.toml`; (2) los
+  fragmentos con frases dirigidas al asistente se descartan antes del prompt (patrones en `config/rag.toml`).
+- **Consecuencias:** defensa en profundidad; no depende de que el modelo resista. Riesgo residual: una inyección redactada
+  sin esas frases. La cuarentena por patrones no reemplaza el control de qué documentos entran al índice.
+
+### ADR-019 · Un tiempo agotado pasa al respaldo; interruptor de circuito
+- **Estado:** Aceptada.
+- **Contexto:** con Gemini caído, la primera respuesta tardó 97 s (3 × 30 s de espera antes de usar Groq).
+- **Decisión:** un `APITimeoutError` ya no se reintenta con el mismo proveedor si hay respaldo; un proveedor que falla queda
+  al final de la fila durante `LLM_ENFRIAMIENTO_S` (120 s).
+- **Consecuencias:** con Gemini caído la respuesta llega en unos 2 s desde Groq. Recomendación al equipo: mientras Gemini siga
+  inestable, usar `LLM_PRINCIPAL=groq` en el `.env`.
