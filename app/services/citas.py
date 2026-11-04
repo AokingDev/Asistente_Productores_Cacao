@@ -18,6 +18,9 @@ _NUMERO = r"(\d{1,3}(?:[. ]\d{3})+(?![\d,])|\d+(?:[.,]\d+)?)"
 # Una cantidad en contexto de rendimiento o producción no es una dosis de producto.
 _CONTEXTO_NO_DOSIS = re.compile(r"(rendimiento|produce|produccion|cosecha|qq|quintal|extrae|pesa|indice)"
                                 r"(?:[^.\n]|\.(?=\d)){0,40}$")   # el punto de «2.000» no corta el contexto
+# «2 760 kg cacao seco por hectárea»: la cantidad es de cacao cosechado, no de un producto (aunque el título
+# «Rendimiento…» quede en la línea anterior).
+_DESPUES_NO_DOSIS = re.compile(r"[\s*/]*(?:(?:por\s+)?(?:ha|hectarea)\b)?[\s*]*(?:de\s+)?(?:cacao|almendra|grano|mazorca)s?\b")
 _UNIDADES = {
     "cc": "ml", "ml": "ml", "mililitro": "ml", "mililitros": "ml", "centimetros cubicos": "ml",
     "l": "l", "lt": "l", "lts": "l", "litro": "l", "litros": "l",
@@ -60,7 +63,7 @@ def extraer_dosis(texto: str) -> list[Dosis]:
     plano = _PALABRA_DOSIS.sub(lambda m: _PALABRAS[m.group(1).lower()], sin_tildes(texto))
     salida = []
     for m in _DOSIS.finditer(plano):
-        if _CONTEXTO_NO_DOSIS.search(plano[max(0, m.start() - 60):m.start()]):
+        if _CONTEXTO_NO_DOSIS.search(plano[max(0, m.start() - 60):m.start()]) or _DESPUES_NO_DOSIS.match(plano, m.end()):
             continue
         crudo = m.group(1)
         cantidad = re.sub(r"[. ]", "", crudo) if re.fullmatch(r"\d{1,3}(?:[. ]\d{3})+", crudo) else crudo.replace(",", ".")
