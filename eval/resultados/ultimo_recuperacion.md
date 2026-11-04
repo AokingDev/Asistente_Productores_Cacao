@@ -1,6 +1,6 @@
 # Evaluación de recuperación
 
-Fecha: 28/10/2026 23:44 · búsqueda hibrida · 175 fragmentos
+Fecha: 04/11/2026 10:09 · búsqueda hibrida · 175 fragmentos
 
 - **hit@1:** 16/17 (94 %) · **hit@5:** 17/17 (100 %) · **MRR:** 0.971
 - **Abstención por umbral** (preguntas sin respuesta en las fuentes): 0/2
