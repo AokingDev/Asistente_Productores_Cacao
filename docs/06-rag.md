@@ -88,7 +88,7 @@ y el resto lo filtra el prompt.
   página con enlace `url#page=N`, tema). Las que se consultaron sin citarse aparecen aparte, plegadas.
 - **Dosis:** toda cantidad de producto en la respuesta (cc, ml, l, g, kg, partes, %, libras) debe aparecer en un fragmento de un
   **documento oficial** del catálogo. Si no aparece, la interfaz muestra una alerta («no la use»). Si aparece, muestra el
-  aviso de verificar el registro en Agrocalidad. No cuentan como dosis los rendimientos («2.000 kg/ha») ni las cantidades que
+  aviso de verificar el registro en Agrocalidad. No cuentan como dosis los rendimientos («2.000 kg/ha», «2 760 kg de cacao seco por hectárea») ni las cantidades que
   escribió el propio productor.
 
 ## 7. Seguridad frente a documentos (inyección indirecta)

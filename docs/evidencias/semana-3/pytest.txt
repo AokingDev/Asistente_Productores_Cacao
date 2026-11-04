@@ -1,0 +1,125 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.5, pytest-9.1.1, pluggy-1.7.0 -- E:\UNIANDES\SEMINARIO\Asistente_Productores_Cacao\.venv\Scripts\python.exe
+rootdir: E:\UNIANDES\SEMINARIO\Asistente_Productores_Cacao
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1
+collecting ... collected 115 items
+
+tests/test_agente.py::test_respuesta_con_fuentes_y_citas_validas PASSED
+tests/test_agente.py::test_el_agente_usa_la_herramienta_y_responde_con_su_resultado PASSED
+tests/test_agente.py::test_limite_de_iteraciones_la_ultima_vuelta_va_sin_herramientas PASSED
+tests/test_agente.py::test_las_vueltas_siguientes_prefieren_el_mismo_proveedor PASSED
+tests/test_agente.py::test_la_firma_de_gemini_solo_vuelve_a_gemini PASSED
+tests/test_agente.py::test_argumentos_invalidos_vuelven_al_modelo_como_error PASSED
+tests/test_agente.py::test_sin_base_en_las_fuentes_se_abstiene_sin_llamar_al_modelo PASSED
+tests/test_agente.py::test_sintomas_reconocidos_por_la_tabla_no_se_abstiene PASSED
+tests/test_agente.py::test_pedidos_de_herramienta_no_se_abstienen[\xbfQu\xe9 labores me toca hacer este mes en mi cacaotal?-pedido de calendario] PASSED
+tests/test_agente.py::test_pedidos_de_herramienta_no_se_abstienen[Quiero que un t\xe9cnico revise mi finca, \xbfme pueden registrar?-pedido de registro] PASSED
+tests/test_agente.py::test_saludo_conversa_sin_fragmentos PASSED
+tests/test_agente.py::test_dosis_inventada_genera_alerta PASSED
+tests/test_agente.py::test_dosis_documentada_lleva_aviso_de_registro PASSED
+tests/test_agente.py::test_fragmento_con_instrucciones_queda_en_cuarentena PASSED
+tests/test_agente.py::test_un_documento_no_oficial_no_respalda_una_dosis PASSED
+tests/test_agente.py::test_nombre_local_expande_la_busqueda_con_el_nombre_tecnico PASSED
+tests/test_agente.py::test_registrar_emite_confirmacion_y_no_guarda PASSED
+tests/test_agente.py::test_sin_proveedor_antes_de_empezar_propaga_para_el_503 PASSED
+tests/test_agente.py::test_corte_a_la_mitad_envia_error PASSED
+tests/test_agente.py::test_cancelar_corta_el_flujo_activo PASSED
+tests/test_agente.py::test_seguimiento_corto_usa_la_pregunta_anterior_para_buscar PASSED
+tests/test_citas.py::test_citas_en_orden_y_sin_repetir PASSED
+tests/test_citas.py::test_citas_inexistentes_se_detectan PASSED
+tests/test_citas.py::test_extrae_cantidades_con_distintas_escrituras PASSED
+tests/test_citas.py::test_no_confunde_medidas_que_no_son_dosis PASSED
+tests/test_citas.py::test_rendimientos_no_son_dosis PASSED
+tests/test_citas.py::test_dosis_por_hectarea_sigue_siendo_dosis PASSED
+tests/test_citas.py::test_miles_con_punto_o_espacio PASSED
+tests/test_citas.py::test_dosis_de_la_fuente_esta_respaldada PASSED
+tests/test_citas.py::test_dosis_inventada_no_esta_respaldada PASSED
+tests/test_citas.py::test_misma_cifra_con_otra_unidad_no_cuenta PASSED
+tests/test_citas.py::test_cantidad_escrita_en_palabras_respalda_la_cifra PASSED
+tests/test_endpoint.py::test_health PASSED
+tests/test_endpoint.py::test_health_no_expone_claves PASSED
+tests/test_endpoint.py::test_fuentes_lista_documentos_y_temas PASSED
+tests/test_endpoint.py::test_interfaz_se_sirve_en_la_raiz PASSED
+tests/test_endpoint.py::test_chat_en_streaming_con_fuentes_y_fin PASSED
+tests/test_endpoint.py::test_filtro_de_tema_llega_a_la_busqueda PASSED
+tests/test_endpoint.py::test_tema_desconocido_422 PASSED
+tests/test_endpoint.py::test_rechaza_rol_system_en_el_historial PASSED
+tests/test_endpoint.py::test_rechaza_mensajes_vacios_o_largos_antes_del_modelo[] PASSED
+tests/test_endpoint.py::test_rechaza_mensajes_vacios_o_largos_antes_del_modelo[   ] PASSED
+tests/test_endpoint.py::test_rechaza_mensajes_vacios_o_largos_antes_del_modelo[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx] PASSED
+tests/test_endpoint.py::test_abstencion_por_la_api PASSED
+tests/test_endpoint.py::test_proveedor_caido_da_503_con_mensaje_claro PASSED
+tests/test_endpoint.py::test_sin_clave_configurada_da_503_sin_detalles_internos PASSED
+tests/test_endpoint.py::test_si_el_cliente_se_desconecta_se_cancela_el_turno PASSED
+tests/test_endpoint.py::test_confirmar_guarda_y_devuelve_codigo PASSED
+tests/test_endpoint.py::test_cancelar_no_guarda PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Las mazorcas tienen manchas caf\xe9s y ahora les sale como un polvo blanco-moniliasis] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Mis \xe1rboles tienen ramas gruesas y deformes como escobas-escoba_bruja] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Salen frutos raros como zanahoria y chirimoya en los cojines-escoba_bruja] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Las mazorcas se ponen negras y duras cuando llueve mucho-mazorca_negra] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Las hojas se secan y no se caen de la rama, y hay aserr\xedn en el tronco-mal_machete] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Las mazorcas pequenas tienen manchas redondas hundidas y se endurecen-chinche_monalonion] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Algo corta las hojas en forma de media luna y hay un hormiguero-hormiga_arriera] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[Hay bichitos negros en las flores con hormigas-pulgon] PASSED
+tests/test_herramientas.py::test_diagnostico_incluye_la_causa_esperada[En el vivero hay gusanos blancos en la raiz y las plantitas se mueren-gallina_ciega] PASSED
+tests/test_herramientas.py::test_diagnostico_muestra_alternativas_cuando_hay_varias_causas PASSED
+tests/test_herramientas.py::test_diagnostico_cita_documento_y_pagina PASSED
+tests/test_herramientas.py::test_diagnostico_sin_coincidencias_no_inventa PASSED
+tests/test_herramientas.py::test_parte_afectada_que_no_corresponde_baja_el_puntaje PASSED
+tests/test_herramientas.py::test_diagnostico_es_determinista PASSED
+tests/test_herramientas.py::test_calendario_empieza_en_el_mes_de_la_fecha_y_cubre_12_meses PASSED
+tests/test_herramientas.py::test_calendario_filtra_por_etapa PASSED
+tests/test_herramientas.py::test_calendario_usa_las_epocas_de_la_region PASSED
+tests/test_herramientas.py::test_fertilizacion_joven_en_enero_marzo_mayo PASSED
+tests/test_herramientas.py::test_cada_labor_cita_su_fuente PASSED
+tests/test_herramientas.py::test_registrar_solo_propone_no_guarda PASSED
+tests/test_herramientas.py::test_pendientes_entrega_una_sola_vez_y_caduca PASSED
+tests/test_herramientas.py::test_argumentos_invalidos_se_rechazan_sin_ejecutar PASSED
+tests/test_herramientas.py::test_herramienta_inexistente PASSED
+tests/test_herramientas.py::test_campos_extra_se_rechazan PASSED
+tests/test_herramientas.py::test_definiciones_para_la_api PASSED
+tests/test_indice.py::test_encuentra_la_seccion_correcta PASSED
+tests/test_indice.py::test_filtro_por_tema PASSED
+tests/test_indice.py::test_filtro_por_documento PASSED
+tests/test_indice.py::test_sin_relacion_se_abstiene PASSED
+tests/test_indice.py::test_saludo_es_conversacional PASSED
+tests/test_indice.py::test_codigos_de_clon_se_normalizan PASSED
+tests/test_indice.py::test_asignar_temas_por_titulo_y_texto PASSED
+tests/test_integracion_simulado.py::test_json_por_http_con_429_real PASSED
+tests/test_integracion_simulado.py::test_stream_por_http_con_429_real_y_tokens PASSED
+tests/test_llm.py::test_json_valido PASSED
+tests/test_llm.py::test_pide_el_esquema_al_proveedor PASSED
+tests/test_llm.py::test_json_invalido_se_corrige_una_vez PASSED
+tests/test_llm.py::test_json_invalido_dos_veces_va_a_revision_humana PASSED
+tests/test_llm.py::test_429_respeta_retry_after_y_reintenta PASSED
+tests/test_llm.py::test_espera_exponencial_sin_retry_after PASSED
+tests/test_llm.py::test_respuesta_vacia_se_reintenta PASSED
+tests/test_llm.py::test_principal_caido_pasa_al_respaldo PASSED
+tests/test_llm.py::test_clave_invalida_no_se_reintenta PASSED
+tests/test_llm.py::test_todos_caidos_da_error_claro PASSED
+tests/test_llm.py::test_retry_after_muy_largo_va_directo_al_respaldo PASSED
+tests/test_llm.py::test_cuota_diaria_de_gemini_va_directo_al_respaldo PASSED
+tests/test_prompt.py::test_cada_fragmento_va_numerado_con_documento_y_paginas PASSED
+tests/test_prompt.py::test_un_documento_no_puede_cerrar_el_bloque_ni_abrir_otro PASSED
+tests/test_prompt.py::test_caracteres_de_control_y_largo_maximo PASSED
+tests/test_prompt.py::test_la_pregunta_va_delimitada_y_neutralizada PASSED
+tests/test_prompt.py::test_sin_fragmentos_si_la_busqueda_no_alcanza PASSED
+tests/test_prompt.py::test_historial_sin_rol_system_y_sin_citas_viejas PASSED
+tests/test_prompt.py::test_sin_citas PASSED
+tests/test_prompt.py::test_system_v4_contiene_las_reglas_clave PASSED
+tests/test_stream.py::test_stream_entrega_el_texto_y_registra_tokens PASSED
+tests/test_stream.py::test_stream_envia_el_system_prompt_primero PASSED
+tests/test_stream.py::test_stream_salta_trozos_vacios_iniciales PASSED
+tests/test_stream.py::test_stream_429_reintenta_con_retry_after PASSED
+tests/test_stream.py::test_stream_vacio_se_reintenta PASSED
+tests/test_stream.py::test_stream_tiempo_agotado_pasa_al_respaldo PASSED
+tests/test_stream.py::test_stream_todos_caidos_da_error_claro_antes_de_empezar PASSED
+tests/test_stream.py::test_stream_cortado_a_la_mitad_no_cambia_de_proveedor PASSED
+tests/test_stream.py::test_log_no_guarda_el_texto_del_usuario PASSED
+tests/test_stream.py::test_detener_cierra_la_conexion_con_el_proveedor PASSED
+tests/test_stream.py::test_cancelar_desde_otro_hilo_cierra_y_no_lanza_error PASSED
+tests/test_stream.py::test_error_inesperado_a_mitad_se_traduce_a_flujo_interrumpido PASSED
+
+============================ 115 passed in 12.18s =============================
