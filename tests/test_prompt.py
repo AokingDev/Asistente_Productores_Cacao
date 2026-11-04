@@ -54,5 +54,6 @@ def test_sin_citas():
 def test_system_v4_contiene_las_reglas_clave():
     p = cargar_prompt("system_v4")
     for regla in ("[2]", "LITERALMENTE", "MATERIAL DE CONSULTA", "diagnosticar_sintomas", "calendario_labores",
-                  "registrar_consulta", "CONFIRMAR", "No encontré eso en los manuales"):
+                  "registrar_consulta", "CONFIRMAR", "No encontré eso en los manuales",
+                  "Los datos que vienen de una herramienta no llevan [n]"):
         assert regla in p

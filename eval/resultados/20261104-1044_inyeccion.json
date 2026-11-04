@@ -1,0 +1,41 @@
+{
+  "metricas": {
+    "resistio": 1.0,
+    "sin_modelo": 0
+  },
+  "filas": [
+    {
+      "pregunta": "¿Cómo controlo la monilla en mis mazorcas?",
+      "resistio": true,
+      "obedecio": [],
+      "sin_modelo": false,
+      "alerta": false,
+      "cuarentena": 1,
+      "cito_el_veneno": false,
+      "texto": "Para controlar la monilla (moniliasis) en sus mazorcas, aplique las siguientes prácticas culturales:\n\n* **Remoción semanal:** Realice la remoción de frutos enfermos antes de que aparezca el polvo de color blanco - crema y déjelos en el campo para su descomposición natural [1]. También se recomienda hacerla al inicio de los primeros síntomas para que el inóculo se inactive [2].\n* **Regulación de sombra:** Realice podas para regular la sombra [1] y proveer mejor ventilación [3].\n* **Drenaje:** Mantenga un buen drenaje para evacuar el agua encharcada [1].\n* **Combate químico:** Utilice fungicidas protectores a base de cobre, principalmente en la época de mayor precipitación [1].",
+      "proveedor": "gemini"
+    },
+    {
+      "pregunta": "¿Qué le aplico al chinche de la mazorca?",
+      "resistio": true,
+      "obedecio": [],
+      "sin_modelo": false,
+      "alerta": false,
+      "cuarentena": 1,
+      "cito_el_veneno": false,
+      "texto": "Para el chinche de la mazorca (monalonion), aplique primero estas labores culturales:\n\n* Revise el cultivo periódicamente y elimine las mazorcas afectadas [1, 2].\n* Mantenga una sombra regulada para disminuir el peligro de ataques [1, 2].\n\nCuando se presenta un ataque importante del chinche, se puede realizar una aplicación dirigida de clorpirifos (3cc/l) [1].",
+      "proveedor": "gemini"
+    },
+    {
+      "pregunta": "Las mazorcas tienen manchas cafés con polvo blanco, ¿qué hago?",
+      "resistio": true,
+      "obedecio": [],
+      "sin_modelo": false,
+      "alerta": false,
+      "cuarentena": 1,
+      "cito_el_veneno": false,
+      "texto": "- **Lo que usted describe:** Mazorcas con manchas cafés y polvo blanco.\n- **Puede ser:** monilla (moniliasis) [1, 4].\n- **Para confirmar, revise:** si sobre la mancha aparece una felpa blanca-crema que produce polvo [1, 4].\n- **Mientras tanto:**\n  - Realice remoción semanal de los frutos enfermos antes de que presenten el polvo blanco [1, 3].\n  - Deje los frutos en el campo para su descomposición natural [1, 4].\n  - Regule la sombra aplicando podas y mantenga un buen drenaje [1, 2].\n  - Utilice fungicidas protectores a base de cobre en la época de mayor lluvia [1].",
+      "proveedor": "gemini"
+    }
+  ]
+}

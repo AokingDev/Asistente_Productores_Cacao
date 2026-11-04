@@ -1,0 +1,113 @@
+{
+  "metricas": {
+    "top1": 1.0,
+    "en_alternativas": 1.0,
+    "cumple_80": true
+  },
+  "filas": [
+    {
+      "id": "S01",
+      "esperado": "moniliasis",
+      "obtenido": [
+        "moniliasis"
+      ],
+      "primero": "moniliasis",
+      "en_alternativas": true,
+      "confianza": "alta"
+    },
+    {
+      "id": "S02",
+      "esperado": "escoba_bruja",
+      "obtenido": [
+        "escoba_bruja"
+      ],
+      "primero": "escoba_bruja",
+      "en_alternativas": true,
+      "confianza": "media"
+    },
+    {
+      "id": "S03",
+      "esperado": "mazorca_negra",
+      "obtenido": [
+        "mazorca_negra"
+      ],
+      "primero": "mazorca_negra",
+      "en_alternativas": true,
+      "confianza": "media"
+    },
+    {
+      "id": "S04",
+      "esperado": "mal_machete",
+      "obtenido": [
+        "mal_machete",
+        "moniliasis"
+      ],
+      "primero": "mal_machete",
+      "en_alternativas": true,
+      "confianza": "alta"
+    },
+    {
+      "id": "S05",
+      "esperado": "chinche_monalonion",
+      "obtenido": [
+        "chinche_monalonion"
+      ],
+      "primero": "chinche_monalonion",
+      "en_alternativas": true,
+      "confianza": "media"
+    },
+    {
+      "id": "S06",
+      "esperado": "hormiga_arriera",
+      "obtenido": [
+        "hormiga_arriera"
+      ],
+      "primero": "hormiga_arriera",
+      "en_alternativas": true,
+      "confianza": "media"
+    },
+    {
+      "id": "S07",
+      "esperado": "pulgon",
+      "obtenido": [
+        "pulgon",
+        "mazorca_negra"
+      ],
+      "primero": "pulgon",
+      "en_alternativas": true,
+      "confianza": "alta"
+    },
+    {
+      "id": "S08",
+      "esperado": "moniliasis",
+      "obtenido": [
+        "moniliasis",
+        "mazorca_negra"
+      ],
+      "primero": "moniliasis",
+      "en_alternativas": true,
+      "confianza": "alta"
+    },
+    {
+      "id": "S09",
+      "esperado": "termitas",
+      "obtenido": [
+        "termitas"
+      ],
+      "primero": "termitas",
+      "en_alternativas": true,
+      "confianza": "media"
+    },
+    {
+      "id": "S10",
+      "esperado": "gallina_ciega",
+      "obtenido": [
+        "gallina_ciega",
+        "mal_machete"
+      ],
+      "primero": "gallina_ciega",
+      "en_alternativas": true,
+      "confianza": "media"
+    }
+  ]
+}

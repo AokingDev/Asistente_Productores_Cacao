@@ -25,6 +25,14 @@ def test_rendimientos_no_son_dosis():
     # falso positivo de la 1.ª corrida de la evaluación (P14 y P15)
     assert extraer_dosis("tiene un rendimiento de 2.000 a 2.500 kg/ha") == []
     assert extraer_dosis("El CCN-51 alcanza un rendimiento de 1 500 a 2 760 kg / ha") == []
+    # 3.ª corrida (P15): el título «Rendimiento» quedó en otra línea
+    assert extraer_dosis("**Rendimiento del clon CCN-51**  \n- 1 500 – 2 760 kg cacao seco por hectárea por año [1].") == []
+    assert extraer_dosis("se cosechan 800 kg de cacao") == []
+    assert extraer_dosis("El clon **CCN-51** puede alcanzar **de 1.500 a 2.760 kg/ha** de cacao fermentado y seco [1].") == []
+
+
+def test_dosis_por_hectarea_sigue_siendo_dosis():
+    assert [(d.cantidad, d.unidad) for d in extraer_dosis("aplique 150 kg/ha de urea")] == [("150", "kg")]
 
 
 def test_miles_con_punto_o_espacio():

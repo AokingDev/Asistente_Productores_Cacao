@@ -1,0 +1,310 @@
+{
+  "metricas": {
+    "exactitud": 1.0,
+    "con_cita": 1.0,
+    "abstencion_correcta": null,
+    "dosis_inventadas": 0,
+    "dosis_limitadas_a_fuente": true,
+    "sintomas_en_alternativas": 1.0,
+    "sintomas_en_respuesta": 1.0,
+    "fallos": {
+      "recuperación": 0,
+      "generación": 0,
+      "proveedor": 0
+    },
+    "sin_modelo": [],
+    "segundos_promedio": 45.0,
+    "proveedores": [
+      "groq"
+    ]
+  },
+  "preguntas": [
+    {
+      "id": "P15",
+      "categoria": "consulta",
+      "pregunta": "¿Cuál es el rendimiento del clon CCN-51 y cuántos días se fermenta?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        4
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "El clon CCN‑51 produce entre **1 500 y 2 760 kg ha⁻¹** [c1].\n\nLa fermentación recomendada es de **6‑7 días** si no se hace pre‑seco; sin pre‑seco se puede reducir a **4‑5 días**. Para cacao tipo nacional suele fermentar 4 días, pero el CCN‑51 requiere un tiempo más largo a menos que se realice pre‑seco [4].",
+      "segundos": 50.5,
+      "herramientas": [
+        {
+          "nombre": "calendario_labores",
+          "resultado": {
+            "etapa": "Plantación en producción (desde el 2.º año)",
+            "region": "Costa (Litoral)",
+            "desde": "noviembre 2026",
+            "hasta": "octubre 2027",
+            "este_mes": "noviembre",
+            "labores": [
+              {
+                "id": "joven_riego",
+                "labor": "Riego suplementario",
+                "frecuencia": "Cada 15 días durante la época seca",
+                "descripcion": "Como referencia, en los 6 meses secos riegue cada 15 días (unos 12 riegos de aproximadamente 60 mm), si dispone de riego.",
+                "meses": [
+                  "noviembre",
+                  "diciembre",
+                  "junio",
+                  "julio",
+                  "agosto",
+                  "septiembre",
+                  "octubre"
+                ],
+                "este_mes": true,
+                "fuentes": [
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 86,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=86"
+                  }
+                ]
+              },
+              {
+                "id": "prod_cosecha",
+                "labor": "Cosecha",
+                "frecuencia": "Semanal o algo más espaciada, según la mano de obra",
+                "descripcion": "Coseche solo mazorcas maduras y sanas, cortando por la mitad del pedúnculo para no dañar el cojín floral. Separe las sanas de las enfermas.",
+                "meses": [
+                  "noviembre",
+                  "diciembre",
+                  "enero",
+                  "febrero",
+                  "marzo",
+                  "abril",
+                  "mayo",
+                  "junio",
+                  "julio",
+                  "agosto",
+                  "septiembre",
+                  "octubre"
+                ],
+                "este_mes": true,
+                "fuentes": [
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 130,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=130"
+                  },
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 18,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=18"
+                  }
+                ]
+              },
+              {
+                "id": "prod_remocion_enfermas",
+                "labor": "Remoción de mazorcas enfermas",
+                "frecuencia": "Cada semana y en cada cosecha",
+                "descripcion": "Retire las mazorcas con monilla antes de que aparezca el polvo blanco y déjelas en el campo para que se descompongan; en cada cosecha elimine todos los frutos enfermos.",
+                "meses": [
+                  "noviembre",
+                  "diciembre",
+                  "enero",
+                  "febrero",
+                  "marzo",
+                  "abril",
+                  "mayo",
+                  "junio",
+                  "julio",
+                  "agosto",
+                  "septiembre",
+                  "octubre"
+                ],
+                "este_mes": true,
+                "fuentes": [
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 16,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=16"
+                  },
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 14,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=14"
+                  },
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 119,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=119"
+                  }
+                ]
+              },
+              {
+                "id": "prod_poda_mantenimiento",
+                "labor": "Poda de mantenimiento y fitosanitaria",
+                "frecuencia": "1 o 2 veces al año",
+                "descripcion": "En la época de mínima lluvia, antes de la floración y con árboles sin frutos: elimine ramas secas, mal formadas y chupones, y las partes enfermas (escobas, frutos con monilla). Cubra los cortes con pasta cúprica y desinfecte las herramientas.",
+                "meses": [
+                  "noviembre",
+                  "diciembre",
+                  "junio",
+                  "julio",
+                  "agosto",
+                  "septiembre",
+                  "octubre"
+                ],
+                "este_mes": true,
+                "fuentes": [
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 102,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=102"
+                  },
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 13,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=13"
+                  },
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 14,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=14"
+                  },
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 121,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=121"
+                  }
+                ]
+              },
+              {
+                "id": "prod_fertilizacion",
+                "labor": "Fertilización de plantas en producción",
+                "frecuencia": "Fraccionada, desde la poda principal",
+                "descripcion": "Inicie la fertilización con la poda principal y aproveche la humedad de la época de lluvias para que el fertilizante se disuelva. El abono orgánico se aplica en corona, al inicio de la producción y al final del pico productivo.",
+                "meses": [
+                  "enero",
+                  "febrero",
+                  "marzo",
+                  "abril",
+                  "mayo"
+                ],
+                "este_mes": false,
+                "fuentes": [
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 93,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=93"
+                  },
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 11,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=11"
+                  }
+                ]
+              },
+              {
+                "id": "prod_malezas",
+                "labor": "Control de malezas",
+                "frecuencia": "Según se necesite (4 a 5 chapeas al año como referencia)",
+                "descripcion": "Mantenga limpia la corona sin herir raíces ni el cuello del árbol; combine el control manual o mecánico para no abusar de herbicidas.",
+                "meses": [
+                  "noviembre",
+                  "diciembre",
+                  "enero",
+                  "febrero",
+                  "marzo",
+                  "abril",
+                  "mayo",
+                  "junio",
+                  "julio",
+                  "agosto",
+                  "septiembre",
+                  "octubre"
+                ],
+                "este_mes": true,
+                "fuentes": [
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 15,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=15"
+                  },
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 86,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=86"
+                  }
+                ]
+              },
+              {
+                "id": "prod_vigilancia_chinche",
+                "labor": "Vigilancia del chinche de la mazorca",
+                "frecuencia": "Revisión periódica, sobre todo cuando bajan las lluvias",
+                "descripcion": "La población del chinche aumenta cuando disminuyen las lluvias: revise las mazorcas pequeñas y elimine las afectadas; mantenga la sombra regulada.",
+                "meses": [
+                  "noviembre",
+                  "diciembre",
+                  "junio",
+                  "julio",
+                  "agosto",
+                  "septiembre",
+                  "octubre"
+                ],
+                "este_mes": true,
+                "fuentes": [
+                  {
+                    "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                    "pagina": 112,
+                    "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=112"
+                  },
+                  {
+                    "documento": "Manual del cultivo de cacao (Manual No. 76)",
+                    "pagina": 15,
+                    "url": "http://canacacao.org/wp-content/uploads/Manual-cultivo-Cacao-Ecuador.pdf#page=15"
+                  }
+                ]
+              }
+            ],
+            "nota_region": "Derivado de la guía INIAP (p. 93): las aplicaciones de enero, marzo y mayo se hacen «en la época de lluvia»; la época seca dura unos 6 meses (p. 86).",
+            "fuentes_region": [
+              {
+                "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                "pagina": 93,
+                "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=93"
+              },
+              {
+                "documento": "Guía para facilitar el aprendizaje en el manejo integrado del cultivo de cacao",
+                "pagina": 86,
+                "url": "https://repositorio.iniap.gob.ec/server/api/core/bitstreams/ca109fb0-20aa-4946-82be-5deb55b83a2f/content#page=86"
+              }
+            ]
+          }
+        }
+      ],
+      "error": null,
+      "alerta": null,
+      "proveedor": "groq",
+      "decision": "suficiente",
+      "tokens": 10182
+    }
+  ],
+  "sintomas": [
+    {
+      "id": "S09",
+      "esperado": "termitas",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "termitas"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "Los túneles que ve en el tronco de los árboles viejos son típicos de las termitas.  \n- **Qué hace:** construyen galerías de tierra a lo largo del tronco y ramas, con nidos dentro del árbol o en el suelo.  \n- **Qué afecta:** suele atacar sobre todo árboles de edad avanzada, destruyendo la corteza.  \n- **Cómo controlar:** retire los nidos y/o aplique insecticida dentro del nido (hacer un orificio en la parte superior); se puede usar Diazinón (3 cc/l) [1].  \n\nMientras tanto, mantenga las prácticas culturales de limpieza de maleza y desinfección de herramientas para evitar que otras plagas se aprovechen de los daños.",
+      "segundos": 39.4,
+      "proveedor": "groq",
+      "error": null,
+      "sin_modelo": false
+    }
+  ]
+}

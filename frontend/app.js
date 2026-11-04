@@ -82,6 +82,7 @@ function escapar(texto) {
 
 function enLinea(texto) {
   return escapar(texto)
+    .replace(/\s?\[[a-z]+(?:_[a-z0-9]+)+\]/g, "") // «[joven_corona]»: id interno de una herramienta, no es una cita
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\[(\d+(?:\s*[,;]\s*\d+)*)\]/g, (_, grupo) =>
       grupo.split(/\s*[,;]\s*/).map((n) => `<button type="button" class="cita" data-n="${n}" aria-label="Ver fuente ${n}">${n}</button>`).join(""));
