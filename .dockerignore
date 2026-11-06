@@ -1,0 +1,42 @@
+# Lo que NO entra a la imagen (igual que .gitignore, pero para Docker).
+# El Dockerfile copia solo app/, config/, frontend/ y data/index/; esta lista es la segunda barrera
+# y además reduce lo que se sube a Cloud Build con «gcloud run deploy --source .».
+
+# Secretos: nunca dentro de la imagen
+.env
+.env.*
+!.env.example
+*.pem
+*-sa-key.json
+.env.yaml
+
+# Control de versiones y herramientas
+.git
+.github/
+.claude/
+.vscode/
+.idea/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Datos que no se usan en producción o que se escriben en ejecución
+data/raw/
+data/processed/
+data/index_inyeccion/
+data/consultas/
+logs/
+*.db
+*.sqlite3
+
+# Desarrollo: pruebas, evaluación, scripts de ingesta y documentación
+tests/
+eval/
+scripts/
+docs/
+requirements-ingest.txt
+node_modules/
