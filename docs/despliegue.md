@@ -7,7 +7,8 @@ No hace falta instalar nada en el computador. La cuenta Azure for Students da **
 | Qué | Valor |
 |---|---|
 | Grupo de recursos | `rg-g9` |
-| App | `g9-cacao` (Container Apps; el entorno lo crea `az containerapp up`) |
+| App | `asistente-productores-cacao` (Container Apps; el entorno lo crea `az containerapp up`) |
+| URL pública | https://asistente-productores-cacao.delightfulpond-e73b0c99.eastus.azurecontainerapps.io/ |
 | Imagen | [Dockerfile](../Dockerfile) (`python:3.12-slim`, usuario sin privilegios, puerto `${PORT}` = 8080) |
 | Recursos | 0,5 vCPU · 1 GiB · réplicas mín. 0 · máx. 1 |
 | Secretos (de la app) | `gemini-key` → `GEMINI_API_KEY` · `groq-key` → `GROQ_API_KEY` |
@@ -69,7 +70,7 @@ Si el repositorio es privado, `git clone` pide usuario y contraseña: la contras
 `rg-g9`), crea el entorno y la app con una URL pública https.
 
 ```bash
-az containerapp up --name g9-cacao --resource-group rg-g9 --location eastus \
+az containerapp up --name asistente-productores-cacao --resource-group rg-g9 --location eastus \
   --source . --ingress external --target-port 8080 \
   --env-vars LLM_PRINCIPAL=gemini LLM_RESPALDO=groq LLM_TIMEOUT_S=8 \
              GEMINI_MODEL=gemini-3.5-flash-lite GROQ_MODEL=openai/gpt-oss-20b APP_VERSION=0.3.0 PORT=8080
@@ -78,8 +79,8 @@ az containerapp up --name g9-cacao --resource-group rg-g9 --location eastus \
 En este punto la app arranca **sin claves**: `/health` ya responde, y el chat contesta «El asistente aún no está
 configurado» hasta el paso 4.
 
-> **Si falla con `TasksOperationsNotAllowed` o «ACR Tasks … not permitted»:** algunas suscripciones gratuitas no
-> permiten construir en el registro. Ver el plan B al final.
+> **Si falla con `TasksOperationsNotAllowed` o «ACR Tasks … not permitted»** (pasa en Azure for Students): la
+> suscripción no permite construir en el registro. Seguir el **plan B** al final, que reemplaza los pasos 3 y 4.
 
 ## 4. Las claves como secretos de la app
 
@@ -88,11 +89,11 @@ configurado» hasta el paso 4.
 ```bash
 read -s GEMINI    # clave de Gemini + Enter
 read -s GROQ      # clave de Groq + Enter
-az containerapp secret set --name g9-cacao --resource-group rg-g9 \
+az containerapp secret set --name asistente-productores-cacao --resource-group rg-g9 \
   --secrets gemini-key="$GEMINI" groq-key="$GROQ"
 unset GEMINI GROQ
 
-az containerapp update --name g9-cacao --resource-group rg-g9 \
+az containerapp update --name asistente-productores-cacao --resource-group rg-g9 \
   --set-env-vars GEMINI_API_KEY=secretref:gemini-key GROQ_API_KEY=secretref:groq-key \
   --cpu 0.5 --memory 1.0Gi --min-replicas 0 --max-replicas 1
 ```
@@ -107,7 +108,7 @@ propuestas de registro pendientes (en memoria) se repartan entre copias.
 ## 5. Probar
 
 ```bash
-URL=https://$(az containerapp show --name g9-cacao --resource-group rg-g9 \
+URL=https://$(az containerapp show --name asistente-productores-cacao --resource-group rg-g9 \
       --query properties.configuration.ingress.fqdn -o tsv)
 echo $URL
 curl -s $URL/health        # {"estado":"ok", … "llm":{"principal":"gemini","respaldo":"groq"} …}
@@ -118,8 +119,8 @@ curl -sN $URL/chat -H 'Content-Type: application/json' \
 Abrir `$URL` en el navegador o el celular: es la interfaz del chat. Registros si algo falla:
 
 ```bash
-az containerapp logs show --name g9-cacao --resource-group rg-g9 --tail 50
-az containerapp logs show --name g9-cacao --resource-group rg-g9 --type system --tail 50   # errores de arranque
+az containerapp logs show --name asistente-productores-cacao --resource-group rg-g9 --tail 50
+az containerapp logs show --name asistente-productores-cacao --resource-group rg-g9 --type system --tail 50   # errores de arranque
 ```
 
 **Antes de una demo:** abrir `URL/health` uno o dos minutos antes para despertar la app (arranque en frío).
@@ -151,30 +152,59 @@ El workflow no pasa claves ni variables de los modelos: la app conserva sus secr
 
 ```bash
 cd Asistente_Productores_Cacao && git pull
-az containerapp up --name g9-cacao --resource-group rg-g9 --source .
+az containerapp up --name asistente-productores-cacao --resource-group rg-g9 --source .
 ```
 
 Para cambiar de proveedor principal sin reconstruir:
-`az containerapp update --name g9-cacao --resource-group rg-g9 --set-env-vars LLM_PRINCIPAL=groq LLM_RESPALDO=gemini`.
+`az containerapp update --name asistente-productores-cacao --resource-group rg-g9 --set-env-vars LLM_PRINCIPAL=groq LLM_RESPALDO=gemini`.
 
-## Plan B · si la nube no puede construir la imagen
+## Plan B · si la nube no puede construir la imagen (nuestro caso)
 
-Construirla en el computador con Docker Desktop y subirla al registro. Requiere la CLI de Azure en Windows
-(`winget install Microsoft.AzureCLI`, luego abrir una terminal nueva):
+En Azure for Students, el paso 3 falla con `TasksOperationsNotAllowed`: la suscripción no permite **ACR Tasks**. Para
+entonces `containerapp up` ya creó el entorno (`g9-cacao-env`) y el registro (en nuestro caso `cab7637514f2acr`). La
+imagen se construye en el computador con Docker Desktop y se sube a ese registro; no hace falta la CLI de Azure en Windows.
 
-```powershell
-az login
-az acr create --resource-group rg-g9 --name g9cacaoacr --sku Basic --admin-enabled true
-az acr login --name g9cacaoacr
-docker build -t g9cacaoacr.azurecr.io/g9-cacao:1 .
-docker push g9cacaoacr.azurecr.io/g9-cacao:1
-az containerapp up --name g9-cacao --resource-group rg-g9 --location eastus `
-  --image g9cacaoacr.azurecr.io/g9-cacao:1 --registry-server g9cacaoacr.azurecr.io `
-  --ingress external --target-port 8080 `
-  --env-vars LLM_PRINCIPAL=gemini LLM_RESPALDO=groq LLM_TIMEOUT_S=8 GEMINI_MODEL=gemini-3.5-flash-lite GROQ_MODEL=openai/gpt-oss-20b PORT=8080
+**B1 · Cloud Shell:** habilitar el usuario del registro y ver su contraseña (no se guarda en ningún archivo).
+
+```bash
+ACR=$(az acr list --resource-group rg-g9 --query "[0].name" -o tsv); echo $ACR
+az acr update --name $ACR --admin-enabled true
+az acr credential show --name $ACR --query "passwords[0].value" -o tsv   # copiar
+az containerapp env list --resource-group rg-g9 --query "[].name" -o tsv  # debe mostrar g9-cacao-env
 ```
 
-Luego seguir con los pasos 4 y 5.
+**B2 · PowerShell en el computador** (carpeta del proyecto, Docker Desktop abierto):
+
+```powershell
+docker build -t cab7637514f2acr.azurecr.io/g9-cacao:1 .
+docker login cab7637514f2acr.azurecr.io -u cab7637514f2acr    # pegar la contraseña de B1 (no se ve)
+docker push cab7637514f2acr.azurecr.io/g9-cacao:1
+docker logout cab7637514f2acr.azurecr.io
+```
+
+**B3 · Cloud Shell:** crear la app con la imagen, las variables y las claves en un solo paso (reemplaza los pasos 3 y 4).
+
+```bash
+read -s ACRPASS   # contraseña del registro (B1) + Enter
+read -s GEMINI    # clave de Gemini + Enter
+read -s GROQ      # clave de Groq + Enter
+az containerapp create --name asistente-productores-cacao --resource-group rg-g9 --environment g9-cacao-env \
+  --image $ACR.azurecr.io/g9-cacao:1 \
+  --registry-server $ACR.azurecr.io --registry-username $ACR --registry-password "$ACRPASS" \
+  --ingress external --target-port 8080 \
+  --cpu 0.5 --memory 1.0Gi --min-replicas 0 --max-replicas 1 \
+  --secrets gemini-key="$GEMINI" groq-key="$GROQ" \
+  --env-vars LLM_PRINCIPAL=gemini LLM_RESPALDO=groq LLM_TIMEOUT_S=8 \
+             GEMINI_MODEL=gemini-3.5-flash-lite GROQ_MODEL=openai/gpt-oss-20b APP_VERSION=0.3.0 PORT=8080 \
+             GEMINI_API_KEY=secretref:gemini-key GROQ_API_KEY=secretref:groq-key
+unset ACRPASS GEMINI GROQ
+```
+
+Luego seguir con el paso 5 (probar).
+
+**Actualizar después de un cambio** (en lugar del paso 7): repetir B2 con una etiqueta nueva (`:2`, `:3`…) y en Cloud Shell
+`az containerapp update --name asistente-productores-cacao --resource-group rg-g9 --image $ACR.azurecr.io/g9-cacao:2`. El pipeline de
+GitHub (paso 6) construye la imagen en su propia máquina y la sube al registro, así que no depende de ACR Tasks.
 
 ## Lo que se pierde al reiniciar
 
