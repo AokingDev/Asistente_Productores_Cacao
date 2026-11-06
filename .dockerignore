@@ -1,14 +1,12 @@
 # Lo que NO entra a la imagen (igual que .gitignore, pero para Docker).
 # El Dockerfile copia solo app/, config/, frontend/ y data/index/; esta lista es la segunda barrera
-# y además reduce lo que se sube a Cloud Build con «gcloud run deploy --source .».
+# y además reduce lo que se sube a Azure con «az containerapp up --source .».
 
 # Secretos: nunca dentro de la imagen
 .env
 .env.*
 !.env.example
 *.pem
-*-sa-key.json
-.env.yaml
 
 # Control de versiones y herramientas
 .git
