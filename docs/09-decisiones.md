@@ -200,7 +200,7 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
   Render gratis se duerme a los 15 min y tarda ~1 min en despertar; Vercel (serverless) tiene disco de solo lectura y no
   usa la imagen Docker.
 - **Decisión:** imagen `python:3.12-slim` con usuario sin privilegios ([Dockerfile](../Dockerfile)); Azure Container Apps
-  (`rg-g9`, app `g9-cacao`) con **0,5 vCPU / 1 GiB, réplicas mín. 0 y máx. 1**, ingreso externo al puerto 8080. Las claves
+  (`rg-g9`, app `asistente-productores-cacao`) con **0,5 vCPU / 1 GiB, réplicas mín. 0 y máx. 1**, ingreso externo al puerto 8080. Las claves
   son **secretos de la app** (`gemini-key`, `groq-key`) referenciados con `secretref:`, nunca en la imagen ni en el repo.
   Configuración en producción: **`LLM_PRINCIPAL=gemini`, `LLM_RESPALDO=groq`**, `LLM_TIMEOUT_S=8`: si Gemini se cuelga o
   responde 503, la app pasa a Groq en segundos y no en 30 s (medición del 05/11 en [07-evaluacion.md](07-evaluacion.md)
