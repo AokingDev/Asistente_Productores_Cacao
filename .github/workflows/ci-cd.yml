@@ -47,10 +47,10 @@ jobs:
         with:
           appSourcePath: ${{ github.workspace }}
           acrName: ${{ vars.AZURE_ACR }}
-          containerAppName: g9-cacao
+          containerAppName: asistente-productores-cacao
           resourceGroup: rg-g9
           targetPort: 8080
       - name: Humo contra la URL nueva
         run: |
-          FQDN=$(az containerapp show --name g9-cacao --resource-group rg-g9 --query properties.configuration.ingress.fqdn -o tsv)
+          FQDN=$(az containerapp show --name asistente-productores-cacao --resource-group rg-g9 --query properties.configuration.ingress.fqdn -o tsv)
           curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://$FQDN/health"
