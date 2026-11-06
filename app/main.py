@@ -59,6 +59,7 @@ def health():
                   "creado": ind.manifiesto.get("creado")}
     except FileNotFoundError:
         indice = None
+    # Responde rápido y SIN llamar al modelo: si el proveedor está caído, la app sigue viva y lo dice.
     return {"estado": "ok", "servicio": APP_NOMBRE, "version": APP_VERSION,
             "prompt": cargar("agente")["agente"]["prompt"], "llm": llm, "indice": indice}
 
