@@ -50,19 +50,42 @@ sin modelo ([repeticion_P15_S09.md](../eval/resultados/repeticion_P15_S09.md)).
 | Síntomas de punta a punta: causa esperada en alternativas o respuesta | 9/9 (100 %) + S09 en la repetición = 10/10 | ≥ 80 % ✅ |
 | Inyección indirecta: resistió / en cuarentena / citó el documento falso | 3/3 · 3/3 · 0/3 | 3/3 · 3/3 · 0/3 ✅ |
 | Fallos por recuperación / generación / proveedor | 0 / 1 / 0 (+ S09 sin modelo) | — |
-| **Latencia p95** (29 turnos con respuesta) | **51,2 s** (mediana 23 s) | **≤ 5 s ❌** |
+| **Latencia p95** (29 turnos con respuesta) | **51,2 s** (mediana 23 s); en la nueva medición (§2.1): **6,3 s** con Groq como principal | **≤ 5 s ❌** (casi) |
 
-### Latencia: el requisito no se cumple con Gemini como principal
+### 2.1 Latencia: nueva medición (05/11/2026)
 
-| Proveedor (llamadas de la corrida) | Mediana | p95 |
-|---|---|---|
-| Gemini `gemini-3.5-flash-lite` (33) | 20,2 s | 28,9 s |
-| Groq `openai/gpt-oss-20b` (8) | 1,2 s | 3,5 s |
+Como el p95 de 51 s del 04/11 no alcanzaba la meta (≤ 5 s, [02-requisitos.md](02-requisitos.md)), se repitió la corrida
+completa (20 preguntas y 10 síntomas) con cada proveedor como principal. Se usó `run_eval.py --proveedor`, que no modifica
+el `.env`. El tiempo de cada turno es lo que espera el productor: búsqueda, embedding, todas las vueltas del agente y las
+verificaciones. Logs: [latencia_groq.log](../eval/resultados/latencia_groq.log) y
+[latencia_gemini.log](../eval/resultados/latencia_gemini.log).
 
-En la 1.ª corrida, con Groq solo, el p95 fue de **3,1 s** (29 de 30 turnos en ≤ 5 s). La diferencia la explica el proveedor:
-hoy Gemini tarda unos 17 s solo en enviar el primer trozo. A esto se suman los turnos con herramienta (2 llamadas al modelo)
-y los errores 429 de Groq: su nivel gratuito admite 8 000 tokens por minuto y cada turno usa unos 3 700, así que hubo 5 esperas.
-**Pendiente para la semana 4:** usar `LLM_PRINCIPAL=groq` (ya lo recomendaba la ADR-019) y medir de nuevo el p95 en el despliegue.
+| Medida (s) | 04/11 · Gemini principal | 05/11 · Gemini principal | 05/11 · **Groq principal** |
+|---|---|---|---|
+| Turno completo: mediana | 23,0 | 5,2 | **2,0** |
+| **Turno completo: p95** | 51,2 | 31,1 | **6,3** |
+| Turnos en ≤ 5 s | 2/29 (7 %) | 15/30 (50 %) | **26/29 (90 %)** |
+| Turno sin herramienta (1 llamada): p95 | 32,8 | 31,1 | **2,6 ✅** |
+| Turno con herramienta (2 llamadas): p95 | 56,8 | 8,9 | 6,6 |
+| Primera palabra en pantalla (streaming): p95 del principal | 25,9 | 4,8 | **1,5 ✅** |
+| Embedding de la pregunta (Gemini): p95 | — | 1,2 | 0,9 |
+| Correctas | 19/20 | 19/20 | 19/20 |
+
+**Diagnóstico:**
+- **Gemini es inestable**, no siempre lento. El 05/11, cuando respondía bien, la primera palabra llegó en 1,6 s de mediana. Pero 3 llamadas recibieron el error 503 *«This model is currently experiencing high demand»* y una esperó los 30 s de `LLM_TIMEOUT_S` antes de pasar al respaldo (P08: 31,1 s). Con Gemini fuera durante 120 s (interruptor de circuito), todo el tráfico fue a Groq. Ahí se sumaron 6 esperas de 11 a 19 s por el límite de **8 000 tokens por minuto** de Groq: cada turno usa unos 4 000.
+- **Con Groq como principal**, las preguntas sin herramienta cumplen con holgura (p95 de 2,6 s). Los 3 turnos que pasan de 5 s (5,3 a 6,6 s) son diagnósticos de síntomas: hacen 2 llamadas al modelo, una para pedir la herramienta y otra para redactar. Gracias al streaming, el productor ve la primera palabra en ≤ 1,5 s en el 95 % de las llamadas.
+- **Límite diario de Groq (plan gratuito):** 200 000 tokens por día, es decir, unas 50 consultas. Al final de esta corrida se agotó (Groq pidió esperar 751 s) y S09 se quedó sin modelo.
+
+**Error encontrado durante la medición** (ver §4): con Groq como principal, el turno P15 se cayó con
+`openai.APIError: Tool call validation failed` ([latencia_groq_fallida.log](../eval/resultados/latencia_groq_fallida.log)).
+Se corrigió y se repitió la corrida.
+
+**Conclusión y pendiente para la semana 4:**
+- Con **`LLM_PRINCIPAL=groq`** el p95 baja de 51 s a **6,3 s**. Las consultas sin herramienta cumplen la meta y los diagnósticos quedan 1,3 s por encima.
+- Para cerrarla:
+  1. bajar `LLM_TIMEOUT_S` de 30 a unos 8 s (el p95 sano de la primera palabra es ≤ 4,8 s), para que una caída del principal no cueste 30 s;
+  2. medir el p95 en el despliegue con red móvil;
+  3. tener en cuenta que con el plan gratuito de Groq la capacidad es de unas 50 consultas al día.
 
 ## 3. Historial de corridas
 
@@ -72,6 +95,8 @@ y los errores 429 de Groq: su nivel gratuito admite 8 000 tokens por minuto y ca
 | 2 | 29/10 00:11 | gemini, groq | 14/20 (70 %) | 94 % | 2/3 | 1 | 5/10\* | 3/3 | 0 / 6 / 0 |
 | 3 | 04/11 10:24 | gemini, groq | 18/20 (90 %) | 100 % | 2/3 | 1 | 8/8 | 3/3 | 0 / 2 / 0 |
 | 4 | 04/11 10:43 | gemini, groq | **19/20 (95 %)** | 100 % | 3/3 | 1 → 0 | 9/9 → 10/10 | 3/3 | 0 / 1 / 0 |
+| 5 | 05/11 17:07 | gemini (principal), groq | 19/20 (95 %) | 100 % | 2/3 | **0** | 9/10 | — | 0 / 1 / 0 |
+| 6 | 05/11 17:32 | **groq (principal)**, gemini | 19/20 (95 %) | 94 % | 3/3 | **0** | 9/9 | — | 0 / 1 / 0 |
 
 \* En la corrida 2, 7 de los 10 síntomas no tuvieron modelo (cuota agotada en los dos proveedores), pero la versión de
 `run_eval.py` de ese momento los contó como fallos de la herramienta. Desde entonces se excluyen (ver §4).
@@ -94,6 +119,8 @@ y los errores 429 de Groq: su nivel gratuito admite 8 000 tokens por minuto y ca
 
 | Capturas (04/11) | Calendario | Generación (visible en la interfaz) | El prompt exige «[n] en TODA afirmación técnica», pero los resultados de las herramientas no tienen número de fragmento. El modelo citó con el id interno de la labor: «sin herir el cuello [joven_corona]». | (1) Una regla en `system_v4`: los datos de una herramienta no llevan [n], porque su tarjeta ya muestra la fuente (verificada en `test_system_v4_contiene_las_reglas_clave`). (2) Respaldo determinista en `frontend/app.js`: se ocultan los `[id_interno]`. La captura 07 se repitió y salió limpia. Este cambio del prompt es posterior a la corrida 4 y todavía no se ha evaluado con una corrida completa. |
 
+| Latencia (05/11) | P15 con Groq como principal | **Caída del turno** | El modelo pidió `calendario_labores` sin `etapa` ni `fecha`. Groq valida el esquema y manda el error **dentro del flujo** como `openai.APIError` simple, sin código HTTP. `_con_reintentos` solo capturaba subclases concretas (`RateLimitError`, `BadRequestError`…), así que la excepción se escapaba. En la app, el productor habría recibido un error en lugar de una respuesta. | `EN_EL_FLUJO = (openai.APIError,)` en `app/services/llm.py` se trata como reintentable: otro intento con el mismo proveedor y, si se repite, el respaldo. Pruebas `test_error_de_validacion_en_el_flujo_se_reintenta` y `test_error_de_validacion_repetido_pasa_al_respaldo`. La corrida 6 terminó sin caídas. |
+
 **Resumen del diagnóstico:**
 - Desde que se agregó la expansión de la consulta no hay fallos de **recuperación**.
 - De los fallos de **generación** que quedaron, la mayoría eran falsos positivos o negativos de las verificaciones automáticas, no errores del modelo. Se revisaron uno por uno con la respuesta completa del JSON.
@@ -113,7 +140,7 @@ y los errores 429 de Groq: su nivel gratuito admite 8 000 tokens por minuto y ca
 
 ## 6. Pruebas automáticas relacionadas
 
-`pytest` corre **115 pruebas sin API** ([evidencias/semana-3/pytest.txt](evidencias/semana-3/pytest.txt)). Las que cubren
+`pytest` corre **117 pruebas sin API** ([evidencias/semana-3/pytest.txt](evidencias/semana-3/pytest.txt)). Las que cubren
 este documento son:
 - **Herramientas** (`tests/test_herramientas.py`): determinismo, alternativas, citas por página, argumentos inválidos y campos extra rechazados, y que el registro solo proponga y no guarde.
 - **Agente** (`tests/test_agente.py`): límite de iteraciones, abstención sin llamar al modelo, cuarentena y alertas de dosis.
