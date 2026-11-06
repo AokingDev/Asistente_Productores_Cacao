@@ -4,7 +4,7 @@ rootdir: E:\UNIANDES\SEMINARIO\Asistente_Productores_Cacao
 configfile: pytest.ini
 testpaths: tests
 plugins: anyio-4.15.1
-collecting ... collected 115 items
+collecting ... collected 117 items
 
 tests/test_agente.py::test_respuesta_con_fuentes_y_citas_validas PASSED
 tests/test_agente.py::test_el_agente_usa_la_herramienta_y_responde_con_su_resultado PASSED
@@ -121,5 +121,7 @@ tests/test_stream.py::test_log_no_guarda_el_texto_del_usuario PASSED
 tests/test_stream.py::test_detener_cierra_la_conexion_con_el_proveedor PASSED
 tests/test_stream.py::test_cancelar_desde_otro_hilo_cierra_y_no_lanza_error PASSED
 tests/test_stream.py::test_error_inesperado_a_mitad_se_traduce_a_flujo_interrumpido PASSED
+tests/test_stream.py::test_error_de_validacion_en_el_flujo_se_reintenta PASSED
+tests/test_stream.py::test_error_de_validacion_repetido_pasa_al_respaldo PASSED
 
-============================ 115 passed in 12.18s =============================
+============================ 117 passed in 12.60s =============================

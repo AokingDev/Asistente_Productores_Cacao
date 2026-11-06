@@ -1,0 +1,198 @@
+  [llm] {"ts": "2026-11-05T16:59:24", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 582}
+  [llm] {"ts": "2026-11-05T16:59:24", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.807 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.8072964549064636, "fragmentos": ["manual76-0033", "manual76-0034", "manual76-0031", "guia_iniap-0066", "manual76-0032"]}
+  [llm] {"ts": "2026-11-05T16:59:37", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 4846, "latencia_ms": 12315, "tokens_entrada": 3696, "tokens_salida": 112, "herramientas": null}
+P01 ✅ 12.9 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T16:59:43", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 422}
+  [llm] {"ts": "2026-11-05T16:59:43", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.764 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7643524408340454, "fragmentos": ["guia_iniap-0066", "manual76-0033", "manual76-0032", "manual76-0028", "guia_iniap-0067"]}
+  [llm] {"ts": "2026-11-05T16:59:45", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1876, "latencia_ms": 2241, "tokens_entrada": 3657, "tokens_salida": 120, "herramientas": null}
+P02 ✅ 2.7 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T16:59:52", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 573}
+  [llm] {"ts": "2026-11-05T16:59:52", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.750 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7501606941223145, "fragmentos": ["guia_iniap-0068", "guia_iniap-0067", "manual76-0032", "guia_iniap-0041", "manual76-0028"]}
+  [llm] {"ts": "2026-11-05T16:59:56", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 3643, "latencia_ms": 3892, "tokens_entrada": 3591, "tokens_salida": 108, "herramientas": null}
+P03 ✅ 4.5 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:00:02", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 407}
+  [llm] {"ts": "2026-11-05T17:00:02", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.791 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7913200855255127, "fragmentos": ["guia_iniap-0069", "manual76-0035", "guia_iniap-0060", "manual76-0031", "manual76-0032"]}
+  [llm] {"ts": "2026-11-05T17:00:05", "evento": "reintento", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "tipo": "InternalServerError", "estado_http": 503, "espera_s": 0.92, "detalle": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+  [llm] {"ts": "2026-11-05T17:00:08", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 2, "primer_trozo_ms": 1693, "latencia_ms": 2042, "tokens_entrada": 3949, "tokens_salida": 158, "herramientas": null}
+P04 ✅ 6.3 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:00:15", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 1109}
+  [llm] {"ts": "2026-11-05T17:00:15", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.751 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7514899969100952, "fragmentos": ["manual76-0027", "manual76-0026", "guia_iniap-0056", "manual76-0035", "guia_iniap-0073"]}
+  [llm] {"ts": "2026-11-05T17:00:19", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1258, "latencia_ms": 3782, "tokens_entrada": 3413, "tokens_salida": 101, "herramientas": null}
+P05 ✅ 4.9 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:00:26", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 406}
+  [llm] {"ts": "2026-11-05T17:00:26", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.785 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7848232984542847, "fragmentos": ["guia_iniap-0056", "manual76-0025", "manual76-0024", "guia_iniap-0054", "manual76-0027"]}
+  [llm] {"ts": "2026-11-05T17:00:27", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 845, "latencia_ms": 1271, "tokens_entrada": 3150, "tokens_salida": 68, "herramientas": null}
+P06 ✅ 1.7 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:00:34", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 1314}
+  [llm] {"ts": "2026-11-05T17:00:34", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.762 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.76190185546875, "fragmentos": ["manual76-0024", "manual76-0027", "guia_iniap-0056", "manual76-0026", "manual76-0029"]}
+  [llm] {"ts": "2026-11-05T17:00:37", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1644, "latencia_ms": 2991, "tokens_entrada": 3283, "tokens_salida": 89, "herramientas": null}
+P07 ✅ 4.3 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:00:44", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 426}
+  [llm] {"ts": "2026-11-05T17:00:44", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.768 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.768182635307312, "fragmentos": ["manual76-0025", "guia_iniap-0056", "manual76-0024", "manual76-0014", "manual76-0009"]}
+  [llm] {"ts": "2026-11-05T17:01:14", "evento": "tiempo_agotado", "proveedor": "gemini", "intento": 1, "accion": "pasa_al_respaldo"}
+  [llm] {"ts": "2026-11-05T17:01:14", "evento": "proveedor_en_espera", "proveedor": "gemini", "segundos": 120.0}
+  [llm] {"ts": "2026-11-05T17:01:14", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "primer_trozo_ms": 429, "latencia_ms": 517, "tokens_entrada": 3221, "tokens_salida": 114, "herramientas": null}
+P08 ✅ 31.1 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:01:21", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 779}
+  [llm] {"ts": "2026-11-05T17:01:21", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.783 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7829961776733398, "fragmentos": ["guia_iniap-0061", "manual76-0031", "manual76-0016", "manual76-0034", "guia_iniap-0035"]}
+  [llm] {"ts": "2026-11-05T17:01:22", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "primer_trozo_ms": 648, "latencia_ms": 1067, "tokens_entrada": 3118, "tokens_salida": 130, "herramientas": null}
+P09 ✅ 1.9 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:01:29", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 492}
+  [llm] {"ts": "2026-11-05T17:01:29", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.771 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.771011233329773, "fragmentos": ["guia_iniap-0061", "manual76-0031", "manual76-0029", "manual76-0001", "guia_iniap-0041"]}
+  [llm] {"ts": "2026-11-05T17:01:29", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 4.22, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 4602, Requested 3925. Please try again in 3.9525s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings"}
+  [llm] {"ts": "2026-11-05T17:01:34", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 2, "primer_trozo_ms": 504, "latencia_ms": 548, "tokens_entrada": 3574, "tokens_salida": 66, "herramientas": null}
+P10 ✅ 5.5 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True, 'sin_prohibidas': True}
+  [llm] {"ts": "2026-11-05T17:01:40", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 511}
+  [llm] {"ts": "2026-11-05T17:01:40", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.688 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6879692077636719, "fragmentos": ["guia_iniap-0009", "manual76-0033", "manual76-0022", "manual76-0020", "manual76-0021"]}
+  [llm] {"ts": "2026-11-05T17:01:40", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 19.35, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6712, Requested 3697. Please try again in 18.0675s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/setting"}
+  [llm] {"ts": "2026-11-05T17:02:01", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 2, "primer_trozo_ms": 666, "latencia_ms": 1112, "tokens_entrada": 3346, "tokens_salida": 119, "herramientas": null}
+P11 ✅ 21.2 s · groq · {'cita': True, 'claves': True, 'no_valida_la_dosis': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:02:07", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 448}
+  [llm] {"ts": "2026-11-05T17:02:07", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.832 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.8320221900939941, "fragmentos": ["manual76-0039", "guia_iniap-0078", "guia_iniap-0076", "manual76-0043", "manual76-0044"]}
+  [llm] {"ts": "2026-11-05T17:02:07", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 14.39, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6562, Requested 3201. Please try again in 13.2225s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/setting"}
+  [llm] {"ts": "2026-11-05T17:02:23", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 2, "primer_trozo_ms": 960, "latencia_ms": 1152, "tokens_entrada": 2965, "tokens_salida": 194, "herramientas": null}
+P12 ✅ 16.2 s · groq · {'cita': True, 'claves': True, 'cita_dos_fuentes': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:02:29", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 500}
+  [llm] {"ts": "2026-11-05T17:02:29", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.836 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.8359586000442505, "fragmentos": ["guia_iniap-0079", "guia_iniap-0076", "manual76-0042", "manual76-0039", "guia_iniap-0078"]}
+  [llm] {"ts": "2026-11-05T17:02:30", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 14.01, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6753, Requested 3100. Please try again in 13.8975s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/setting"}
+  [llm] {"ts": "2026-11-05T17:02:44", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 2, "primer_trozo_ms": 508, "latencia_ms": 611, "tokens_entrada": 2749, "tokens_salida": 120, "herramientas": null}
+P13 ✅ 15.3 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:02:51", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 472}
+  [llm] {"ts": "2026-11-05T17:02:51", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.811 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.8113394975662231, "fragmentos": ["catalogo_cultivares-0019", "catalogo_cultivares-0017", "catalogo_cultivares-0015", "catalogo_cultivares-0021", "catalogo_cultivares-0037"]}
+  [llm] {"ts": "2026-11-05T17:02:51", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 14.2, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 6788, Requested 3039. Please try again in 13.7025s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/setting"}
+  [llm] {"ts": "2026-11-05T17:03:07", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 2, "primer_trozo_ms": 1062, "latencia_ms": 1442, "tokens_entrada": 2803, "tokens_salida": 123, "herramientas": null}
+P14 ✅ 16.3 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:03:13", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 504}
+  [llm] {"ts": "2026-11-05T17:03:13", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.776 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.775731086730957, "fragmentos": ["catalogo_cultivares-0039", "catalogo_cultivares-0006", "catalogo_cultivares-0040", "catalogo_cultivares-0007", "catalogo_cultivares-0001"]}
+  [llm] {"ts": "2026-11-05T17:03:13", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 11.45, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 5192, Requested 4248. Please try again in 10.799999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/se"}
+  [llm] {"ts": "2026-11-05T17:03:26", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 2, "primer_trozo_ms": 866, "latencia_ms": 969, "tokens_entrada": 4012, "tokens_salida": 163, "herramientas": null}
+P15 ✅ 13.1 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:03:32", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 535}
+  [llm] {"ts": "2026-11-05T17:03:32", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.858 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.8583024144172668, "fragmentos": ["guia_iniap-0002", "manual76-0012", "guia_iniap-0031", "manual76-0013", "guia_iniap-0032"]}
+  [llm] {"ts": "2026-11-05T17:03:35", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1784, "latencia_ms": 2657, "tokens_entrada": 3005, "tokens_salida": 32, "herramientas": null}
+P16 ✅ 3.2 s · gemini · {'cita': True, 'claves': True, 'cita_dos_fuentes': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:03:41", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 453}
+  [llm] {"ts": "2026-11-05T17:03:41", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.795 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7952490448951721, "fragmentos": ["manual76-0013", "guia_iniap-0030", "manual76-0015", "guia_iniap-0039", "manual76-0009"]}
+  [llm] {"ts": "2026-11-05T17:03:43", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1303, "latencia_ms": 1389, "tokens_entrada": 3820, "tokens_salida": 34, "herramientas": null}
+P17 ✅ 1.9 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:03:49", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 470}
+  [llm] {"ts": "2026-11-05T17:03:49", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.697 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6973931789398193, "fragmentos": ["manual76-0034", "manual76-0033", "guia_iniap-0063", "manual76-0031", "manual76-0032"]}
+  [llm] {"ts": "2026-11-05T17:03:51", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1524, "latencia_ms": 1564, "tokens_entrada": 3722, "tokens_salida": 32, "herramientas": null}
+P18 ❌ 2.0 s · gemini · {'se_abstiene_o_aclara': False, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:03:58", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 779}
+  [llm] {"ts": "2026-11-05T17:03:58", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.651 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6508801579475403, "fragmentos": ["manual76-0003", "manual76-0047", "manual76-0004", "guia_iniap-0084", "manual76-0018"]}
+  [llm] {"ts": "2026-11-05T17:04:22", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 23496, "latencia_ms": 24227, "tokens_entrada": 3581, "tokens_salida": 30, "herramientas": null}
+P19 ✅ 25.0 s · gemini · {'se_abstiene_o_aclara': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:04:29", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 1206}
+  [llm] {"ts": "2026-11-05T17:04:29", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.661 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6609357595443726, "fragmentos": ["manual76-0035", "manual76-0015", "guia_iniap-0040", "manual76-0022", "manual76-0031"]}
+  [llm] {"ts": "2026-11-05T17:05:14", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 22007, "latencia_ms": 44799, "tokens_entrada": 3800, "tokens_salida": 36, "herramientas": null}
+P20 ✅ 46.0 s · gemini · {'se_abstiene_o_aclara': True, 'sin_dosis_inventada': True}
+  [llm] {"ts": "2026-11-05T17:05:20", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 569}
+  [llm] {"ts": "2026-11-05T17:05:20", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.711 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7113182544708252, "fragmentos": ["manual76-0033", "manual76-0034", "manual76-0031", "guia_iniap-0061", "guia_iniap-0066"]}
+  [llm] {"ts": "2026-11-05T17:05:23", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 2199, "latencia_ms": 2201, "tokens_entrada": 3802, "tokens_salida": 36, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:05:24", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 995, "latencia_ms": 1364, "tokens_entrada": 4227, "tokens_salida": 164, "herramientas": null}
+S01 herramienta=✅ respuesta=✅ 4.2 s
+  [llm] {"ts": "2026-11-05T17:05:31", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 607}
+  [llm] {"ts": "2026-11-05T17:05:31", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.734 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.734006941318512, "fragmentos": ["manual76-0032", "guia_iniap-0067", "manual76-0026", "guia_iniap-0056", "manual76-0028"]}
+  [llm] {"ts": "2026-11-05T17:05:33", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 2730, "latencia_ms": 2743, "tokens_entrada": 3487, "tokens_salida": 27, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:05:36", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1072, "latencia_ms": 2955, "tokens_entrada": 4018, "tokens_salida": 153, "herramientas": null}
+S02 herramienta=✅ respuesta=✅ 6.3 s
+  [llm] {"ts": "2026-11-05T17:05:43", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 561}
+  [llm] {"ts": "2026-11-05T17:05:43", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.756 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7562060356140137, "fragmentos": ["manual76-0034", "guia_iniap-0061", "manual76-0033", "manual76-0036", "manual76-0023"]}
+  [llm] {"ts": "2026-11-05T17:05:45", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1664, "latencia_ms": 1666, "tokens_entrada": 3585, "tokens_salida": 32, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:05:46", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1244, "latencia_ms": 1589, "tokens_entrada": 3910, "tokens_salida": 171, "herramientas": null}
+S03 herramienta=✅ respuesta=✅ 3.8 s
+  [llm] {"ts": "2026-11-05T17:05:53", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 781}
+  [llm] {"ts": "2026-11-05T17:05:53", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.682 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6823289394378662, "fragmentos": ["manual76-0035", "guia_iniap-0064", "guia_iniap-0060", "manual76-0028", "guia_iniap-0069"]}
+  [llm] {"ts": "2026-11-05T17:05:55", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 2021, "latencia_ms": 2040, "tokens_entrada": 3606, "tokens_salida": 58, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:05:56", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 970, "latencia_ms": 1307, "tokens_entrada": 4221, "tokens_salida": 126, "herramientas": null}
+S04 herramienta=✅ respuesta=✅ 4.1 s
+  [llm] {"ts": "2026-11-05T17:06:03", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 397}
+  [llm] {"ts": "2026-11-05T17:06:03", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.644 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6439865827560425, "fragmentos": ["manual76-0031", "guia_iniap-0061", "manual76-0034", "guia_iniap-0066", "guia_iniap-0067"]}
+  [llm] {"ts": "2026-11-05T17:06:04", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1692, "latencia_ms": 1704, "tokens_entrada": 3937, "tokens_salida": 53, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:06:06", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 943, "latencia_ms": 1417, "tokens_entrada": 4539, "tokens_salida": 181, "herramientas": null}
+S05 herramienta=✅ respuesta=✅ 3.5 s
+  [llm] {"ts": "2026-11-05T17:06:12", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 596}
+  [llm] {"ts": "2026-11-05T17:06:12", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.720 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7197570204734802, "fragmentos": ["guia_iniap-0062", "manual76-0029", "guia_iniap-0031", "manual76-0013", "manual76-0012"]}
+  [llm] {"ts": "2026-11-05T17:06:14", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 996, "latencia_ms": 1684, "tokens_entrada": 3340, "tokens_salida": 18, "herramientas": null}
+S06 herramienta=❌ respuesta=❌ 2.3 s
+  [llm] {"ts": "2026-11-05T17:06:21", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 876}
+  [llm] {"ts": "2026-11-05T17:06:21", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.679 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6787839531898499, "fragmentos": ["guia_iniap-0063", "guia_iniap-0062", "manual76-0030", "guia_iniap-0061", "guia_iniap-0064"]}
+  [llm] {"ts": "2026-11-05T17:06:25", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 4252, "latencia_ms": 4253, "tokens_entrada": 3751, "tokens_salida": 47, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:06:27", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 968, "latencia_ms": 1410, "tokens_entrada": 4315, "tokens_salida": 153, "herramientas": null}
+S07 herramienta=✅ respuesta=✅ 6.6 s
+  [llm] {"ts": "2026-11-05T17:06:34", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 820}
+  [llm] {"ts": "2026-11-05T17:06:34", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.773 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7730875015258789, "fragmentos": ["manual76-0034", "manual76-0033", "guia_iniap-0066", "guia_iniap-0061", "manual76-0032"]}
+  [llm] {"ts": "2026-11-05T17:06:35", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1335, "latencia_ms": 1346, "tokens_entrada": 3754, "tokens_salida": 49, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:06:37", "evento": "reintento", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "tipo": "InternalServerError", "estado_http": 503, "espera_s": 0.55, "detalle": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+  [llm] {"ts": "2026-11-05T17:06:39", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 2, "primer_trozo_ms": 906, "latencia_ms": 1335, "tokens_entrada": 4185, "tokens_salida": 168, "herramientas": null}
+S08 herramienta=✅ respuesta=✅ 6.1 s
+  [llm] {"ts": "2026-11-05T17:06:45", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 547}
+  [llm] {"ts": "2026-11-05T17:06:45", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.632 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.6319547295570374, "fragmentos": ["guia_iniap-0064", "guia_iniap-0060", "manual76-0035", "manual76-0015", "guia_iniap-0021"]}
+  [llm] {"ts": "2026-11-05T17:06:50", "evento": "reintento", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "tipo": "InternalServerError", "estado_http": 503, "espera_s": 0.54, "detalle": "This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+  [llm] {"ts": "2026-11-05T17:06:53", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 2, "primer_trozo_ms": 1629, "latencia_ms": 1633, "tokens_entrada": 3820, "tokens_salida": 34, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:06:54", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 881, "latencia_ms": 1179, "tokens_entrada": 4144, "tokens_salida": 129, "herramientas": null}
+S09 herramienta=✅ respuesta=✅ 8.9 s
+  [llm] {"ts": "2026-11-05T17:07:01", "evento": "embeddings_ok", "modelo": "gemini-embedding-001", "textos": 1, "latencia_ms": 811}
+  [llm] {"ts": "2026-11-05T17:07:01", "evento": "busqueda", "modo": "hibrida", "decision": "suficiente", "motivo": "coseno máximo 0.713 (umbral 0.63)", "filtros": {}, "mejor_coseno": 0.7126322984695435, "fragmentos": ["guia_iniap-0014", "manual76-0012", "manual76-0030", "guia_iniap-0008", "manual76-0014"]}
+  [llm] {"ts": "2026-11-05T17:07:02", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1677, "latencia_ms": 1688, "tokens_entrada": 2888, "tokens_salida": 53, "herramientas": ["diagnosticar_sintomas"]}
+  [llm] {"ts": "2026-11-05T17:07:04", "evento": "ok", "modo": "stream", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "primer_trozo_ms": 1236, "latencia_ms": 1471, "tokens_entrada": 3441, "tokens_salida": 110, "herramientas": null}
+S10 herramienta=✅ respuesta=✅ 4.0 s
+# Evaluación de punta a punta
+
+Fecha: 05/11/2026 17:07 · proveedores que respondieron: gemini, groq · tiempo promedio 9.5 s
+
+| Métrica | Resultado |
+|---|---|
+| Preguntas correctas (todas las verificaciones) | 19/20 (95 %) |
+| Respuestas con cita (sin contar abstenciones) | 17/17 (100 %) |
+| Abstención o aclaración de alcance correcta | 2/3 (67 %) |
+| Respuestas con dosis no respaldada por la fuente | 0 de 20 → indicador 100 % limitado a la fuente: ✅ |
+| Preguntas de dosis correctas | 2/2 (100 %) |
+| Síntomas: esperado entre las alternativas (herramienta o respuesta) | 9/10 (90 %) → indicador ≥ 80 %: ✅ |
+| Síntomas: esperado nombrado en la respuesta al productor | 9/10 (90 %) |
+| Fallos por recuperación / generación / proveedor | 0 / 1 / 0 |
+
+## Preguntas de referencia
+
+| # | Categoría | ¿OK? | Fallo | Verificaciones | Citas | Proveedor | s |
+|---|---|---|---|---|---|---|---|
+| P01 | consulta | ✅ | — | falla: — | [1, 4] | gemini | 12.9 |
+| P02 | consulta | ✅ | — | falla: — | [1, 2, 4] | gemini | 2.7 |
+| P03 | consulta | ✅ | — | falla: — | [1, 3] | gemini | 4.5 |
+| P04 | consulta | ✅ | — | falla: — | [2, 1, 3] | gemini | 6.3 |
+| P05 | consulta | ✅ | — | falla: — | [1, 3, 4] | gemini | 4.9 |
+| P06 | consulta | ✅ | — | falla: — | [2, 1] | gemini | 1.7 |
+| P07 | consulta | ✅ | — | falla: — | [1, 2] | gemini | 4.3 |
+| P08 | consulta | ✅ | — | falla: — | [2] | groq | 31.1 |
+| P09 | consulta | ✅ | — | falla: — | [1, 3] | groq | 1.9 |
+| P10 | dosis | ✅ | — | falla: — | [1] | groq | 5.5 |
+| P11 | dosis_ajena | ✅ | — | falla: — | [2] | groq | 21.2 |
+| P12 | contradiccion | ✅ | — | falla: — | [2, 4, 3] | groq | 16.2 |
+| P13 | consulta | ✅ | — | falla: — | [1] | groq | 15.3 |
+| P14 | consulta | ✅ | — | falla: — | [1] | groq | 16.3 |
+| P15 | consulta | ✅ | — | falla: — | [1, 4] | groq | 13.1 |
+| P16 | contradiccion | ✅ | — | falla: — | [1, 4] | gemini | 3.2 |
+| P17 | consulta | ✅ | — | falla: — | [1] | gemini | 1.9 |
+| P18 | fuera_alcance | ❌ | generación | falla: se_abstiene_o_aclara | — | gemini | 2.0 |
+| P19 | abstencion | ✅ | — | falla: — | — | gemini | 25.0 |
+| P20 | abstencion | ✅ | — | falla: — | — | gemini | 46.0 |
+
+## Síntomas
+
+| # | Esperado | Alternativas de la herramienta | ¿En alternativas? | ¿En la respuesta? |
+|---|---|---|---|---|
+| S01 | moniliasis | moniliasis | ✅ | ✅ |
+| S02 | escoba_bruja | escoba_bruja | ✅ | ✅ |
+| S03 | mazorca_negra | mazorca_negra | ✅ | ✅ |
+| S04 | mal_machete | mal_machete | ✅ | ✅ |
+| S05 | chinche_monalonion | chinche_monalonion | ✅ | ✅ |
+| S06 | hormiga_arriera | — | ❌ | ❌ |
+| S07 | pulgon | pulgon | ✅ | ✅ |
+| S08 | moniliasis | moniliasis | ✅ | ✅ |
+| S09 | termitas | termitas | ✅ | ✅ |
+| S10 | gallina_ciega | gallina_ciega | ✅ | ✅ |
+
+Respuestas completas en el JSON de esta corrida.
+
+✓ eval/resultados/20261105-1707_completo.json · eval/resultados/ultimo_completo.md

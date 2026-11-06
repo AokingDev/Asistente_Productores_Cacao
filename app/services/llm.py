@@ -90,6 +90,11 @@ REINTENTABLES = (openai.RateLimitError, openai.APITimeoutError, openai.APIConnec
 # inexistente, solicitud mal formada. Se pasa directo al respaldo.
 DEFINITIVOS = (openai.AuthenticationError, openai.PermissionDeniedError, openai.NotFoundError, openai.BadRequestError)
 
+# Error que el proveedor manda DENTRO del flujo, sin código HTTP (Groq: «Tool call validation failed» cuando el modelo
+# pide una herramienta sin sus argumentos obligatorios). Es un error del modelo, no de la solicitud: otro intento suele
+# salir bien. Antes se escapaba sin capturar y el turno se caía.
+EN_EL_FLUJO = (openai.APIError,)
+
 ESPERA_MAXIMA_S = 20  # si el proveedor pide esperar más que esto, mejor ir al respaldo
 
 
@@ -303,7 +308,7 @@ class ClienteLLM:
                 if intento == self.config.reintentos:
                     raise _FalloProveedor() from e
                 self.dormir(espera_exponencial(intento))
-            except (*REINTENTABLES, _RespuestaVacia) as e:
+            except (*REINTENTABLES, *EN_EL_FLUJO, _RespuestaVacia) as e:  # DEFINITIVOS ya se capturaron arriba
                 pedida = _retry_after(e)
                 # Si el proveedor dice cuánto esperar, se respeta y se suma un poco de azar
                 espera = pedida + random.uniform(0, 0.5) if pedida is not None else espera_exponencial(intento)

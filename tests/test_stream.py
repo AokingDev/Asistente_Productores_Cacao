@@ -166,3 +166,27 @@ def test_error_inesperado_a_mitad_se_traduce_a_flujo_interrumpido():
     c, _ = cliente(Doble([gen()]))
     with pytest.raises(FlujoInterrumpido):
         list(c.generar_stream("sys", []))
+
+
+def validacion_de_herramienta():
+    """Groq valida los argumentos de la herramienta y manda el error dentro del flujo (corrida de latencia, P15)."""
+    def gen():
+        raise openai.APIError("Tool call validation failed: parameters for tool calendario_labores did not match "
+                              "schema: errors: [missing properties: 'etapa', 'fecha']",
+                              request=httpx.Request("POST", "https://x"), body=None)
+        yield
+    return gen()
+
+
+def test_error_de_validacion_en_el_flujo_se_reintenta():
+    d = Doble([validacion_de_herramienta(), flujo("Fermente ", "6 días.")])
+    c, esperas = cliente(d)
+    assert "".join(c.generar_stream("sys", [{"role": "user", "content": "ccn-51"}])) == "Fermente 6 días."
+    assert len(d.llamadas) == 2 and len(esperas) == 1
+
+
+def test_error_de_validacion_repetido_pasa_al_respaldo():
+    a = Doble([validacion_de_herramienta() for _ in range(3)])
+    b = Doble([flujo("Respuesta del respaldo.")])
+    f = cliente(a, b)[0].generar_stream("sys", [{"role": "user", "content": "ccn-51"}])
+    assert "".join(f) == "Respuesta del respaldo." and f.proveedor == "b"
