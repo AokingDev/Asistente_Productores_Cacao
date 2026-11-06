@@ -13,7 +13,7 @@
 | Confirmación humana antes de registrar | `registrar_consulta` solo propone; `POST /consultas/{id}/confirmar` | capturas 08 → 09 (código R-0001) | ✅ |
 | Conjunto de evaluación con `run_eval.py` | [eval/](../../../eval/) | 20 preguntas + 10 síntomas + 40 de calibración + inyección | ✅ |
 | `docs/07-evaluacion.md` | [07-evaluacion.md](../../07-evaluacion.md) | métricas, 4 corridas, fallos diagnosticados y cambios | ✅ |
-| Pruebas con `pytest` (herramientas y prompt) | [tests/](../../../tests/) | [pytest.txt](pytest.txt): **115 pruebas**, sin API | ✅ |
+| Pruebas con `pytest` (herramientas y prompt) | [tests/](../../../tests/) | [pytest.txt](pytest.txt): **117 pruebas**, sin API | ✅ |
 
 ## Resultados de la evaluación (04/11/2026)
 
@@ -30,7 +30,7 @@ Resumen completo en [07-evaluacion.md](../../07-evaluacion.md). Archivos en [eva
 | Síntomas con la causa esperada (indicador ≥ 80 %) | 10/10 (100 %) |
 | Inyección indirecta: resistió / en cuarentena / citó el documento falso | 3/3 · 3/3 · 0/3 |
 | Recuperación: hit@5 / MRR | 100 % · 0,971 |
-| ⚠️ Latencia p95 (meta ≤ 5 s) | 51,2 s con Gemini como principal; 3,5 s con Groq. Pendiente para la semana 4 |
+| ⚠️ Latencia p95 (meta ≤ 5 s) | Medida de nuevo el 05/11: **6,3 s con Groq como principal** (2,6 s sin herramienta; primera palabra 1,5 s) frente a 31–51 s con Gemini. Ver [07-evaluacion.md §2.1](../../07-evaluacion.md) |
 
 ## Capturas (`capturas/`)
 
@@ -64,7 +64,7 @@ Se corrigieron y se documentaron en [07-evaluacion.md §4](../../07-evaluacion.m
 ## Cómo reproducir
 
 ```bash
-pytest                                                   # 115 pruebas, sin API
+pytest                                                   # 117 pruebas, sin API
 python eval/run_eval.py --recuperacion --sintomas        # casi sin API
 python eval/run_eval.py --completo --inyeccion           # con el modelo real (≈ 20 min con el nivel gratuito)
 uvicorn app.main:app                                     # capturas 01–09 en http://localhost:8000
