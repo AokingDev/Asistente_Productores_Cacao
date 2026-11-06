@@ -1,8 +1,8 @@
 # CI/CD del Asistente de Cacao (semana 4, misión 5)
 #  · CI: en cada push y pull request → gitleaks + pytest (el modelo va SIMULADO: no hace falta ninguna clave)
-#  · CD: solo en push a main, solo si las pruebas pasaron (needs: pruebas) → Cloud Run
-#    El despliegue queda apagado hasta que el equipo cree el secreto GCP_SA_KEY y la variable
-#    DESPLEGAR_CLOUD_RUN=true (Settings › Secrets and variables › Actions). Pasos en docs/despliegue.md §5.
+#  · CD: solo en push a main, solo si las pruebas pasaron (needs: pruebas) → Azure Container Apps
+#    El despliegue queda apagado hasta que el equipo cree el secreto AZURE_CREDENTIALS y las variables
+#    AZURE_ACR y DESPLEGAR_AZURE=true (Settings › Secrets and variables › Actions). Pasos en docs/despliegue.md §6.
 name: ci-cd
 
 on:
@@ -34,22 +34,23 @@ jobs:
 
   desplegar:
     needs: pruebas                       # si las pruebas fallan, no se publica
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.DESPLEGAR_CLOUD_RUN == 'true'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && vars.DESPLEGAR_AZURE == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: google-github-actions/auth@v2
+      - uses: azure/login@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-      - uses: google-github-actions/deploy-cloudrun@v2
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # Construye la imagen con el Dockerfile en el registro ACR y actualiza la app.
+      # Las claves y LLM_PRINCIPAL/LLM_RESPALDO NO se pasan aquí: la app conserva sus secretos y variables.
+      - uses: azure/container-apps-deploy-action@v2
         with:
-          service: g9-cacao
-          region: us-central1
-          source: .
-          # Las claves y LLM_PRINCIPAL/LLM_RESPALDO NO se pasan aquí: Cloud Run conserva entre versiones
-          # lo configurado en el primer despliegue (docs/despliegue.md §3).
-          flags: --memory=1Gi --cpu=1 --min-instances=0 --max-instances=1 --timeout=120
+          appSourcePath: ${{ github.workspace }}
+          acrName: ${{ vars.AZURE_ACR }}
+          containerAppName: g9-cacao
+          resourceGroup: rg-g9
+          targetPort: 8080
       - name: Humo contra la URL nueva
         run: |
-          URL=$(gcloud run services describe g9-cacao --region us-central1 --format 'value(status.url)')
-          curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "$URL/health"
+          FQDN=$(az containerapp show --name g9-cacao --resource-group rg-g9 --query properties.configuration.ingress.fqdn -o tsv)
+          curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://$FQDN/health"

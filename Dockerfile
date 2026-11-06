@@ -1,4 +1,4 @@
-# Asistente Agrotécnico para Productores de Cacao · imagen para Google Cloud Run (semana 4, misión 1)
+# Asistente Agrotécnico para Productores de Cacao · imagen para Azure Container Apps (semana 4, misión 1)
 #
 # Construir y probar en local:
 #   docker build -t g9-cacao .
@@ -33,7 +33,7 @@ COPY data/index ./data/index
 RUN useradd --create-home --uid 10001 app && chown -R app /app
 USER app
 
-# 4. Arranque: Cloud Run, Azure y Render indican el puerto en la variable PORT.
+# 4. Arranque: Azure Container Apps (y otras plataformas) indican el puerto en la variable PORT.
 ENV PORT=8080
 EXPOSE 8080
 CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT} --proxy-headers --forwarded-allow-ips='*'"]
