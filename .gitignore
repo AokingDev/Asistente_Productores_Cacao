@@ -2,6 +2,8 @@
 .env
 .env.*
 !.env.example
+.env.yaml
+*-sa-key.json
 
 # --- Python ---
 __pycache__/

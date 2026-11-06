@@ -31,6 +31,7 @@ def eventos(r):
 def test_health():
     r = TestClient(app).get("/health")
     assert r.status_code == 200 and r.json()["estado"] == "ok" and r.json()["prompt"] == "system_v4"
+    assert r.json()["indice"]["fragmentos"] > 0   # el índice viaja dentro de la imagen y cargó
 
 
 def test_health_no_expone_claves():
