@@ -193,23 +193,23 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
 
 ## Semana 4
 
-### ADR-020 · Despliegue en Google Cloud Run con contenedor Docker
+### ADR-020 · Despliegue en Azure Container Apps con contenedor Docker
 - **Estado:** Aceptada (taller de despliegue, 5 de noviembre de 2026). Pasos en [despliegue.md](despliegue.md).
 - **Contexto:** la app es liviana: FastAPI, embeddings **por API** (Gemini) y un índice de menos de 1 MB. Opciones del
-  taller: Cloud Run, Azure for Students, Render. Render gratis se duerme a los 15 min y tarda ~1 min en despertar; Vercel
-  (serverless) tiene disco de solo lectura y no usa la imagen Docker. Cloud Run usa la misma cuenta de Google que la clave
-  de Gemini.
-- **Decisión:** imagen `python:3.12-slim` con usuario sin privilegios ([Dockerfile](../Dockerfile)); Cloud Run en
-  `us-central1` con `--memory 1Gi --cpu 1 --min-instances 0 --max-instances 1 --timeout 120`. Las claves van en
-  **Secret Manager** (`gemini-key`, `groq-key`), nunca en la imagen ni en el repo. Configuración en producción:
-  **`LLM_PRINCIPAL=gemini`, `LLM_RESPALDO=groq`**, `LLM_TIMEOUT_S=8`: si Gemini se cuelga o responde 503, la app pasa a Groq
-  en segundos y no en 30 s (medición del 05/11 en [07-evaluacion.md](07-evaluacion.md) §2.1). `/health` responde sin
-  llamar al modelo. CI/CD en `.github/workflows/ci-cd.yml`: gitleaks + pytest + build de la imagen en cada push y pull
-  request; despliegue solo en `main` y solo si las pruebas pasan (`needs: pruebas`).
-- **Consecuencias:** con `min-instances 0` no hay costo sin tráfico, pero la primera visita tras un rato sin uso tiene
-  **arranque en frío** (se despierta con `/health` antes de la demo). `max-instances 1` limita el gasto y evita que las
-  propuestas pendientes de registro (en memoria) queden repartidas entre copias. Cambiar de proveedor principal no
-  requiere reconstruir: `gcloud run services update --update-env-vars`.
+  taller: Azure for Students, Render y otras. El equipo tiene Azure for Students (100 USD de crédito, **sin tarjeta**).
+  Render gratis se duerme a los 15 min y tarda ~1 min en despertar; Vercel (serverless) tiene disco de solo lectura y no
+  usa la imagen Docker.
+- **Decisión:** imagen `python:3.12-slim` con usuario sin privilegios ([Dockerfile](../Dockerfile)); Azure Container Apps
+  (`rg-g9`, app `g9-cacao`) con **0,5 vCPU / 1 GiB, réplicas mín. 0 y máx. 1**, ingreso externo al puerto 8080. Las claves
+  son **secretos de la app** (`gemini-key`, `groq-key`) referenciados con `secretref:`, nunca en la imagen ni en el repo.
+  Configuración en producción: **`LLM_PRINCIPAL=gemini`, `LLM_RESPALDO=groq`**, `LLM_TIMEOUT_S=8`: si Gemini se cuelga o
+  responde 503, la app pasa a Groq en segundos y no en 30 s (medición del 05/11 en [07-evaluacion.md](07-evaluacion.md)
+  §2.1). `/health` responde sin llamar al modelo. CI/CD en `.github/workflows/ci-cd.yml`: gitleaks + pytest + build de la
+  imagen en cada push y pull request; despliegue solo en `main` y solo si las pruebas pasan (`needs: pruebas`).
+- **Consecuencias:** con réplicas mín. 0 no hay costo de cómputo sin tráfico, pero la primera visita tras un rato sin uso
+  tiene **arranque en frío** (se despierta con `/health` antes de la demo). El registro de imágenes (ACR Basic) consume
+  ≈ 5 USD/mes del crédito. Máx. 1 réplica limita el gasto y evita que las propuestas pendientes de registro (en memoria)
+  queden repartidas entre copias. Cambiar de proveedor principal no requiere reconstruir (`az containerapp update`).
 
 #### Datos en producción
 
@@ -221,10 +221,10 @@ Formato: contexto → decisión → consecuencias. Estados: **Aceptada**, **Prop
 | Historial de conversaciones | escribe | En el navegador del productor (`localStorage`, ADR-005): el servidor no lo guarda |
 | Consultas registradas por el agente (`data/consultas/consultas.jsonl`) | escribe | Se pierde al reiniciar (lo aceptamos) |
 | Archivos que sube el usuario | — | No existe en nuestro proyecto |
-| Registros de llamadas al modelo (`logs/llm.jsonl`) | escribe | Se pierde al reiniciar; la copia que importa sale por la consola a **Cloud Logging** |
+| Registros de llamadas al modelo (`logs/llm.jsonl`) | escribe | Se pierde al reiniciar; la copia que importa sale por la consola a **Log Analytics** |
 
 **Lo que aceptamos perder y por qué:** las consultas registradas son una demostración del flujo con confirmación humana
 (ADR-017); no hay todavía un técnico que las atienda, así que perderlas en un reinicio no afecta a ningún productor, y
-cada una queda en Cloud Logging (evento `consulta_registrada` con su código). Los códigos R-0001… se reinician con
-el contenedor. Si el piloto pasa a técnicos reales, el registro se mueve a Firestore (capa gratuita) sin cambiar la
+cada una queda en Log Analytics (evento `consulta_registrada` con su código). Los códigos R-0001… se reinician con
+el contenedor. Si el piloto pasa a técnicos reales, el registro se mueve a una base externa (Cosmos DB tiene capa gratuita) sin cambiar la
 interfaz de `app/agente/consultas.py`. Los logs nunca llevan el texto del usuario ni claves.
