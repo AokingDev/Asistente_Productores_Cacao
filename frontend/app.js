@@ -365,7 +365,7 @@ async function mensajeDeError(respuesta) {
     /* el cuerpo no era JSON */
   }
   if (respuesta.status === 422) return "Su mensaje está vacío o es demasiado largo (máximo 1000 letras).";
-  if (respuesta.status === 429) return "Hay muchas consultas en este momento. Espere un minuto e intente de nuevo.";
+  if (respuesta.status === 429) return detalle || "Hay muchas consultas en este momento. Espere un minuto e intente de nuevo.";
   if (respuesta.status === 503) return detalle || "El asistente no está disponible ahora. Intente en unos minutos.";
   return `Ocurrió un problema en el servidor (código ${respuesta.status}). Intente de nuevo.`;
 }

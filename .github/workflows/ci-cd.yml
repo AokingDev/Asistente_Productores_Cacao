@@ -50,7 +50,10 @@ jobs:
           containerAppName: asistente-productores-cacao
           resourceGroup: rg-g9
           targetPort: 8080
+      # Pruebas funcionales de humo contra la URL desplegada, con el modelo REAL (misión 6 del taller).
+      # Primero despierta la app (arranque en frío) y luego corre tests/smoke.py: si un caso falla, el job queda rojo.
       - name: Humo contra la URL nueva
         run: |
           FQDN=$(az containerapp show --name asistente-productores-cacao --resource-group rg-g9 --query properties.configuration.ingress.fqdn -o tsv)
           curl -fsS --retry 5 --retry-delay 10 --retry-all-errors "https://$FQDN/health"
+          python3 tests/smoke.py "https://$FQDN"

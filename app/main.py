@@ -16,6 +16,7 @@ from app.agente import consultas
 from app.agente.herramientas import pendientes
 from app.asistente import Turno
 from app.config import APP_NOMBRE, APP_VERSION, RAIZ, ErrorConfiguracion, cargar_config
+from app.limite import limitar
 from app.parametros import cargar, documentos, temas
 from app.rag.indice import Indice, indice_global
 from app.schemas import ChatSolicitud
@@ -96,8 +97,9 @@ async def _ndjson(primero: dict, eventos: Iterator[dict], turno: Turno) -> Async
     200: {"content": {"application/x-ndjson": {}},
           "description": 'Una línea JSON por evento: {"tipo": "fuentes"|"herramienta"|"confirmacion"|"texto"|'
                          '"alerta"|"aviso"|"error"|"fin", ...}'},
+    429: {"description": "Demasiadas preguntas desde la misma IP (LIMITE_POR_MINUTO); trae Retry-After"},
     503: {"description": "Ningún proveedor del modelo respondió"},
-})
+}, dependencies=[Depends(limitar)])
 def chat(solicitud: ChatSolicitud, llm: ClienteLLM = Depends(obtener_llm), indice: Indice = Depends(obtener_indice)):
     """Busca en los manuales, decide si hay base para responder y, si la hay, responde con citas usando
     las herramientas del agente. El historial lo guarda el navegador; el servidor usa solo los últimos turnos."""
