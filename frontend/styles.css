@@ -385,14 +385,41 @@ body > .cuerpo { /* contenedor de panel + chat (no el .cuerpo de cada burbuja) *
 }
 .guia h3 { margin-top: 4px; }
 .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px !important; }
-.etiquetas span {
-  padding: 3px 10px;
+.guia-ayuda { font-size: .8rem; font-weight: 400; color: var(--suave); }
+/* Opciones del ejemplo armable: cápsulas que se marcan al tocarlas (aria-pressed) */
+.opcion-guia {
+  min-height: 32px;
+  padding: 4px 12px;
   border: 1px solid var(--borde);
   border-radius: 999px;
   background: var(--superficie);
   color: var(--texto);
-  font-size: .8rem;
+  font: inherit;
+  font-size: .82rem;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
 }
+.opcion-guia:hover { border-color: var(--acento); }
+.opcion-guia[aria-pressed="true"] { border-color: var(--acento); background: var(--acento-suave); color: var(--acento); font-weight: 600; }
+.opcion-guia[aria-pressed="true"]::before { content: "✓ "; }
+.ejemplo-acciones { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Pasos 3 y 4: desplegables en fila (en el teléfono bajan de a dos o uno) */
+.selectores { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-top: 8px; }
+.selectores label { display: grid; gap: 3px; flex: 1 1 130px; max-width: 220px; font-size: .75rem; color: var(--suave); }
+.selectores select {
+  min-height: 36px;
+  padding: 0 30px 0 12px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--superficie) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;
+  color: var(--texto);
+  font: inherit;
+  font-size: .85rem;
+  appearance: none;
+  cursor: pointer;
+}
+.selectores select:hover, .selectores select:focus-visible { border-color: var(--acento); }
+.btn-ejemplo.secundario { border-color: var(--borde); color: var(--suave); }
 .ejemplo {
   margin: 8px 0 0;
   padding: 16px;
@@ -737,6 +764,8 @@ main {
 
 /* Fuentes bajo cada respuesta */
 .fuentes:empty, .tarjetas:empty, .avisos:empty { display: none; }
+/* Mientras se escribe la respuesta solo se ve el cuerpo; lo demás aparece debajo al terminar (app.js). */
+.asistente.generando .tarjetas, .asistente.generando .avisos, .asistente.generando .fuentes { display: none; }
 .fuentes { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--borde); }
 .fuentes-titulo { margin: 0 0 6px; font-size: .8rem; font-weight: 700; color: var(--suave); }
 .fuentes-lista { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
