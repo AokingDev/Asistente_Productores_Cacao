@@ -307,6 +307,17 @@ function bajar() {
   conversacion.scrollTop = conversacion.scrollHeight;
 }
 
+// Mientras llega una respuesta, la vista sigue el texto solo hasta que la pregunta del usuario toca el borde
+// superior; desde ahí se queda quieta: se ve la pregunta y la respuesta desde su comienzo. Nunca sube por su
+// cuenta. Si la pregunta es muy larga (más del 40 % de la pantalla), se ancla al inicio de la respuesta.
+function seguirRespuesta(divUsuario, divAsistente) {
+  const margen = 12;
+  const arriba = (d) => conversacion.scrollTop + d.getBoundingClientRect().top - conversacion.getBoundingClientRect().top - margen;
+  const ancla = divUsuario.offsetHeight > conversacion.clientHeight * 0.4 ? divAsistente : divUsuario;
+  const fondo = conversacion.scrollHeight - conversacion.clientHeight;
+  conversacion.scrollTop = Math.max(conversacion.scrollTop, Math.min(fondo, arriba(ancla)));
+}
+
 function mostrarError(mensaje) {
   textoError.textContent = mensaje;
   cajaError.hidden = false;
@@ -376,8 +387,16 @@ async function enviar(texto) {
   ajustarAltura();
   const divUsuario = burbujaUsuario(texto);
   const partes = burbujaAsistente();
+  // Tarjetas, avisos y fuentes llegan antes que el texto: se guardan ocultos y aparecen bajo el cuerpo al final.
+  partes.div.classList.add("generando");
   indicadorEscribiendo(partes.cuerpo, "Buscando en los manuales…");
   bajar();
+
+  // Si el usuario desplaza la conversación a mano, la vista deja de seguir la respuesta.
+  let siguiendo = true;
+  const soltar = () => (siguiendo = false);
+  const seguir = () => siguiendo && seguirRespuesta(divUsuario, partes.div);
+  ["wheel", "touchmove"].forEach((t) => conversacion.addEventListener(t, soltar, { passive: true }));
 
   const control = new AbortController();
   let motivo = "tiempo"; // por qué se abortó: "tiempo" o "usuario"
@@ -469,17 +488,18 @@ async function enviar(texto) {
             fin = evento;
             break;
         }
-        bajar();
+        seguir();
       }
     }
 
     if (fin) {
       Object.assign(msg, { citadas: fin.citadas || [], abstencion: fin.abstencion, proveedor: fin.proveedor,
         modelo: fin.modelo, latencia_ms: fin.latencia_ms });
+      partes.div.classList.remove("generando");
       pintarAsistente(partes, msg);
       historial.push({ role: "user", content: texto }, msg);
       guardarHistorial();
-      bajar();
+      seguir();
     } else if (!msg.content && !msg.herramientas.length) {
       deshacer("El asistente no respondió. Intente de nuevo.");
     } else if (cajaError.hidden) {
@@ -504,6 +524,8 @@ async function enviar(texto) {
       deshacer(mensaje);
     }
   } finally {
+    partes.div.classList.remove("generando"); // si se cortó o se detuvo, lo recibido también se muestra
+    ["wheel", "touchmove"].forEach((t) => conversacion.removeEventListener(t, soltar));
     clearTimeout(temporizador);
     detener = null;
     ocupado(false);
@@ -601,6 +623,129 @@ function alternarPanel() {
   escribir(CLAVE_PANEL, oculto);
   rotularBotonPanel();
 }
+
+// ---------------------------------------------------------------- «Cómo describir un síntoma»: ejemplo armable
+// Las señales de cada parte salen de los signos de config/sintomas.toml, dichas como las diría el productor,
+// para que el ejemplo armado active el diagnóstico preliminar.
+const GUIA_SINTOMA = {
+  parte: [
+    { id: "mazorca", texto: "Mazorca", sujeto: "varias mazorcas tienen" },
+    { id: "hoja", texto: "Hoja", sujeto: "varias hojas tienen" },
+    { id: "rama", texto: "Rama", sujeto: "varias ramas tienen" },
+    { id: "tronco", texto: "Tronco", sujeto: "varios troncos tienen" },
+  ],
+  senales: {
+    mazorca: [
+      { id: "cafe", texto: "Manchas cafés", frase: "manchas cafés" },
+      { id: "polvo", texto: "Polvo o felpa blanca", frase: "un polvo blanco encima" },
+      { id: "negra", texto: "Mancha negra", frase: "una mancha negra que se extiende" },
+      { id: "picadura", texto: "Picaduras hundidas", frase: "picaduras oscuras y hundidas" },
+      { id: "deforme", texto: "Deformes o duras", frase: "deformaciones y zonas endurecidas" },
+    ],
+    hoja: [
+      { id: "borde", texto: "Manchas desde el borde", frase: "manchas negras que empiezan por el borde" },
+      { id: "cortes", texto: "Cortes en media luna", frase: "cortes en media luna en el borde" },
+      { id: "amarilla", texto: "Amarillas y secas", frase: "color amarillo y bordes secos" },
+      { id: "aranitas", texto: "Arañitas en el envés", frase: "arañitas rojas en el envés" },
+    ],
+    rama: [
+      { id: "escoba", texto: "Brotes gruesos (escoba)", frase: "brotes gruesos y deformes, como una escoba" },
+      { id: "pulgon", texto: "Insectos negros", frase: "pulgones (insectos negros pequeños) en los brotes tiernos" },
+      { id: "secas", texto: "Hojas secas pegadas", frase: "hojas secas que no se caen" },
+      { id: "tierra", texto: "Túneles de tierra", frase: "caminos o túneles de tierra" },
+    ],
+    tronco: [
+      { id: "vino", texto: "Mancha vino tinto", frase: "manchas húmedas de color vino tinto" },
+      { id: "aserrin", texto: "Huequitos con aserrín", frase: "huequitos de los que sale aserrín fino" },
+      { id: "tuneles", texto: "Túneles de tierra", frase: "túneles de tierra y nidos" },
+      { id: "corteza", texto: "Corteza comida", frase: "la corteza comida por comején" },
+    ],
+  },
+  tiempo: [
+    { id: "dias", texto: "Unos días", frase: "unos días" },
+    { id: "semana", texto: "Una semana", frase: "una semana" },
+    { id: "dos", texto: "Dos semanas", frase: "dos semanas" },
+    { id: "mes", texto: "Un mes", frase: "un mes" },
+  ],
+  cantidad: [
+    { id: "pocas", texto: "2 o 3 plantas", frase: "Son 2 o 3 plantas" },
+    { id: "diez", texto: "Unas 10 plantas", frase: "Son unas 10 plantas" },
+    { id: "lote", texto: "Casi todo el lote", frase: "Es casi todo el lote" },
+  ],
+  edad: [
+    { id: "2", texto: "2 años", frase: "2 años" },
+    { id: "5", texto: "5 años", frase: "5 años" },
+    { id: "10", texto: "10 años", frase: "10 años" },
+    { id: "20", texto: "Más de 20 años", frase: "más de 20 años" },
+  ],
+  tipo: [
+    { id: "ccn51", texto: "CCN-51", frase: "CCN-51" },
+    { id: "nacional", texto: "Nacional", frase: "cacao Nacional" },
+  ],
+  region: ["Los Ríos", "Guayas", "Manabí", "Esmeraldas", "El Oro", "Sucumbíos", "Orellana"].map((r) => ({ id: r, texto: r, frase: r })),
+};
+// Selección inicial = el ejemplo de siempre (monilla en CCN-51 de Los Ríos).
+const guiaSel = { parte: "mazorca", senales: ["cafe", "polvo"], tiempo: "dos", cantidad: "diez", edad: "5", tipo: "ccn51", region: "Los Ríos" };
+
+const opcionesGuia = (grupo) => (grupo === "senales" ? GUIA_SINTOMA.senales[guiaSel.parte] : GUIA_SINTOMA[grupo]);
+const buscarGuia = (grupo, id) => opcionesGuia(grupo).find((o) => o.id === id);
+
+function textoEjemplo() {
+  const s = guiaSel;
+  const frases = s.senales.map((id) => buscarGuia("senales", id).frase);
+  // «A y B»; si alguna ya lleva «y» se evita «A y B y C»: «A y B, además de C».
+  const senales = frases.join(frases.some((f) => f.includes(" y ")) ? ", además de " : " y ");
+  return `Desde hace ${buscarGuia("tiempo", s.tiempo).frase}, ${buscarGuia("parte", s.parte).sujeto} ${senales}. `
+    + `${buscarGuia("cantidad", s.cantidad).frase} de ${buscarGuia("tipo", s.tipo).frase} de ${buscarGuia("edad", s.edad).frase}, en ${s.region}.`;
+}
+
+function pintarGuiaSintoma() {
+  vistaInfo.querySelectorAll(".etiquetas[data-grupo]").forEach((caja) => {
+    const grupo = caja.dataset.grupo;
+    const elegidos = [].concat(guiaSel[grupo]);
+    caja.innerHTML = opcionesGuia(grupo).map((o) =>
+      `<button type="button" class="opcion-guia" data-id="${escapar(o.id)}" aria-pressed="${elegidos.includes(o.id)}">${escapar(o.texto)}</button>`).join("");
+  });
+  // Pasos 3 y 4: desplegables (datos de una sola opción; ocupan una fila en vez de varias)
+  vistaInfo.querySelectorAll("select[data-grupo]").forEach((lista) => {
+    const grupo = lista.dataset.grupo;
+    lista.innerHTML = opcionesGuia(grupo).map((o) =>
+      `<option value="${escapar(o.id)}"${o.id === guiaSel[grupo] ? " selected" : ""}>${escapar(o.texto)}</option>`).join("");
+  });
+  $("#texto-ejemplo").textContent = textoEjemplo();
+}
+
+function elegirGuia(grupo, id) {
+  if (grupo === "senales") {
+    const lista = guiaSel.senales;
+    if (lista.includes(id)) {
+      if (lista.length > 1) lista.splice(lista.indexOf(id), 1); // siempre queda al menos una señal
+    } else {
+      lista.push(id);
+      if (lista.length > 2) lista.shift(); // máximo dos: se suelta la más antigua
+    }
+  } else {
+    guiaSel[grupo] = id;
+    if (grupo === "parte") guiaSel.senales = GUIA_SINTOMA.senales[id].slice(0, 2).map((o) => o.id);
+  }
+  pintarGuiaSintoma();
+}
+
+function ejemploAlAzar() {
+  const azar = (lista) => lista[Math.floor(Math.random() * lista.length)].id;
+  ["parte", "tiempo", "cantidad", "edad", "tipo", "region"].forEach((g) => (guiaSel[g] = azar(GUIA_SINTOMA[g])));
+  const senales = [...GUIA_SINTOMA.senales[guiaSel.parte]].sort(() => Math.random() - 0.5);
+  guiaSel.senales = senales.slice(0, 1 + Math.floor(Math.random() * 2)).map((o) => o.id);
+  pintarGuiaSintoma();
+}
+
+vistaInfo.addEventListener("click", (e) => {
+  const boton = e.target.closest(".opcion-guia");
+  if (boton) elegirGuia(boton.parentElement.dataset.grupo, boton.dataset.id);
+});
+vistaInfo.addEventListener("change", (e) => {
+  if (e.target.matches("select[data-grupo]")) elegirGuia(e.target.dataset.grupo, e.target.value);
+});
 
 // ---------------------------------------------------------------- vistas del panel (se abren en la zona del chat)
 let vistaActual = null;
@@ -738,6 +883,8 @@ $("#abrir-panel").addEventListener("click", abrirPanel);
 velo.addEventListener("click", cerrarPanel);
 lateral.querySelectorAll(".item[data-vista]").forEach((b) => b.addEventListener("click", () => mostrarVista(b.dataset.vista)));
 $("#volver-chat").addEventListener("click", cerrarVista);
+pintarGuiaSintoma();
+$("#otro-ejemplo").addEventListener("click", ejemploAlAzar);
 // «Cómo describir un síntoma»: el ejemplo se copia al campo para que el productor lo adapte a su caso
 $("#usar-ejemplo").addEventListener("click", () => {
   campo.value = $("#texto-ejemplo").textContent.replace(/\s+/g, " ").trim();

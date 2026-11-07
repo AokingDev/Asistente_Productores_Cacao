@@ -130,5 +130,15 @@ def cancelar_consulta(ident: str):
     return {"mensaje": "No se registró la consulta."}
 
 
+class Interfaz(StaticFiles):
+    """Archivos del chat con «no-cache»: el navegador pregunta en cada visita si cambiaron (ETag) y, si no,
+    recibe un 304 sin cuerpo. Así un despliegue nuevo se ve sin Ctrl+F5 y no queda un app.js viejo."""
+
+    async def get_response(self, path, scope):
+        respuesta = await super().get_response(path, scope)
+        respuesta.headers["Cache-Control"] = "no-cache"
+        return respuesta
+
+
 # Interfaz web (al final, para que no tape las rutas de la API)
-app.mount("/", StaticFiles(directory=RAIZ / "frontend", html=True), name="frontend")
+app.mount("/", Interfaz(directory=RAIZ / "frontend", html=True), name="frontend")
