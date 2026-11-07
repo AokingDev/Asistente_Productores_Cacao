@@ -10,7 +10,7 @@
   <meta name="referrer" content="no-referrer">
   <title>Asistente Cacao</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%234b5563'/%3E%3Cg transform='translate(32 33) rotate(28) scale(.84) translate(-32 -33)'%3E%3Cpath d='M32 15c7.6.6 12.4 10 12.4 20.4S39.6 54.6 32 58c-7.6-3.4-12.4-12.2-12.4-22.6S24.4 15.6 32 15z' fill='%23fff'/%3E%3Cpath d='M30.5 13.5c-3.6-4.4-9-5.6-13.6-3.4 3.2 4.4 8.6 5.6 13.6 3.4z' fill='%23fff'/%3E%3Cpath d='M27 18.6c-2.6 5.6-3.4 13.4-2.4 21.4.8 5.8 2.6 10.6 5 14M37 18.6c2.6 5.6 3.4 13.4 2.4 21.4-.8 5.8-2.6 10.6-5 14M32 16.2v39.6' stroke='%234b5563' stroke-width='2' fill='none'/%3E%3C/g%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=0.3.3">
 </head>
 <body>
   <!-- Logo: mazorca blanca sobre un círculo gris, sin borde (como el sello de referencia).
@@ -167,30 +167,42 @@
         </article>
 
         <article data-vista="sintoma" data-titulo="Cómo describir un síntoma" hidden>
-          <p class="vista-intro">Mientras más detalles me dé, mejor será la orientación. Siga estos pasos:</p>
+          <p class="vista-intro">Mientras más detalles me dé, mejor será la orientación. Toque una opción en cada paso
+            y vea cómo se arma el ejemplo:</p>
+          <!-- Las opciones se pintan desde app.js (GUIA_SINTOMA); «¿Cómo se ve?» cambia según la parte elegida. -->
           <ol class="guia">
             <li>
               <h3>¿Qué parte está afectada?</h3>
-              <p class="etiquetas"><span>Mazorca</span><span>Hoja</span><span>Rama</span><span>Tronco</span></p>
+              <div class="etiquetas" data-grupo="parte" role="group" aria-label="Parte afectada"></div>
             </li>
             <li>
-              <h3>¿Cómo se ve?</h3>
-              <p class="etiquetas"><span>Color de la mancha</span><span>Polvo o felpa</span><span>Deformación</span><span>Huecos o galerías</span></p>
+              <h3>¿Cómo se ve? <span class="guia-ayuda">(elija una o dos)</span></h3>
+              <div class="etiquetas" data-grupo="senales" role="group" aria-label="Cómo se ve"></div>
             </li>
             <li>
               <h3>¿Desde cuándo y cuánto?</h3>
-              <p class="etiquetas"><span>Días o semanas</span><span>Cuántas plantas</span></p>
+              <div class="selectores">
+                <label>Desde hace<select data-grupo="tiempo"></select></label>
+                <label>Plantas afectadas<select data-grupo="cantidad"></select></label>
+              </div>
             </li>
             <li>
               <h3>Su plantación</h3>
-              <p class="etiquetas"><span>Edad</span><span>Tipo de cacao (Nacional, CCN-51…)</span><span>Región</span></p>
+              <div class="selectores">
+                <label>Edad<select data-grupo="edad"></select></label>
+                <label>Tipo de cacao<select data-grupo="tipo"></select></label>
+                <label>Provincia<select data-grupo="region"></select></label>
+              </div>
             </li>
           </ol>
           <figure class="ejemplo">
             <figcaption>Así se ve una buena descripción</figcaption>
-            <blockquote id="texto-ejemplo">Desde hace dos semanas, varias mazorcas tienen manchas cafés con un polvo blanco encima.
-              Son unas 10 plantas de CCN-51 de 5 años, en Los Ríos.</blockquote>
-            <button id="usar-ejemplo" class="btn-ejemplo" type="button">Usar este ejemplo</button>
+            <blockquote id="texto-ejemplo" aria-live="polite">Desde hace dos semanas, varias mazorcas tienen manchas cafés y
+              un polvo blanco encima. Son unas 10 plantas de CCN-51 de 5 años, en Los Ríos.</blockquote>
+            <div class="ejemplo-acciones">
+              <button id="usar-ejemplo" class="btn-ejemplo" type="button">Usar este ejemplo</button>
+              <button id="otro-ejemplo" class="btn-ejemplo secundario" type="button">Otro ejemplo al azar</button>
+            </div>
           </figure>
         </article>
 
@@ -254,6 +266,6 @@
     </section>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=0.3.3"></script>
 </body>
 </html>
