@@ -1,0 +1,8 @@
+PASA   1. [salud] GET /health -> 200 en 0.4 s
+PASA   2. [caso] POST /chat -> 200 en 1.8 s
+PASA   3. [caso] POST /chat -> 200 en 4.5 s
+PASA   4. [fuera] POST /chat -> 200 en 0.4 s
+PASA   5. [inyeccion] POST /chat -> 200 en 0.4 s
+PASA   6. [invalida] POST /chat -> 422 en 0.3 s
+PASA   7. [invalida] POST /chat -> 422 en 0.3 s
+RESULTADO: 7/7 pasan · p95 4.5 s · más lento 4.5 s

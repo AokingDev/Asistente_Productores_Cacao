@@ -23,7 +23,7 @@ el campo. Detalle en [docs/01-propuesta.md](docs/01-propuesta.md).
 | 1 | Definición del problema y diseño | ✅ |
 | 2 | MVP de chat + integración con IA generativa | ✅ ([evidencias](docs/evidencias/semana-2/README.md)) |
 | 3 | RAG con citas, agente y evaluación | ✅ en revisión ([evidencias](docs/evidencias/semana-3/README.md)) |
-| 4 | Despliegue y validación | ⏳ |
+| 4 | Despliegue y validación | ✅ ([evidencias](docs/evidencias/semana-4/README.md)) |
 
 ## Arquitectura
 
@@ -102,6 +102,7 @@ uvicorn app.main:app --reload      # abrir http://localhost:8000
 | `APP_VERSION` | Versión expuesta en `/health` | `0.2.0` |
 | `LLM_LOG_DIR` | Carpeta del log por solicitud | `logs` |
 | `LLM_ENFRIAMIENTO_S` | Segundos que un proveedor que falló queda al final de la fila | `120` |
+| `LIMITE_POR_MINUTO` | Preguntas por minuto por IP en `/chat` (`0` = sin límite) | `20` |
 | `RAG_INDICE` | Carpeta del índice (pruebas: `data/index_inyeccion`) | `data/index` |
 | `CONFIG_DIR` | Carpeta de parámetros | `config` |
 
@@ -127,9 +128,54 @@ Los parámetros del negocio (umbrales, tabla de síntomas, calendario, mensajes)
 | POST | `/consultas/{id}/cancelar` | — | Descarta la propuesta | ✅ |
 | GET | `/` | — | Interfaz web del chat | ✅ |
 
-## URL desplegada
+## Demo y despliegue
 
-_Pendiente (semana 4)._
+- **URL pública:** https://asistente-productores-cacao.delightfulpond-e73b0c99.eastus.azurecontainerapps.io/
+- **Estado:** [`/health`](https://asistente-productores-cacao.delightfulpond-e73b0c99.eastus.azurecontainerapps.io/health)
+  (responde sin llamar al modelo)
+- **Plataforma:** Azure for Students · Azure Container Apps (0,5 vCPU / 1 GiB, réplicas mín. 0 y máx. 1). Con mín. 0 la
+  primera visita tras un rato sin uso tiene arranque en frío: antes de una demo, abrir `/health` uno o dos minutos antes.
+- **Imagen:** [Dockerfile](Dockerfile) (`python:3.12-slim`, usuario sin privilegios); el índice va dentro de la imagen.
+- **Claves:** secretos de la app en Azure (`gemini-key`, `groq-key`), nunca en la imagen ni en el repositorio.
+- **CI/CD:** [.github/workflows/ci-cd.yml](.github/workflows/ci-cd.yml). En cada push y pull request: gitleaks + pytest +
+  build de la imagen. En `main`, si las pruebas pasan: despliegue en Azure y pruebas de humo contra la URL nueva.
+- Paso a paso (incluido el plan B si la suscripción no permite construir en la nube): [docs/despliegue.md](docs/despliegue.md).
+  Qué datos viven dónde en producción: ADR-020 en [docs/09-decisiones.md](docs/09-decisiones.md).
+
+## Pruebas y evaluación
+
+| Qué | Cómo se corre | Resultado |
+| :--- | :--- | :--- |
+| Pruebas unitarias y de integración (modelo simulado, sin gastar API) | `pytest` | 121/121 pasan |
+| Pruebas funcionales de humo contra la URL desplegada (modelo real) | `python tests/smoke.py <URL>` | **7/7 pasan**, p95 4,5 s ([salida](docs/evidencias/semana-4/smoke-azure.txt)) |
+| Evaluación del RAG y del agente | `python eval/run_eval.py …` | 19/20 preguntas correctas, 100 % con cita, síntomas 10/10 ([docs/07-evaluacion.md](docs/07-evaluacion.md)) |
+
+Los 7 casos de humo: `/health`; dos preguntas del caso (poda de mantenimiento con respuesta citada y síntomas de
+monilla con la herramienta de diagnóstico); una pregunta fuera de dominio y un intento de inyección (ambos deben
+abstenerse); y dos entradas inválidas (`{}` y mensaje vacío → 422, nunca 500).
+
+## Integración estable con el modelo
+
+| Control | Estado | Dónde |
+| :--- | :-: | :--- |
+| Tiempo límite en cada llamada al modelo | Sí | `LLM_TIMEOUT_S` (8 s en producción) · `app/services/llm.py` |
+| Reintentos con espera creciente ante 429 o 5xx | Sí | `app/services/llm.py` (`_con_reintentos`) · `app/rag/embeddings.py` |
+| Proveedor de respaldo | Sí | `LLM_RESPALDO=groq` · `app/services/llm.py` (interruptor: el que falla espera 120 s) |
+| Límite de peticiones por usuario o IP (responde 429) | Sí | `app/limite.py`: 20 preguntas/min por IP (`LIMITE_POR_MINUTO`), 429 con `Retry-After` |
+| Tope de tamaño de la entrada y de tokens de salida | Sí | `app/schemas.py` (1000 caracteres, historial ≤ 40) · `LLM_MAX_TOKENS` |
+| Mensaje claro al usuario cuando el modelo falla | Sí | `app/services/llm.py` (`mensaje_usuario`) · `frontend/app.js` (`mensajeDeError`) |
+| La primera llamada tras un arranque en frío no falla | Sí | `/health` sin modelo; el frontend espera hasta 60 s (`frontend/app.js`) |
+| Registro de llamadas sin datos personales ni claves | Sí | `app/services/llm.py` (`_registrar`): latencia, tokens, proveedor y error; nunca el texto |
+
+**Prueba de caída** (7/11/2026, en local con la clave de Gemini inválida): Gemini respondió 400 y quedó en espera;
+la búsqueda siguió solo con BM25 y la respuesta llegó por **Groq**, que además devolvió 429 dos veces y respondió al
+tercer intento tras esperar ≈ 3 s. El productor recibió la respuesta con citas, sin ningún error en pantalla.
+Log: [log-prueba-caida.jsonl](docs/evidencias/semana-4/log-prueba-caida.jsonl).
+
+## Decisiones y riesgos
+
+- Decisiones (ADR-001 … ADR-020): [docs/09-decisiones.md](docs/09-decisiones.md).
+- Riesgos del proyecto: [docs/01-propuesta.md § Riesgos](docs/01-propuesta.md#riesgos).
 
 ## Fuentes de conocimiento
 
@@ -145,13 +191,33 @@ Catálogo completo, enlaces y hashes en [data/raw/README.md](data/raw/README.md)
 - Las dosis citadas vienen de manuales de 2015–2021: el sistema pide verificar el registro vigente en Agrocalidad.
 - La abstención por umbral no separa todas las preguntas de fuera de dominio (se traslapan con las válidas); el resto
   depende del prompt (ver `docs/07-evaluacion.md`).
-- Las propuestas de registro viven en memoria (30 min) y las consultas confirmadas en un archivo local: en un despliegue
-  con disco efímero se pierden al reiniciar.
+- Las propuestas de registro viven en memoria (30 min) y las consultas confirmadas en un archivo local: en producción
+  (Azure Container Apps, disco efímero) se pierden al reiniciar. Es una decisión aceptada (ADR-020).
+- El límite por IP vive en memoria: vale con 1 réplica; con varias habría que llevarlo a un almacén compartido
+  (Redis). Varias personas detrás de la misma IP (p. ej., una asociación) comparten las 20 preguntas por minuto.
+- Con réplicas mín. 0, la primera visita tras un rato sin uso tarda más (arranque en frío).
 
 ## Declaración de uso de IA
 
-_Completar: herramientas de IA usadas en el desarrollo (p. ej., asistentes de código, LLM para redacción), para qué
-se usaron y cómo se verificó su salida._
+El producto emplea modelos de lenguaje en tiempo de ejecución (Gemini y Groq) para redactar las respuestas al
+productor, según se describe en la arquitectura. La presente declaración se refiere al uso de herramientas de
+inteligencia artificial **durante la construcción** del proyecto.
+
+| Herramienta | Uso | Verificación |
+| :--- | :--- | :--- |
+| Claude Code (asistente de programación de Anthropic, integrado en VS Code) | Apoyo en la semana 4 para la contenerización con Docker, el despliegue en Azure Container Apps, el pipeline de integración y despliegue continuo en GitHub Actions, los ajustes de la interfaz (desplazamiento durante la generación de la respuesta y guía «Cómo describir un síntoma»), las pruebas funcionales de humo (`tests/smoke.py`), el límite de peticiones por IP (`app/limite.py`) y la redacción de la documentación y de las evidencias | Cada cambio fue revisado por el equipo y validado con `pytest` (121/121) y con las pruebas de humo contra la URL de Azure (7/7); la interfaz se comprobó en el navegador; las cifras reportadas en este README provienen de ejecuciones reales registradas en `docs/evidencias/` |
+
+**Investigación individual.** Previo a la implementación, cada integrante del equipo se encargó de indagar de manera
+independiente sobre el despliegue de aplicaciones en Microsoft Azure (Azure Container Apps, Azure Container Registry
+y gestión de secretos) y sobre la integración y el despliegue continuos (CI/CD) con GitHub Actions. Los hallazgos se
+pusieron en común en el equipo y sirvieron de base para las decisiones registradas en el ADR-020 y para el
+procedimiento documentado en [docs/despliegue.md](docs/despliegue.md); las sugerencias obtenidas con apoyo de la IA
+se contrastaron con la documentación oficial y con las indicaciones del taller antes de aplicarse.
+
+**Criterios de uso responsable.** No se introdujeron claves, credenciales ni datos personales en ninguna herramienta
+de IA. Todo código generado fue leído, probado y, cuando fue necesario, corregido antes de incorporarse al
+repositorio. Los contenidos agronómicos proceden exclusivamente de los manuales del INIAP citados y no de la IA. El
+equipo asume la responsabilidad total sobre lo entregado.
 
 ## Integrantes y aporte
 

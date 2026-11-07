@@ -1,0 +1,23 @@
+{"ts": "2026-11-07T10:51:42", "evento": "embeddings_error", "tipo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:42", "evento": "busqueda_sin_embeddings", "motivo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:42", "evento": "busqueda", "modo": "bm25", "decision": "suficiente", "motivo": "cobertura máxima 1.00 (umbral 0.5)", "filtros": {}, "mejor_coseno": null, "fragmentos": ["manual76-0024", "guia_iniap-0056", "manual76-0029", "manual76-0032", "guia_iniap-0083"]}
+{"ts": "2026-11-07T10:51:43", "evento": "error_definitivo", "proveedor": "gemini", "modelo": "gemini-3.5-flash-lite", "intento": 1, "tipo": "BadRequestError", "estado_http": 400, "detalle": "Please pass a valid API key"}
+{"ts": "2026-11-07T10:51:43", "evento": "proveedor_en_espera", "proveedor": "gemini", "segundos": 120.0}
+{"ts": "2026-11-07T10:51:43", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "primer_trozo_ms": 552, "latencia_ms": 695, "tokens_entrada": 3092, "tokens_salida": 82, "herramientas": null}
+{"ts": "2026-11-07T10:51:46", "evento": "embeddings_error", "tipo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:46", "evento": "busqueda_sin_embeddings", "motivo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:46", "evento": "busqueda", "modo": "bm25", "decision": "insuficiente", "motivo": "cobertura máxima 0.38 (umbral 0.5)", "filtros": {}, "mejor_coseno": null, "fragmentos": ["manual76-0042", "manual76-0033", "manual76-0034", "manual76-0028", "manual76-0006"]}
+{"ts": "2026-11-07T10:51:46", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "primer_trozo_ms": 463, "latencia_ms": 466, "tokens_entrada": 1702, "tokens_salida": 58, "herramientas": ["diagnosticar_sintomas"]}
+{"ts": "2026-11-07T10:51:47", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "primer_trozo_ms": 558, "latencia_ms": 743, "tokens_entrada": 2089, "tokens_salida": 233, "herramientas": null}
+{"ts": "2026-11-07T10:51:49", "evento": "embeddings_error", "tipo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:49", "evento": "busqueda_sin_embeddings", "motivo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:49", "evento": "busqueda", "modo": "bm25", "decision": "insuficiente", "motivo": "cobertura máxima 0.25 (umbral 0.5)", "filtros": {}, "mejor_coseno": null, "fragmentos": ["manual76-0004", "manual76-0020", "manual76-0019", "catalogo_cultivares-0001", "manual76-0023"]}
+{"ts": "2026-11-07T10:51:51", "evento": "embeddings_error", "tipo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:51", "evento": "busqueda_sin_embeddings", "motivo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:51", "evento": "busqueda", "modo": "bm25", "decision": "insuficiente", "motivo": "cobertura máxima 0.25 (umbral 0.5)", "filtros": {}, "mejor_coseno": null, "fragmentos": ["guia_iniap-0029", "manual76-0011", "manual76-0015", "guia_iniap-0023", "manual76-0010"]}
+{"ts": "2026-11-07T10:51:58", "evento": "embeddings_error", "tipo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:58", "evento": "busqueda_sin_embeddings", "motivo": "BadRequestError"}
+{"ts": "2026-11-07T10:51:58", "evento": "busqueda", "modo": "bm25", "decision": "suficiente", "motivo": "cobertura máxima 1.00 (umbral 0.5)", "filtros": {}, "mejor_coseno": null, "fragmentos": ["manual76-0024", "guia_iniap-0056", "manual76-0029", "manual76-0032", "guia_iniap-0083"]}
+{"ts": "2026-11-07T10:51:58", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 1, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 3.22, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 5218, Requested 3150. Please try again in 2.76s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/b"}
+{"ts": "2026-11-07T10:52:02", "evento": "reintento", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 2, "tipo": "RateLimitError", "estado_http": 429, "espera_s": 3.31, "detalle": "Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01m5nkjfxye4gbmz235a5pd3te` service tier `on_demand` on tokens per minute (TPM): Limit 8000, Used 4770, Requested 3543. Please try again in 2.3475s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings"}
+{"ts": "2026-11-07T10:52:06", "evento": "ok", "modo": "stream", "proveedor": "groq", "modelo": "openai/gpt-oss-20b", "intento": 3, "primer_trozo_ms": 661, "latencia_ms": 733, "tokens_entrada": 3092, "tokens_salida": 80, "herramientas": null}
