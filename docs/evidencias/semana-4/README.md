@@ -22,7 +22,7 @@ recoge porque usa el modelo real. También corre en el pipeline después de cada
 | 6 | Inválida | `POST /chat` | `{}` | 422 | `mensaje` |
 | 7 | Inválida | `POST /chat` | `{"mensaje": ""}` | 422 | `mensaje` |
 
-Salida contra Azure (7/11/2026), también en [smoke-azure.txt](smoke-azure.txt):
+Primera versión, la del taller: salida contra Azure del 7/11/2026.
 
 ```
 PASA   1. [salud] GET /health -> 200 en 0.4 s
@@ -35,7 +35,13 @@ PASA   7. [invalida] POST /chat -> 422 en 0.3 s
 RESULTADO: 7/7 pasan · p95 4.5 s · más lento 4.5 s
 ```
 
-Los casos 4 y 5 se resuelven sin llamar al modelo. La abstención es determinista: el código decide que no hay base en
+**Ampliación (10/11/2026): 21 casos, 21/21 pasan.** Se agregaron salud del índice, interfaz, `/fuentes`, calendario,
+filtro por tema, rol `system` en el historial, confirmar o cancelar sin propuesta, mensaje demasiado largo, tipo y tema
+inválidos, campos extra, método y ruta inexistentes. Tabla completa en [docs/08-pruebas.md](../../08-pruebas.md);
+salida en [smoke-azure.txt](smoke-azure.txt). Evaluación completa en producción (20/20, síntomas 10/10, p95 12,0 s) en
+[docs/07-evaluacion.md §7](../../07-evaluacion.md#7-evaluación-en-producción-semana-4).
+
+Los casos de fuera de dominio e inyección se resuelven sin llamar al modelo. La abstención es determinista: el código decide que no hay base en
 los manuales, por eso tardan menos de medio segundo. Pruebas unitarias: [pytest.txt](pytest.txt) (121 pasan).
 
 ## Misión 7 · Integración IA estable
@@ -82,11 +88,11 @@ Autoevaluación de los 6 entregables del Complexivo:
 
 | Entregable | Estado | Evidencia |
 |---|:-:|---|
-| Producto final operativo | Completo | URL pública + `tests/smoke.py` 7/7 |
+| Producto final operativo | Completo | URL pública + `tests/smoke.py` 21/21 + evaluación en producción 20/20 |
 | Integración IA estable | Completo | Tabla de controles (8 de 8) y prueba de caída: `docs/evidencias/semana-4/log-prueba-caida.jsonl` |
 | Despliegue | Completo | `Dockerfile`, `docs/despliegue.md`, ADR-020 |
-| Documentación técnica | Completo | `README.md` y `docs/00` … `docs/09` |
-| Pruebas funcionales | Completo | `tests/smoke.py`, `docs/evidencias/semana-4/smoke-azure.txt`, job `desplegar` en `ci-cd.yml` |
+| Documentación técnica | Completo | `README.md`, `docs/00` … `docs/09` (incluye `08-pruebas.md` y la evaluación en producción en `07` §7) |
+| Pruebas funcionales | Completo | `docs/08-pruebas.md` (21 casos), `tests/smoke.py`, `smoke-azure.txt`, job `desplegar` en `ci-cd.yml` |
 | Protección de credenciales | Completo | Secretos de Azure (`secretref:`), gitleaks en el pipeline, `.env` fuera de Git e imagen (`.dockerignore`) |
 
 **Límite por IP.** Prueba en local con `LIMITE_POR_MINUTO=3`: las preguntas 1–3 dieron 200 y la 4.ª dio **429** con
@@ -96,3 +102,34 @@ proxy de Azure), así que el cliente no puede saltarse el límite cambiando esa 
 
 **Declaración de uso de IA:** completa en el README (herramientas usadas, investigación individual de cada integrante
 sobre el despliegue y la CI/CD en Azure, y criterios de uso responsable).
+
+## Capturas de producción
+
+| Evidencia | Archivo |
+|---|---|
+| `/health` en la URL pública: versión 0.3.0, Gemini principal y Groq respaldo, índice de 175 fragmentos con búsqueda híbrida | [capturas/01-health-produccion.png](capturas/01-health-produccion.png) · [health-produccion.json](health-produccion.json) |
+| Run #21 de `ci-cd` en `main` (07/11/2026, commit `87d88c9`): `pruebas` (gitleaks, pytest, build) → `desplegar` (Azure y humo), ambos en verde | [capturas/02-pipeline-ci-cd.png](capturas/02-pipeline-ci-cd.png) · [run en GitHub](https://github.com/AokingDev/Asistente_Productores_Cacao/actions/runs/42398124978) |
+
+## Presentación
+
+PDF de la sustentación del sábado 7/11/2026 (11 láminas): [docs/presentacion-grupo9.pdf](../../presentacion-grupo9.pdf).
+
+Se versiona tal como se presentó. Dos cifras de la lámina 8 («Evaluación final frente a la semana 3») cambiaron con
+la evaluación en producción que pidió el tribunal:
+- **Latencia p95:** la lámina dice «6,3 s eval.», que es la corrida local con Groq como principal. En producción, con
+  Gemini como principal, el p95 es **12,0 s**.
+- **Preguntas correctas:** la lámina dice 19/20; en producción fueron **20/20**.
+- **Pruebas de humo:** la lámina 7 muestra 7/7; ahora son **21/21**.
+
+Los valores vigentes están en [docs/07-evaluacion.md §7](../../07-evaluacion.md#7-evaluación-en-producción-semana-4) y en
+[docs/08-pruebas.md](../../08-pruebas.md).
+
+## Observaciones del tribunal (sustentación del sábado 7/11/2026)
+
+Estado: **corregida** (con el commit que la resuelve), **en curso** o **descartada** (con la razón).
+
+| # | Observación del tribunal | Qué hicimos | Estado | Commit / evidencia |
+|:-:|---|---|:-:|---|
+| 1 | Repetir la evaluación en producción y compararla con la de semana 3 en `docs/07` | Se agregó `--url` a `eval/run_eval.py` para evaluar la app desplegada por HTTP, como el navegador. Se corrieron las 20 preguntas y los 10 síntomas contra Azure (10/11/2026): 20/20 correctas, 100 % con cita, 0 dosis no respaldadas, síntomas 10/10. Latencia: p95 de 12,0 s (semana 3: 51,2 s), por encima de la meta de 5 s, y se declaró como limitación. La comparación y el diagnóstico están en §7 | Corregida | [docs/07-evaluacion.md §7](../../07-evaluacion.md#7-evaluación-en-producción-semana-4) · [20261110-1944_completo.json](../../../eval/resultados/20261110-1944_completo.json) · commit: _(completar)_ |
+| 2 | Subir la presentación en PDF dentro de `docs/` | Se versionó el PDF presentado, sin cambios. Arriba se anotan las cifras que cambiaron después | Corregida | [docs/presentacion-grupo9.pdf](../../presentacion-grupo9.pdf) · commit: _(completar)_ |
+| 3 | Dejar un solo proveedor principal coherente en `README`, `docs/despliegue.md` y `.env.example` | Se decidió **Gemini principal y Groq respaldo**, que es lo que corre en Azure (`/health`). Razones: Groq gratis alcanza para unas 50 consultas al día, Gemini ya calcula los embeddings y la calidad en producción fue 20/20. Se quitó del README la recomendación de usar Groq como principal y `.env.example` usa los mismos valores que producción (`LLM_TIMEOUT_S=8`, `gemini-3.5-flash-lite`, versión 0.3.0). El costo (p95 de 12 s) y el comando para invertir el orden están documentados | Corregida | [docs/07-evaluacion.md §7.3](../../07-evaluacion.md#73-proveedor-principal-decisión) · README «Variables de entorno» · `.env.example` · [health-produccion.json](health-produccion.json) · commit: _(completar)_ |
