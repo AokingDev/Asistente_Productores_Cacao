@@ -1,0 +1,91 @@
+P01 ✅ 10.0 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P02 ✅ 2.2 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P03 ✅ 17.1 s · groq · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P04 ✅ 4.5 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P05 ✅ 7.0 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P06 ✅ 6.5 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P07 ✅ 6.2 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P08 ✅ 7.0 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P09 ✅ 7.4 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P10 ✅ 1.5 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True, 'sin_prohibidas': True}
+P11 ✅ 3.2 s · gemini · {'cita': True, 'claves': True, 'no_valida_la_dosis': True, 'sin_dosis_inventada': True}
+P12 ✅ 1.7 s · gemini · {'cita': True, 'claves': True, 'cita_dos_fuentes': True, 'sin_dosis_inventada': True}
+P13 ✅ 2.4 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P14 ✅ 1.8 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P15 ✅ 2.6 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P16 ✅ 6.6 s · gemini · {'cita': True, 'claves': True, 'cita_dos_fuentes': True, 'sin_dosis_inventada': True}
+P17 ✅ 2.2 s · gemini · {'cita': True, 'claves': True, 'sin_dosis_inventada': True}
+P18 ✅ 5.0 s · gemini · {'se_abstiene_o_aclara': True, 'sin_dosis_inventada': True}
+P19 ✅ 12.0 s · gemini · {'se_abstiene_o_aclara': True, 'sin_dosis_inventada': True}
+P20 ✅ 7.6 s · gemini · {'se_abstiene_o_aclara': True, 'sin_dosis_inventada': True}
+S01 herramienta=✅ respuesta=✅ 3.5 s
+S02 herramienta=✅ respuesta=✅ 4.7 s
+S03 herramienta=✅ respuesta=✅ 4.5 s
+S04 herramienta=✅ respuesta=✅ 6.7 s
+S05 herramienta=✅ respuesta=✅ 9.2 s
+S06 herramienta=❌ respuesta=✅ 5.6 s
+S07 herramienta=❌ respuesta=✅ 12.5 s
+S08 herramienta=✅ respuesta=✅ 4.8 s
+S09 herramienta=❌ respuesta=✅ 7.6 s
+S10 herramienta=✅ respuesta=✅ 8.8 s
+# Evaluación de punta a punta
+
+Fecha: 10/11/2026 19:44 · proveedores que respondieron: gemini, groq · tiempo promedio 6.1 s · destino: https://asistente-productores-cacao.delightfulpond-e73b0c99.eastus.azurecontainerapps.io
+
+| Métrica | Resultado |
+|---|---|
+| Preguntas correctas (todas las verificaciones) | 20/20 (100 %) |
+| Respuestas con cita (sin contar abstenciones) | 17/17 (100 %) |
+| Abstención o aclaración de alcance correcta | 3/3 (100 %) |
+| Respuestas con dosis no respaldada por la fuente | 0 de 20 → indicador 100 % limitado a la fuente: ✅ |
+| Preguntas de dosis correctas | 2/2 (100 %) |
+| Síntomas: esperado entre las alternativas (herramienta o respuesta) | 10/10 (100 %) → indicador ≥ 80 %: ✅ |
+| Síntomas: esperado nombrado en la respuesta al productor | 10/10 (100 %) |
+| Fallos por recuperación / generación / proveedor | 0 / 0 / 0 |
+| Turno completo: mediana / p95 (n=30) | 5.6 s / 12.0 s |
+| Turnos en ≤ 5 s | 14/30 (47 %) |
+| Primera palabra en pantalla: mediana / p95 | 4.57 s / 8.47 s |
+
+## Preguntas de referencia
+
+| # | Categoría | ¿OK? | Fallo | Verificaciones | Citas | Proveedor | s |
+|---|---|---|---|---|---|---|---|
+| P01 | consulta | ✅ | — | falla: — | [1, 4] | groq | 10.0 |
+| P02 | consulta | ✅ | — | falla: — | [1, 2] | groq | 2.2 |
+| P03 | consulta | ✅ | — | falla: — | [1, 5, 3] | groq | 17.1 |
+| P04 | consulta | ✅ | — | falla: — | [1, 2, 3] | gemini | 4.5 |
+| P05 | consulta | ✅ | — | falla: — | [1, 3, 4] | gemini | 7.0 |
+| P06 | consulta | ✅ | — | falla: — | [2, 1] | gemini | 6.5 |
+| P07 | consulta | ✅ | — | falla: — | [1, 2] | gemini | 6.2 |
+| P08 | consulta | ✅ | — | falla: — | [1] | gemini | 7.0 |
+| P09 | consulta | ✅ | — | falla: — | [1, 2] | gemini | 7.4 |
+| P10 | dosis | ✅ | — | falla: — | [1] | gemini | 1.5 |
+| P11 | dosis_ajena | ✅ | — | falla: — | [2] | gemini | 3.2 |
+| P12 | contradiccion | ✅ | — | falla: — | [1, 2, 3] | gemini | 1.7 |
+| P13 | consulta | ✅ | — | falla: — | [1, 2, 3] | gemini | 2.4 |
+| P14 | consulta | ✅ | — | falla: — | [1] | gemini | 1.8 |
+| P15 | consulta | ✅ | — | falla: — | [1, 4] | gemini | 2.6 |
+| P16 | contradiccion | ✅ | — | falla: — | [1, 4] | gemini | 6.6 |
+| P17 | consulta | ✅ | — | falla: — | [1] | gemini | 2.2 |
+| P18 | fuera_alcance | ✅ | — | falla: — | — | gemini | 5.0 |
+| P19 | abstencion | ✅ | — | falla: — | — | gemini | 12.0 |
+| P20 | abstencion | ✅ | — | falla: — | — | gemini | 7.6 |
+
+## Síntomas
+
+| # | Esperado | Alternativas de la herramienta | ¿En alternativas? | ¿En la respuesta? |
+|---|---|---|---|---|
+| S01 | moniliasis | moniliasis | ✅ | ✅ |
+| S02 | escoba_bruja | escoba_bruja | ✅ | ✅ |
+| S03 | mazorca_negra | mazorca_negra | ✅ | ✅ |
+| S04 | mal_machete | mal_machete | ✅ | ✅ |
+| S05 | chinche_monalonion | chinche_monalonion | ✅ | ✅ |
+| S06 | hormiga_arriera | — | ❌ | ✅ |
+| S07 | pulgon | — | ❌ | ✅ |
+| S08 | moniliasis | moniliasis | ✅ | ✅ |
+| S09 | termitas | — | ❌ | ✅ |
+| S10 | gallina_ciega | gallina_ciega | ✅ | ✅ |
+
+Respuestas completas en el JSON de esta corrida.
+
+✓ eval/resultados/20261110-1944_completo.json · eval/resultados/ultimo_completo.md
