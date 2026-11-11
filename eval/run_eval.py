@@ -5,6 +5,7 @@
     python eval/run_eval.py --completo         # 20 preguntas + 10 síntomas de punta a punta con el modelo
     python eval/run_eval.py --inyeccion        # documento envenenado forzado al 1.er lugar (3 preguntas)
     python eval/run_eval.py --todo [--proveedor groq]
+    python eval/run_eval.py --completo --url https://<app>.azurecontainerapps.io   # contra la app DESPLEGADA
 
 Resultados: eval/resultados/<fecha>_<modo>.json (detalle) y eval/resultados/ultimo_<modo>.md (resumen).
 Diagnóstico de cada fallo: «recuperación» si la página esperada no llegó al modelo; «generación» si llegó
@@ -33,6 +34,7 @@ for m in ("recuperacion", "sintomas", "completo", "inyeccion", "todo", "calibrar
 ap.add_argument("--proveedor", choices=["gemini", "groq"], help="proveedor principal solo para esta corrida")
 ap.add_argument("--pausa", type=float, default=2.0, help="segundos entre preguntas (cuidar la cuota)")
 ap.add_argument("--solo", nargs="*", help="ids a evaluar (p. ej. P10 P11)")
+ap.add_argument("--url", help="evaluar la app desplegada por HTTP (POST /chat) en lugar de llamar a Turno en local")
 A = ap.parse_args()
 if A.proveedor:
     os.environ["LLM_PRINCIPAL"] = A.proveedor
@@ -142,34 +144,90 @@ def eval_sintomas() -> dict:
 
 
 # ====================================================================== punta a punta
-def correr_turno(llm: ClienteLLM, indice: Indice, pregunta: str) -> dict:
-    turno = Turno(llm, indice)
-    ev, t0 = [], time.monotonic()
-    try:
-        ev = list(turno.responder(ChatSolicitud(mensaje=pregunta)))
-    except ErrorLLM as e:
-        ev = [{"tipo": "error", "mensaje": e.mensaje_usuario}]
+def eventos_http(pregunta: str) -> tuple[list[dict], float | None]:
+    """POST /chat a la app desplegada, como el navegador: lee el NDJSON línea a línea y mide cuándo llega la
+    primera palabra (incluye la red). Si el límite por IP responde 429, espera lo que dice Retry-After."""
+    import urllib.error
+    import urllib.request
+
+    datos = json.dumps({"mensaje": pregunta}).encode("utf-8")
+    for _ in range(3):
+        req = urllib.request.Request(A.url.rstrip("/") + "/chat", data=datos, method="POST",
+                                     headers={"Content-Type": "application/json", "User-Agent": "eval-seminario-uniandes"})
+        t0, ev, primera = time.monotonic(), [], None
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r:
+                for linea in r:
+                    if linea.strip():
+                        e = json.loads(linea)
+                        if e["tipo"] == "texto" and primera is None:
+                            primera = round(time.monotonic() - t0, 2)
+                        ev.append(e)
+            return ev, primera
+        except urllib.error.HTTPError as e:
+            if e.code == 429:
+                time.sleep(int(e.headers.get("Retry-After", "30")) + 1)
+                continue
+            try:
+                detalle = json.loads(e.read()).get("detail")
+            except ValueError:
+                detalle = None
+            return [{"tipo": "error", "mensaje": f"HTTP {e.code}: {detalle}"}], None
+    return [{"tipo": "error", "mensaje": "HTTP 429 repetido"}], None
+
+
+def correr_turno(llm: ClienteLLM | None, indice: Indice, pregunta: str) -> dict:
+    ev, t0, primera, turno = [], time.monotonic(), None, None
+    if A.url:
+        ev, primera = eventos_http(pregunta)
+    else:
+        turno = Turno(llm, indice)
+        try:
+            ev = list(turno.responder(ChatSolicitud(mensaje=pregunta)))
+        except ErrorLLM as e:
+            ev = [{"tipo": "error", "mensaje": e.mensaje_usuario}]
     texto = "".join(e["texto"] for e in ev if e["tipo"] == "texto")
     fin = next((e for e in ev if e["tipo"] == "fin"), {})
     fuentes = next((e["fragmentos"] for e in ev if e["tipo"] == "fuentes"), [])
+    if turno:
+        fragmentos = [r.fragmento for r in turno.busqueda.resultados] if turno.busqueda else None
+    else:   # por HTTP llegan los ids de los fragmentos enviados al modelo; el índice local es el mismo de la imagen
+        por_id = {f.id: f for f in indice.fragmentos}
+        fragmentos = [por_id[x["id"]] for x in fuentes if x["id"] in por_id] or (None if fin.get("abstencion") else [])
     return {"texto": texto, "fin": fin, "fuentes": fuentes, "segundos": round(time.monotonic() - t0, 1),
+            "primera_palabra": primera,
             "herramientas": [{"nombre": e["nombre"], "resultado": e["resultado"]} for e in ev if e["tipo"] == "herramienta"],
             "alerta": next((e for e in ev if e["tipo"] == "alerta"), None),
-            "error": next((e["mensaje"] for e in ev if e["tipo"] == "error"), None), "busqueda": turno.busqueda,
-            "cuarentena": turno.cuarentena}
+            "error": next((e["mensaje"] for e in ev if e["tipo"] == "error"), None), "fragmentos": fragmentos,
+            "cuarentena": turno.cuarentena if turno else next((e.get("cuarentena") for e in ev if e["tipo"] == "fuentes"), None)}
 
 
-def eval_completo(llm: ClienteLLM, indice: Indice) -> dict:
+def percentil(valores: list[float], p: float) -> float | None:
+    v = sorted(valores)
+    return v[max(0, round(p * len(v)) - 1)] if v else None
+
+
+def latencias(turnos: list[dict]) -> dict:
+    """Solo turnos que llegaron al modelo (sin abstención determinista ni error): lo que espera el productor."""
+    ok = [t for t in turnos if not t["error"] and t.get("proveedor")]
+    seg = [t["segundos"] for t in ok]
+    prim = [t["primera_palabra"] for t in ok if t.get("primera_palabra") is not None]
+    return {"n": len(seg), "mediana": percentil(seg, 0.5), "p95": percentil(seg, 0.95),
+            "en_5s": pct(sum(s <= 5 for s in seg), len(seg)),
+            "primera_mediana": percentil(prim, 0.5), "primera_p95": percentil(prim, 0.95)}
+
+
+def eval_completo(llm: ClienteLLM | None, indice: Indice) -> dict:
     filas = []
     for q in leer("preguntas_referencia.csv"):
         r = correr_turno(llm, indice, q["pregunta"])
         esp = esperados(q["esperados"])
-        b = r.pop("busqueda")
-        recuperado = any(acierta(x.fragmento, esp) for x in b.resultados) if (b and esp) else None
+        frs = r.pop("fragmentos")
+        recuperado = any(acierta(f, esp) for f in frs) if (frs is not None and esp) else None
         cat = q["categoria"]
         citadas = r["fin"].get("citadas", [])
         abstuvo = bool(r["fin"].get("abstencion")) or bool(ABSTIENE.search(sin_tildes(r["texto"])))
-        textos = [x.fragmento.texto for x in b.resultados] if b else []
+        textos = [f.texto for f in frs] if frs else []
         dosis_malas = [d.texto for d in dosis_no_respaldadas(r["texto"], textos + [q["pregunta"]])]
         checks = {}
         if cat in ("abstencion", "fuera_alcance"):
@@ -191,7 +249,7 @@ def eval_completo(llm: ClienteLLM, indice: Indice) -> dict:
             fallo = "proveedor" if r["error"] else ("recuperación" if recuperado is False else "generación")
         filas.append({"id": q["id"], "categoria": cat, "pregunta": q["pregunta"], "ok": ok, "fallo": fallo,
                       "checks": checks, "recuperado": recuperado, "citadas": citadas, "dosis_no_respaldadas": dosis_malas,
-                      **{k: r[k] for k in ("texto", "segundos", "herramientas", "error", "alerta")},
+                      **{k: r[k] for k in ("texto", "segundos", "primera_palabra", "herramientas", "error", "alerta")},
                       "proveedor": r["fin"].get("proveedor"), "decision": r["fin"].get("decision"),
                       "tokens": (r["fin"].get("tokens_entrada") or 0) + (r["fin"].get("tokens_salida") or 0)})
         print(f"{q['id']} {'✅' if ok else '❌'} {r['segundos']} s · {r['fin'].get('proveedor')} · {checks}")
@@ -200,14 +258,14 @@ def eval_completo(llm: ClienteLLM, indice: Indice) -> dict:
     sint = []
     for s in leer("sintomas_referencia.csv"):
         r = correr_turno(llm, indice, s["descripcion"])
-        r.pop("busqueda")
+        r.pop("fragmentos")
         alts = [a["id"] for h in r["herramientas"] if h["nombre"] == "diagnosticar_sintomas" for a in h["resultado"]["alternativas"]]
         tabla = next(p for p in __import__("app.parametros", fromlist=["cargar"]).cargar("sintomas")["problema"] if p["id"] == s["esperado"])
         nombres = [tabla["nombre"].split(" (")[0], *tabla["nombres_locales"]]
         en_texto = any(sin_tildes(n) in sin_tildes(r["texto"]) for n in nombres)
         sint.append({"id": s["id"], "esperado": s["esperado"], "uso_herramienta": bool(r["herramientas"]),
                      "alternativas_herramienta": alts, "en_alternativas": s["esperado"] in alts, "en_respuesta": en_texto,
-                     "texto": r["texto"], "segundos": r["segundos"], "proveedor": r["fin"].get("proveedor"), "error": r["error"],
+                     "texto": r["texto"], "segundos": r["segundos"], "primera_palabra": r["primera_palabra"], "proveedor": r["fin"].get("proveedor"), "error": r["error"],
                      "sin_modelo": bool(r["error"])})
         print(f"{s['id']} herramienta={'✅' if s['esperado'] in alts else '❌'} respuesta={'✅' if en_texto else '❌'} "
               f"{r['segundos']} s{' · SIN MODELO' if r['error'] else ''}")
@@ -232,10 +290,13 @@ def eval_completo(llm: ClienteLLM, indice: Indice) -> dict:
         "sin_modelo": sin_modelo,
         "segundos_promedio": round(sum(f["segundos"] for f in todas + todos_sint) / max(1, len(todas) + len(todos_sint)), 1),
         "proveedores": sorted({f["proveedor"] for f in todas + todos_sint if f["proveedor"]}),
+        "latencia": latencias(todas + todos_sint),
+        "destino": A.url or "local",
     }
+    lat = m["latencia"]
     md = ["# Evaluación de punta a punta", "",
           f"Fecha: {datetime.now():%d/%m/%Y %H:%M} · proveedores que respondieron: {', '.join(m['proveedores'])} · "
-          f"tiempo promedio {m['segundos_promedio']} s", "",
+          f"tiempo promedio {m['segundos_promedio']} s · destino: {m['destino']}", "",
           *([f"> ⚠️ Sin modelo (cuota agotada o proveedor caído), **excluidos de las métricas**: {', '.join(sin_modelo)}. "
              "Repetirlos con `--solo`.", ""] if sin_modelo else []),
           "| Métrica | Resultado |", "|---|---|",
@@ -249,6 +310,10 @@ def eval_completo(llm: ClienteLLM, indice: Indice) -> dict:
           f"indicador ≥ 80 %: {'✅' if (m['sintomas_en_alternativas'] or 0) >= 0.8 else '❌'} |",
           f"| Síntomas: esperado nombrado en la respuesta al productor | {pct(sum(s['en_respuesta'] for s in sint), len(sint))} |",
           f"| Fallos por recuperación / generación / proveedor | {m['fallos']['recuperación']} / {m['fallos']['generación']} / {m['fallos']['proveedor']} |",
+          f"| Turno completo: mediana / p95 (n={lat['n']}) | {lat['mediana']} s / {lat['p95']} s |",
+          f"| Turnos en ≤ 5 s | {lat['en_5s']} |",
+          *([f"| Primera palabra en pantalla: mediana / p95 | {lat['primera_mediana']} s / {lat['primera_p95']} s |"]
+            if lat["primera_p95"] is not None else []),
           "", "## Preguntas de referencia", "", "| # | Categoría | ¿OK? | Fallo | Verificaciones | Citas | Proveedor | s |",
           "|---|---|---|---|---|---|---|---|"]
     for f in todas:
@@ -287,7 +352,7 @@ def eval_inyeccion(llm: ClienteLLM, indice: Indice) -> dict:
     try:
         for p in preguntas:
             r = correr_turno(llm, indice, p)
-            r.pop("busqueda")
+            r.pop("fragmentos")
             obedecio = [x for x in prohibidas if x in sin_tildes(r["texto"])]
             sin_modelo = bool(r["error"]) or not r["texto"].strip()
             # la cuarentena saca el boletín de la lista: la cita [1] es entonces el primer manual oficial
@@ -356,7 +421,9 @@ if __name__ == "__main__":
     if A.recuperacion or A.todo:
         eval_recuperacion(indice)
     if A.completo or A.inyeccion or A.todo:
-        llm = ClienteLLM()
+        llm = None if A.url else ClienteLLM()
+        if A.url and (A.inyeccion or A.todo):
+            sys.exit("--inyeccion necesita meter el boletín falso en el índice: solo se corre en local (sin --url).")
         if A.completo or A.todo:
             eval_completo(llm, indice)
         if A.inyeccion or A.todo:

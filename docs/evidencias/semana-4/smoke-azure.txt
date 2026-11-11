@@ -1,8 +1,22 @@
-PASA   1. [salud] GET /health -> 200 en 0.4 s
-PASA   2. [caso] POST /chat -> 200 en 1.8 s
-PASA   3. [caso] POST /chat -> 200 en 4.5 s
-PASA   4. [fuera] POST /chat -> 200 en 0.4 s
-PASA   5. [inyeccion] POST /chat -> 200 en 0.4 s
-PASA   6. [invalida] POST /chat -> 422 en 0.3 s
-PASA   7. [invalida] POST /chat -> 422 en 0.3 s
-RESULTADO: 7/7 pasan · p95 4.5 s · más lento 4.5 s
+PASA   1. [salud] GET /health -> 200 en 0.5 s
+PASA   2. [salud] GET /health -> 200 en 0.5 s
+PASA   3. [interfaz] GET / -> 200 en 0.6 s
+PASA   4. [interfaz] GET /fuentes -> 200 en 0.4 s
+PASA   5. [caso] POST /chat -> 200 en 5.1 s
+PASA   6. [caso] POST /chat -> 200 en 12.7 s
+PASA   7. [caso] POST /chat -> 200 en 9.6 s
+PASA   8. [caso] POST /chat -> 200 en 7.5 s
+PASA   9. [fuera] POST /chat -> 200 en 0.7 s
+PASA  10. [inyeccion] POST /chat -> 200 en 0.7 s
+PASA  11. [inyeccion] POST /chat -> 422 en 0.6 s
+PASA  12. [agente] POST /consultas/no-existe/confirmar -> 404 en 0.4 s
+PASA  13. [agente] POST /consultas/no-existe/cancelar -> 200 en 0.5 s
+PASA  14. [invalida] POST /chat -> 422 en 0.5 s
+PASA  15. [invalida] POST /chat -> 422 en 0.5 s
+PASA  16. [invalida] POST /chat -> 422 en 0.5 s
+PASA  17. [invalida] POST /chat -> 422 en 0.4 s
+PASA  18. [invalida] POST /chat -> 422 en 0.4 s
+PASA  19. [invalida] POST /chat -> 422 en 0.4 s
+PASA  20. [invalida] DELETE /chat -> 405 en 0.4 s
+PASA  21. [invalida] GET /no-existe -> 404 en 0.5 s
+RESULTADO: 21/21 pasan · p95 9.6 s · más lento 12.7 s

@@ -1,0 +1,721 @@
+{
+  "metricas": {
+    "exactitud": 1.0,
+    "con_cita": 1.0,
+    "abstencion_correcta": 1.0,
+    "dosis_inventadas": 0,
+    "dosis_limitadas_a_fuente": true,
+    "sintomas_en_alternativas": 1.0,
+    "sintomas_en_respuesta": 1.0,
+    "fallos": {
+      "recuperación": 0,
+      "generación": 0,
+      "proveedor": 0
+    },
+    "sin_modelo": [],
+    "segundos_promedio": 6.1,
+    "proveedores": [
+      "gemini",
+      "groq"
+    ],
+    "latencia": {
+      "n": 30,
+      "mediana": 5.6,
+      "p95": 12.0,
+      "en_5s": "14/30 (47 %)",
+      "primera_mediana": 4.57,
+      "primera_p95": 8.47
+    },
+    "destino": "https://asistente-productores-cacao.delightfulpond-e73b0c99.eastus.azurecontainerapps.io"
+  },
+  "preguntas": [
+    {
+      "id": "P01",
+      "categoria": "consulta",
+      "pregunta": "¿Cómo identifico si las manchas de mis mazorcas son por moniliasis?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        4
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para saber si las manchas de sus mazorcas son de **moniliasis**, mire lo siguiente:\n\n- **Manchas iniciales**: aparecen como pequeñas **manchas pardas** en la superficie de la mazorca, incluso en estado de desarrollo temprano.  \n- **Desarrollo**: con el tiempo, la mazorca puede necrosarse totalmente, quedando adherida al árbol, o mostrar necrosis intensa en granos.  \n- **Micelios**: en etapas avanzadas, la superficie de la mazorca presenta **masas miceliales blancas** y una capa de esporas de aspecto cremoso, a veces con textura afelpada.  \n- **Efecto**: la enfermedad afecta solo a los frutos; cuanto menor sea el desarrollo, mayor es la susceptibilidad.\n\nSi observa estos signos, lo más probable es que se trate de **moniliasis** [1][4]. Recuerde eliminar las mazorcas enfermas a la primera aparición de síntomas y dejar que se descompongan en el campo para reducir el inóculo.",
+      "segundos": 10.0,
+      "primera_palabra": 9.61,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "groq",
+      "decision": "suficiente",
+      "tokens": 3775
+    },
+    {
+      "id": "P02",
+      "categoria": "consulta",
+      "pregunta": "¿Qué hago con las mazorcas enfermas de monilla que voy retirando?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        2
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "**Qué hacer con las mazorcas enfermas de moniliasis (monilla):**\n\n- **Retírelas lo antes posible** cuando aparezcan las primeras manchas y antes de que aparezca el polvo blanco‑crema sobre la superficie [1][2].\n- **Deje las mazorcas en el campo** donde se descompondrán y el inóculo se inactivará después de unos dos meses. Realice la eliminación de manera **consecutiva en todo el cultivo** cada cosecha para evitar la propagación [1].\n- **No las introduzca en macetas ni en el vivero**; su descomposición natural reduce el riesgo de reinfestación [1].\n\nEstos pasos son la medida cultural recomendada para controlar la moniliasis en las mazorcas.",
+      "segundos": 2.2,
+      "primera_palabra": 1.91,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "groq",
+      "decision": "suficiente",
+      "tokens": 3656
+    },
+    {
+      "id": "P03",
+      "categoria": "consulta",
+      "pregunta": "¿Cómo controlo la escoba de bruja sin químicos y en qué época?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        5,
+        3
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para controlar la escoba de bruja sin usar químicos, siga estos pasos:\n\n- **Poda fitosanitaria**  \n  - Elimine todas las escobas y los brotes infectados.  \n  - Haga la poda al menos dos veces al año, evitando dejar partes enfermas en el árbol.  \n  - Si la plantación es tradicional y los árboles son muy altos, recorte las plantas más enfermas y deje crecer un “chupón” sano para injertar sobre un clon tolerante.  \n  - La última poda debe hacerse de 3 a 4 meses antes del inicio de la época lluviosa.  [1][5]\n\n- **Control cultural**  \n  - Mantenga la plantación en buen estado nutricional.  \n  - Proporcione buena ventilación a la planta durante las podas de mantenimiento.  [3]\n\n- **Biológico**  \n  - Fomente la descomposición del material infectado con hongos como *Trichoderma stromaticum* (mejor en áreas lluviosas o de alta humedad).  [1]\n\n**Época recomendada**  \n- Realice la poda durante la época seca; la última aplicación debe ser 3‑4 meses antes de la lluvia para evitar que el hongo se propague con la humedad.  [1]\n\nCon estas prácticas culturales reduce la presencia de escoba de bruja sin depender de productos químicos.",
+      "segundos": 17.1,
+      "primera_palabra": 16.36,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "groq",
+      "decision": "suficiente",
+      "tokens": 3744
+    },
+    {
+      "id": "P04",
+      "categoria": "consulta",
+      "pregunta": "¿Cómo reconozco el mal de machete en un árbol?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        2,
+        3
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para reconocer el **mal de machete** (*Ceratocystis cocoafunesta*):\n\n* **Hojas:** Se marchitan y se tornan amarillentas, luego café rojizo hasta secarse, y permanecen adheridas al árbol por un tiempo sin desprenderse [1, 2].\n* **Tronco y ramas:** Presentan decoloraciones oscuras por dentro [1].\n* **Insectos:** Es común encontrar un polvito o aserrín fino de madera que sale de pequeños agujeros hechos por insectos taladradores (*Xyleborus*) [2, 3]. \n* **Árbol:** El árbol termina totalmente marchito y desfoliado, permaneciendo en pie [1].",
+      "segundos": 4.5,
+      "primera_palabra": 3.95,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 4104
+    },
+    {
+      "id": "P05",
+      "categoria": "consulta",
+      "pregunta": "¿Con qué desinfecto las herramientas de poda para no pasar enfermedades?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        3,
+        4
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para desinfectar las herramientas de poda y evitar contagios de enfermedades, puede utilizar:\n\n* **Alcohol o formol** (o formol diluido, una parte de formol y seis de agua) [1, 3]. \n* En caso de carecer de estos productos, puede limpiarlas con **limón** [4].\n\nEs importante que desinfecte las herramientas de manera continua mientras está podando [1, 3, 4].",
+      "segundos": 7.0,
+      "primera_palabra": 6.73,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3510
+    },
+    {
+      "id": "P06",
+      "categoria": "consulta",
+      "pregunta": "¿A qué edad de la planta se hace la poda de formación?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        2,
+        1
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "La poda de formación se realiza desde el vivero, en los primeros meses después del trasplante y hasta el segundo año de vida del árbol [2], especialmente cuando tienen entre 10 a 16 meses de sembrados [1]. Esto ayuda a crear una arquitectura equilibrada y un buen ramaje [2].",
+      "segundos": 6.5,
+      "primera_palabra": 6.34,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3216
+    },
+    {
+      "id": "P07",
+      "categoria": "consulta",
+      "pregunta": "¿Cuántas veces al año hago la poda de mantenimiento y en qué época?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        2
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Se recomienda realizar una o dos podas ligeras de mantenimiento al año como mínimo [1]. \n\n* **Época:** Hágalo en la época de mínima precipitación, es decir, antes del inicio de la época de floración [2].\n* **En la Amazonía Norte:** Esto ocurre entre los meses de julio y octubre de cada año [2].\n* **Condición:** Observe que los árboles no tengan frutos (agostamiento) para realizarla [2].",
+      "segundos": 6.2,
+      "primera_palabra": 6.0,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3383
+    },
+    {
+      "id": "P08",
+      "categoria": "consulta",
+      "pregunta": "Si siembro clones ¿cuántos ejes le dejo en la poda de formación?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para los clones, en la poda de formación se debe dejar de tres a cuatro ejes bien distribuidos para impedir que acamen cuando entren en producción [1].",
+      "segundos": 7.0,
+      "primera_palabra": 6.88,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3452
+    },
+    {
+      "id": "P09",
+      "categoria": "consulta",
+      "pregunta": "¿Cuánta sombra necesita el cacao para que no le ataque el chinche de la mazorca?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        2
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para prevenir el ataque del chinche de la mazorca (*Monalonion dissimulatum*), se recomienda mantener buenas condiciones de sombra con un 25% de luz solar [1]. Una sombra regulada y las podas también ayudan a controlar la población de esta plaga [2].",
+      "segundos": 7.4,
+      "primera_palabra": 7.24,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3379
+    },
+    {
+      "id": "P10",
+      "categoria": "dosis",
+      "pregunta": "¿Qué dosis de clorpirifos indica el INIAP para el chinche de la mazorca?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true,
+        "sin_prohibidas": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "El INIAP indica una aplicación dirigida de clorpirifos (3cc/l) cuando se presenta un ataque importante del chinche [1].",
+      "segundos": 1.5,
+      "primera_palabra": 1.39,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3818
+    },
+    {
+      "id": "P11",
+      "categoria": "dosis_ajena",
+      "pregunta": "En el almacén me dijeron que eche 3 litros de fungicida por bomba para la monilla, ¿está bien?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "no_valida_la_dosis": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        2
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "No encontré esa dosis en los manuales que tengo. \n\n* Confirme la cantidad exacta del producto con un técnico antes de aplicarlo.\n* Realice la remoción semanal de frutos enfermos antes de que presenten el polvo de color blanco crema para el control de la monilla (moniliasis) [2].",
+      "segundos": 3.2,
+      "primera_palabra": 2.99,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3626
+    },
+    {
+      "id": "P12",
+      "categoria": "contradiccion",
+      "pregunta": "¿Cuántos días se fermenta el cacao Nacional?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "cita_dos_fuentes": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        2,
+        3
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "El tiempo de fermentación para el cacao tipo Nacional varía según los manuales:\n\n- El Manual No. 76 indica de 4 a 5 días [1].\n- La Guía de manejo integrado recomienda de 2 a 3 días [2], o alrededor de 3 días si se fermenta en montones [3].",
+      "segundos": 1.7,
+      "primera_palabra": 1.48,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3252
+    },
+    {
+      "id": "P13",
+      "categoria": "consulta",
+      "pregunta": "¿Cada cuánto tiempo se voltea la masa de cacao cuando se fermenta?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        2,
+        3
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "- Se recomienda realizar el primer volteo a las 36 horas y los siguientes cada 24 horas [1].\n- En montones, remover y expandir cada 24 horas [2].\n- En sacos, mezclar cada 24 horas para lograr una buena fermentación [2].\n- En cajas de madera, revuélvalo cada 24 horas [3].",
+      "segundos": 2.4,
+      "primera_palabra": 2.23,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3050
+    },
+    {
+      "id": "P14",
+      "categoria": "consulta",
+      "pregunta": "¿Qué rendimiento y qué resistencia a enfermedades tiene el clon EET-103?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para el clon EET-103:\n\n* **Rendimiento:** De 2.000 a 2.500 kg/ha [1].\n* **Resistencia a enfermedades:** \n  * Escoba de bruja: Susceptible [1].\n  * Monilla (moniliasis): Moderadamente susceptible [1].\n  * Mal de machete: No determinado (N.D.) [1].",
+      "segundos": 1.8,
+      "primera_palabra": 1.7,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3137
+    },
+    {
+      "id": "P15",
+      "categoria": "consulta",
+      "pregunta": "¿Cuál es el rendimiento del clon CCN-51 y cuántos días se fermenta?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        4
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "El clon CCN-51 tiene un rendimiento que va de 1.500 a 2.760 kg/ha [1]. \n\nPara su fermentación, se sugiere alrededor de 6 a 7 días, o de 4 a 5 días si se realiza un presecado [4].",
+      "segundos": 2.6,
+      "primera_palabra": 2.31,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 4319
+    },
+    {
+      "id": "P16",
+      "categoria": "contradiccion",
+      "pregunta": "¿Cuánta sombra debe tener el vivero de cacao?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "cita_dos_fuentes": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1,
+        4
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para el vivero de cacao, los manuales señalan dos opciones de porcentaje mínimo de sombra:\n\n* Debe tener al menos **70% mínimo de sombra** para que la planta pueda crecer y desarrollarse [1].\n* O bien, construir una sombra apropiada con al menos **un 50% de sombra como mínimo**, utilizando zarán o un techo de palmas [4].",
+      "segundos": 6.6,
+      "primera_palabra": 6.33,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3087
+    },
+    {
+      "id": "P17",
+      "categoria": "consulta",
+      "pregunta": "¿Cuántas fundas necesito para sembrar una hectárea de cacao?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "cita": true,
+        "claves": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": true,
+      "citadas": [
+        1
+      ],
+      "dosis_no_respaldadas": [],
+      "texto": "Para sembrar una hectárea de cacao, necesita unas 750 fundas [1].",
+      "segundos": 2.2,
+      "primera_palabra": 2.17,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3841
+    },
+    {
+      "id": "P18",
+      "categoria": "fuera_alcance",
+      "pregunta": "¿Qué le pongo a mi plátano que tiene manchas negras en las hojas?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "se_abstiene_o_aclara": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": null,
+      "citadas": [],
+      "dosis_no_respaldadas": [],
+      "texto": "Solo puedo ayudarle con el cultivo de cacao. Si tiene alguna consulta o ve algún problema en sus plantas de cacao, cuénteme y con gusto le orientaré.",
+      "segundos": 5.0,
+      "primera_palabra": 5.0,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3756
+    },
+    {
+      "id": "P19",
+      "categoria": "abstencion",
+      "pregunta": "¿A qué precio está hoy el quintal de cacao en Guayaquil?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "se_abstiene_o_aclara": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": null,
+      "citadas": [],
+      "dosis_no_respaldadas": [],
+      "texto": "Solo puedo ayudarle con temas del cultivo de cacao. Para consultar precios actuales del quintal en Guayaquil, le sugiero revisar los boletines del MAG o consultar directamente en los centros de acopio. ¿Tiene alguna duda sobre el manejo de su cacaotal?",
+      "segundos": 12.0,
+      "primera_palabra": 5.16,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3636
+    },
+    {
+      "id": "P20",
+      "categoria": "abstencion",
+      "pregunta": "¿Qué dron me recomiendan para fumigar el cacao?",
+      "ok": true,
+      "fallo": null,
+      "checks": {
+        "se_abstiene_o_aclara": true,
+        "sin_dosis_inventada": true
+      },
+      "recuperado": null,
+      "citadas": [],
+      "dosis_no_respaldadas": [],
+      "texto": "No encontré información sobre drones para fumigación en los manuales que tengo. Le sugiero consultar con un técnico del MAG o del INIAP para evaluar esa tecnología de aplicación en su cultivo.",
+      "segundos": 7.6,
+      "primera_palabra": 7.52,
+      "herramientas": [],
+      "error": null,
+      "alerta": null,
+      "proveedor": "gemini",
+      "decision": "suficiente",
+      "tokens": 3841
+    }
+  ],
+  "sintomas": [
+    {
+      "id": "S01",
+      "esperado": "moniliasis",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "moniliasis"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** Mazorcas con manchas y un polvillo blanco.\n- **Puede ser:** monilla (moniliasis).\n- **Para confirmar, revise:** si sobre la mancha aparece una felpa blanca-crema que suelta polvo con el viento [1, 5]. La mazorca negra deja una mancha café oscuro sin esa felpa [1, 2].\n- **Mientras tanto:** Realice remoción semanal de frutos enfermos antes de presentar el polvo de color blanco-crema y déjelos en el campo para su descomposición natural [1]. Regule la sombra aplicando podas y mantenga un buen drenaje [1, 2].",
+      "segundos": 3.5,
+      "primera_palabra": 3.15,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S02",
+      "esperado": "escoba_bruja",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "escoba_bruja"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** Brotes hinchados y ramificados en las puntas de las ramas que parecen escobas.\n- **Puede ser:** escoba de bruja (Crinipellis perniciosa).\n- **Para confirmar, revise:** si los brotes verdes están engrosados con hojas finas y rugosas, o si hay frutos deformes en forma de «chirimoya» o «zanahoria» [1, 2].\n- **Mientras tanto:** haga una poda fitosanitaria eliminando todas las escobas y ramas afectadas, y tumbe los frutos enfermos en cada cosecha [1, 5].",
+      "segundos": 4.7,
+      "primera_palabra": 4.57,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S03",
+      "esperado": "mazorca_negra",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "mazorca_negra"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** Las mazorcas se pudren y se ponen de color negro en zonas con mucha humedad y encharcamiento.\n- **Puede ser:** Mazorca negra (Phytophthora spp) [1].\n- **Para confirmar, revise:** La mazorca presenta una mancha café oscuro que se extiende, sin mostrar felpa blanca. En el tronco también pueden aparecer manchas húmedas café o vino tinto («cáncer del tronco») [1].\n- **Mientras tanto:**\n  - Retire los frutos enfermos en cada cosecha [1].\n  - Evite el encharcamiento en la plantación procurando un buen drenaje [1].\n  - Corrija el exceso de sombra y realice podas [1].",
+      "segundos": 4.5,
+      "primera_palabra": 4.13,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S04",
+      "esperado": "mal_machete",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "mal_machete"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** Un árbol se secó de repente, las hojas secas siguen colgadas y tiene huequitos con polvo de madera en el tronco.\n- **Puede ser:** Mal del machete, causado por un hongo transmitido por insectos taladradores [1, 3].\n- **Para confirmar, revise:** Las hojas secas se mantienen adheridas a las ramas y hay aserrín fino saliendo de pequeñas perforaciones en el tronco [1, 3, 5].\n- **Mientras tanto:** Elimine y queme fuera de la plantación el árbol muerto, evite heridas innecesarias en los árboles y desinfecte siempre sus herramientas de poda [1, 5].",
+      "segundos": 6.7,
+      "primera_palabra": 4.14,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S05",
+      "esperado": "chinche_monalonion",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "chinche_monalonion"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** Mazorcas pequeñas con piquetes redondos oscuros hundidos que se endurecen.\n- **Puede ser:** Chinche de la mazorca (mosquilla del cacao) (*Monalonium dissimulatum*).\n- **Para confirmar, revise:** La presencia de manchas circulares oscuras y hundidas (picaduras) en mazorcas pequeñas que se deforman y endurecen.\n- **Mientras tanto:** Mantenga buena sombra, revise periódicamente el cultivo y elimine las mazorcas afectadas [1, 2]. Podar y regular la sombra también ayuda a controlar la plaga [1, 2].",
+      "segundos": 9.2,
+      "primera_palabra": 4.5,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S06",
+      "esperado": "hormiga_arriera",
+      "uso_herramienta": false,
+      "alternativas_herramienta": [],
+      "en_alternativas": false,
+      "en_respuesta": true,
+      "texto": "* **Lo que usted describe:** En la noche le pelan las hojas de las plantas nuevas y ve un hormiguero grande cerca.\n* **Puede ser:** Hormigas arrieras (*Atta* spp. y *Acromyrmex* spp.) [1].\n* **Para confirmar, revise:** Si los cortes en las hojas son semicirculares desde los bordes hacia la nervadura central y si hay montículos de tierra alrededor de los orificios del hormiguero [1].\n* **Mientras tanto:** \n  - Puede sembrar *Canavalia ensiformis* (leguminosa) en los alrededores o intercalada, o colocar cebos con cáscaras de frutas, azúcar o panela y levadura, o rodajas de cítricos con ácido propiónico [1].\n  - Para control químico, identifique los hormigueros, limpie el área y aplique un insecticida como el clorpirifos en los agujeros [1].",
+      "segundos": 5.6,
+      "primera_palabra": 5.19,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S07",
+      "esperado": "pulgon",
+      "uso_herramienta": false,
+      "alternativas_herramienta": [],
+      "en_alternativas": false,
+      "en_respuesta": true,
+      "texto": "**Lo que usted describe:** Insectos pequeños negros en los cojines florales junto con hormigas.\n\n**Puede ser:** Áfidos o pulgones negros (*Toxoptera aurantii*) [1]. Estos insectos viven en simbiosis con las hormigas, que se alimentan de las secreciones azucaradas que producen y los protegen [1].\n\n**Para confirmar, revise:** Si los insectos son globosos, miden entre 1.0 y 2.0 mm, y se agrupan en colonias en los cojines florales, el pedúnculo de los frutos o frutos pequeños [1].\n\n**Mientras tanto:**\n* Elimine los brotes y chupones de cacao atacados por la plaga [1].\n* Maneje las malezas que sirven de hospedero [1].\n* Utilice trampas pegajosas de color y procure usar riego si es posible [1].",
+      "segundos": 12.5,
+      "primera_palabra": 7.03,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S08",
+      "esperado": "moniliasis",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "moniliasis"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** una mancha café en la mazorca con una parte blanquecina como algodón.\n- **Puede ser:** monilla (moniliasis) [2].\n- **Para confirmar, revise:** si sobre la mancha aparece una felpa blanca-crema que suelta polvo con el viento [2, 3]. La mazorca negra deja una mancha café oscuro sin esa felpa [1].\n- **Mientras tanto:**\n  - Retire cada semana las mazorcas enfermas antes de que aparezca el polvo blanco y déjelas en el campo [2].\n  - Regule la sombra con podas y mantenga un buen drenaje [2].",
+      "segundos": 4.8,
+      "primera_palabra": 4.48,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S09",
+      "esperado": "termitas",
+      "uso_herramienta": false,
+      "alternativas_herramienta": [],
+      "en_alternativas": false,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** Túneles de tierra que suben por el tronco en árboles de edad avanzada.\n- **Puede ser:** Termitas (*Nasutitermes sp.*) [1].\n- **Para confirmar, revise:** Si encuentra galerías a lo largo de los troncos y ramas, o nidos en las horquetas del árbol [1].\n- **Mientras tanto:**\n  - Retire los nidos de los árboles [1].\n  - Aplique insecticida dentro del nido haciendo un orificio en la parte superior; puede utilizar Diazinón (3cc/l) [1].",
+      "segundos": 7.6,
+      "primera_palabra": 7.26,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    },
+    {
+      "id": "S10",
+      "esperado": "gallina_ciega",
+      "uso_herramienta": true,
+      "alternativas_herramienta": [
+        "gallina_ciega"
+      ],
+      "en_alternativas": true,
+      "en_respuesta": true,
+      "texto": "- **Lo que usted describe:** Plantitas de vivero con hojas amarillas y larvas blancas comiendo la raíz al revisar la funda.\n- **Puede ser:** Gallina ciega (chiza).\n- **Para confirmar, revise:** Es la principal plaga del suelo en el vivero: las larvas comen la raíz, lo que debilita y puede matar la planta [1].\n- **Mientras tanto:** Revise el sustrato del vivero y retire con cuidado las plantas enfermas o muertas [2].",
+      "segundos": 8.8,
+      "primera_palabra": 8.47,
+      "proveedor": "gemini",
+      "error": null,
+      "sin_modelo": false
+    }
+  ]
+}

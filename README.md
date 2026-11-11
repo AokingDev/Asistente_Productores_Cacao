@@ -39,6 +39,7 @@ RAG en [docs/06-rag.md](docs/06-rag.md), evaluación en [docs/07-evaluacion.md](
 ```
 ├── app/                     API FastAPI
 │   ├── main.py              rutas: /chat, /fuentes, /consultas/{id}/confirmar|cancelar, /health; sirve la interfaz
+│   ├── limite.py            límite de preguntas por IP en /chat (429 con Retry-After)
 │   ├── asistente.py         un turno: buscar → decidir (abstención) → agente → verificar citas y dosis
 │   ├── rag/                 indice.py (BM25 + embeddings, filtros), embeddings.py, texto.py
 │   ├── agente/              herramientas.py (Pydantic + deterministas), consultas.py (registro confirmado)
@@ -52,13 +53,18 @@ RAG en [docs/06-rag.md](docs/06-rag.md), evaluación en [docs/07-evaluacion.md](
 ├── data/raw/                manuales oficiales (PDF fuera de Git; ver README de la carpeta)
 ├── frontend/                interfaz del chat (index.html, styles.css, app.js)
 ├── tests/                   pytest con dobles del modelo y del índice (no gasta API)
-├── eval/                    preguntas de referencia, síntomas, calibración, inyección, run_eval.py y resultados
+│   └── smoke.py             pruebas funcionales contra la URL desplegada (modelo real; no lo corre pytest)
+├── eval/                    preguntas de referencia, síntomas, calibración, inyección, run_eval.py (también --url) y resultados
 ├── scripts/                 ingest.py, descarga de fuentes, comparación de prompts, simulador, demo 429
-├── docs/                    levantamiento (00) … prompts (05), RAG (06), evaluación (07), decisiones (09)
-│   └── evidencias/          evidencias semanales
+├── docs/                    levantamiento (00) … RAG (06), evaluación (07), pruebas (08), decisiones (09)
+│   ├── despliegue.md        paso a paso en Azure Container Apps y CI/CD
+│   └── evidencias/          evidencias semanales (semana-2 … semana-4)
+├── .github/workflows/       ci-cd.yml (gitleaks + pytest + build; en main: despliegue y humo) · secretos.yml
+├── Dockerfile               imagen de producción (python:3.12-slim, usuario sin privilegios, puerto 8080)
+├── .dockerignore            deja fuera de la imagen .env, tests, eval, PDFs y logs
 ├── requirements.txt         servidor
 ├── requirements-ingest.txt  + PyMuPDF para reconstruir el índice
-└── .env.example             plantilla de variables de entorno
+└── .env.example             plantilla de variables de entorno (mismos valores no secretos que producción)
 ```
 
 ## Instalación y ejecución local
@@ -92,14 +98,14 @@ uvicorn app.main:app --reload      # abrir http://localhost:8000
 | `LLM_PRINCIPAL` | Proveedor principal: `gemini`, `groq` o `simulado` | `gemini` |
 | `LLM_RESPALDO` | Proveedor de respaldo (vacío = sin respaldo) | `groq` |
 | `GEMINI_API_KEY` | Clave de Gemini. **Solo en `.env` o en el panel de la plataforma; nunca en el código** | — |
-| `GEMINI_MODEL` | Modelo de Gemini | `gemini-3.8-flash` |
+| `GEMINI_MODEL` | Modelo de Gemini | `gemini-3.5-flash-lite` en `.env.example` y producción (si falta: `gemini-3.8-flash`) |
 | `GROQ_API_KEY` | Clave de Groq (misma regla) | — |
 | `GROQ_MODEL` | Modelo de Groq | `openai/gpt-oss-20b` |
-| `LLM_TIMEOUT_S` | Tiempo límite por llamada (s) | `30` |
+| `LLM_TIMEOUT_S` | Tiempo límite por llamada (s) | `8` en `.env.example` y producción (si falta: `30`) |
 | `LLM_MAX_TOKENS` | Máximo de tokens de salida | `2048` |
 | `LLM_REINTENTOS` | Intentos por proveedor ante 429 / tiempo agotado / vacío | `3` |
 | `LLM_RAZONAMIENTO` | Esfuerzo de razonamiento: `low`, `medium`, `high` | `low` |
-| `APP_VERSION` | Versión expuesta en `/health` | `0.2.0` |
+| `APP_VERSION` | Versión expuesta en `/health` | `0.3.0` |
 | `LLM_LOG_DIR` | Carpeta del log por solicitud | `logs` |
 | `LLM_ENFRIAMIENTO_S` | Segundos que un proveedor que falló queda al final de la fila | `120` |
 | `LIMITE_POR_MINUTO` | Preguntas por minuto por IP en `/chat` (`0` = sin límite) | `20` |
@@ -107,7 +113,9 @@ uvicorn app.main:app --reload      # abrir http://localhost:8000
 | `CONFIG_DIR` | Carpeta de parámetros | `config` |
 
 Los parámetros del negocio (umbrales, tabla de síntomas, calendario, mensajes) **no** son variables de entorno: viven en
-`config/*.toml`. Mientras Gemini siga inestable, se recomienda `LLM_PRINCIPAL=groq` y `LLM_RESPALDO=gemini`.
+`config/*.toml`. **Proveedor principal: Gemini, con Groq de respaldo**, en local y en producción. Por qué no Groq como
+principal (aunque es más rápido): su plan gratuito alcanza para unas 50 consultas al día. Detalle en
+[docs/07-evaluacion.md §7.3](docs/07-evaluacion.md#73-proveedor-principal-decisión).
 
 > **Cuotas gratuitas.** `gemini-3.8-flash` admite solo **20 solicitudes por día** y cada pregunta al agente usa 2–3;
 > `gemini-3.5-flash-lite` tiene cuota propia y también soporta herramientas. El motivo exacto de un 429 (qué límite y
@@ -139,6 +147,7 @@ Los parámetros del negocio (umbrales, tabla de síntomas, calendario, mensajes)
 - **Claves:** secretos de la app en Azure (`gemini-key`, `groq-key`), nunca en la imagen ni en el repositorio.
 - **CI/CD:** [.github/workflows/ci-cd.yml](.github/workflows/ci-cd.yml). En cada push y pull request: gitleaks + pytest +
   build de la imagen. En `main`, si las pruebas pasan: despliegue en Azure y pruebas de humo contra la URL nueva.
+- **Presentación de la sustentación (7/11/2026):** [docs/presentacion-grupo9.pdf](docs/presentacion-grupo9.pdf).
 - Paso a paso (incluido el plan B si la suscripción no permite construir en la nube): [docs/despliegue.md](docs/despliegue.md).
   Qué datos viven dónde en producción: ADR-020 en [docs/09-decisiones.md](docs/09-decisiones.md).
 
@@ -147,12 +156,14 @@ Los parámetros del negocio (umbrales, tabla de síntomas, calendario, mensajes)
 | Qué | Cómo se corre | Resultado |
 | :--- | :--- | :--- |
 | Pruebas unitarias y de integración (modelo simulado, sin gastar API) | `pytest` | 121/121 pasan |
-| Pruebas funcionales de humo contra la URL desplegada (modelo real) | `python tests/smoke.py <URL>` | **7/7 pasan**, p95 4,5 s ([salida](docs/evidencias/semana-4/smoke-azure.txt)) |
-| Evaluación del RAG y del agente | `python eval/run_eval.py …` | 19/20 preguntas correctas, 100 % con cita, síntomas 10/10 ([docs/07-evaluacion.md](docs/07-evaluacion.md)) |
+| Pruebas funcionales contra la URL desplegada (modelo real) | `python tests/smoke.py` | **21/21 pasan** ([docs/08-pruebas.md](docs/08-pruebas.md), [salida](docs/evidencias/semana-4/smoke-azure.txt)) |
+| Evaluación del RAG y del agente **en producción** | `python eval/run_eval.py --completo --url <URL>` | **20/20** preguntas correctas, 100 % con cita, 0 dosis no respaldadas, síntomas 10/10 |
+| Latencia en producción (30 turnos reales) | la misma corrida | mediana 5,6 s · **p95 12,0 s** (semana 3: 51,2 s) · meta ≤ 5 s ❌ |
 
-Los 7 casos de humo: `/health`; dos preguntas del caso (poda de mantenimiento con respuesta citada y síntomas de
-monilla con la herramienta de diagnóstico); una pregunta fuera de dominio y un intento de inyección (ambos deben
-abstenerse); y dos entradas inválidas (`{}` y mensaje vacío → 422, nunca 500).
+Los 21 casos de humo cubren lo que debe hacer (salud, interfaz, poda, diagnóstico, calendario y filtro por tema), lo
+que debe negarse a hacer (fuera de dominio, inyección, rol `system` en el historial, confirmar sin propuesta) y lo que
+debe rechazar sin romperse (vacío, demasiado largo, tipo o tema inválido, campos extra, método o ruta inexistente).
+Comparación semana 3 frente a producción: [docs/07-evaluacion.md §7](docs/07-evaluacion.md#7-evaluación-en-producción-semana-4).
 
 ## Integración estable con el modelo
 
@@ -196,6 +207,8 @@ Catálogo completo, enlaces y hashes en [data/raw/README.md](data/raw/README.md)
 - El límite por IP vive en memoria: vale con 1 réplica; con varias habría que llevarlo a un almacén compartido
   (Redis). Varias personas detrás de la misma IP (p. ej., una asociación) comparten las 20 preguntas por minuto.
 - Con réplicas mín. 0, la primera visita tras un rato sin uso tarda más (arranque en frío).
+- **Latencia:** p95 de 12,0 s en producción, por encima de la meta de 5 s (RNF de [02-requisitos.md](docs/02-requisitos.md)).
+  Con Groq como principal baja a ≈ 6 s, pero su cuota gratuita no alcanza para el día (docs/07 §7.3).
 
 ## Declaración de uso de IA
 
@@ -205,7 +218,7 @@ inteligencia artificial **durante la construcción** del proyecto.
 
 | Herramienta | Uso | Verificación |
 | :--- | :--- | :--- |
-| Claude Code (asistente de programación de Anthropic, integrado en VS Code) | Apoyo en la semana 4 para la contenerización con Docker, el despliegue en Azure Container Apps, el pipeline de integración y despliegue continuo en GitHub Actions, los ajustes de la interfaz (desplazamiento durante la generación de la respuesta y guía «Cómo describir un síntoma»), las pruebas funcionales de humo (`tests/smoke.py`), el límite de peticiones por IP (`app/limite.py`) y la redacción de la documentación y de las evidencias | Cada cambio fue revisado por el equipo y validado con `pytest` (121/121) y con las pruebas de humo contra la URL de Azure (7/7); la interfaz se comprobó en el navegador; las cifras reportadas en este README provienen de ejecuciones reales registradas en `docs/evidencias/` |
+| Claude Code (asistente de programación de Anthropic, integrado en VS Code) | Apoyo en la semana 4 para la contenerización con Docker, el despliegue en Azure Container Apps, el pipeline de integración y despliegue continuo en GitHub Actions, los ajustes de la interfaz (desplazamiento durante la generación de la respuesta y guía «Cómo describir un síntoma»), las pruebas funcionales (`tests/smoke.py`, `docs/08-pruebas.md`), la evaluación en producción (`eval/run_eval.py --url`), el límite de peticiones por IP (`app/limite.py`) y la redacción de la documentación y de las evidencias | Cada cambio fue revisado por el equipo y validado con `pytest` (121/121) y con las pruebas funcionales contra la URL de Azure (21/21) y la evaluación en producción (20/20); la interfaz se comprobó en el navegador; las cifras reportadas en este README provienen de ejecuciones reales registradas en `docs/evidencias/` |
 
 **Investigación individual.** Previo a la implementación, cada integrante del equipo se encargó de indagar de manera
 independiente sobre el despliegue de aplicaciones en Microsoft Azure (Azure Container Apps, Azure Container Registry
@@ -226,3 +239,11 @@ equipo asume la responsabilidad total sobre lo entregado.
 | Darío Tipanluisa | Análisis | Elaboración de propuesta del problema (01) y requisitos con historias de usuario (02). |
 | Jhonn Miranda | Arquitectura | Diseño de la arquitectura (03), inventario de fuentes (04) e integración de manuales. |
 | Marco Rivas | Gestión y Desarrollo | Levantamiento real de preguntas, configuración base del repositorio y evidencias. |
+
+**Semana 4 · Despliegue y validación**
+
+| Integrante | Aporte |
+| :--- | :--- |
+| Jhonn Miranda | Implementación del despliegue: Dockerfile, publicación en Azure Container Apps con secretos (ADR-020, [docs/despliegue.md](docs/despliegue.md)), pipeline de CI/CD en GitHub Actions, límite de peticiones por IP, ajustes de la interfaz, pruebas funcionales contra la URL ([docs/08-pruebas.md](docs/08-pruebas.md)), evaluación en producción ([docs/07-evaluacion.md](docs/07-evaluacion.md) §7) y evidencias de la semana. |
+| Darío Tipanluisa | Investigación sobre el despliegue en Azure y la integración y el despliegue continuos (CI/CD); revisión de la documentación de cierre. |
+| Marco Rivas | Investigación sobre el despliegue en Azure y la integración y el despliegue continuos (CI/CD); revisión de la documentación de cierre. |
