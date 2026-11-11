@@ -16,7 +16,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 load_dotenv(RAIZ / ".env")
 
 APP_NOMBRE = "Asistente Agrotécnico para Productores de Cacao"
-APP_VERSION = os.getenv("APP_VERSION", "0.2.0")
+APP_VERSION = os.getenv("APP_VERSION", "0.3.0")
 
 # Los tres proveedores hablan el mismo "idioma" (la API de Chat Completions de OpenAI).
 # Cambiar de proveedor es cambiar base_url, clave y modelo: los endpoints no se tocan.

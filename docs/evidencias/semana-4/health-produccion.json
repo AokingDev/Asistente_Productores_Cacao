@@ -1,0 +1,15 @@
+{
+  "estado": "ok",
+  "servicio": "Asistente Agrotécnico para Productores de Cacao",
+  "version": "0.3.0",
+  "prompt": "system_v4",
+  "llm": {
+    "principal": "gemini",
+    "respaldo": "groq"
+  },
+  "indice": {
+    "fragmentos": 175,
+    "busqueda": "hibrida",
+    "creado": "2026-10-29T02:33:20+00:00"
+  }
+}
